@@ -1,0 +1,14 @@
+{
+    "name": "features",
+    "version": "0.0.1",
+    "exports": {
+      "./store": "./src/store.ts",
+      "./analyzeSlices": "./src/analyzeSlices.ts",
+      "./authSlices": "./src/authSlices.ts",
+      "./decideSlices": "./src/decideSlices.ts"
+    },
+    "dependencies": {
+      "typescript": "latest",
+      "types": "*"
+    }
+  }
