@@ -15,7 +15,7 @@ import {
   markertingMixProps,
   segmentProps,
   shoppingHabitProps,
-} from "./type";
+} from "types";
 import { colorGrades, segmentColors } from "./constants/colors";
 
 

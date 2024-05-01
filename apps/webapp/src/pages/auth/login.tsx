@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { loadInfo } from "@/lib/features/participantSlices";
-import { quickAccess } from "@/lib/features/authSlices";
+import { loadInfo } from "features/participantSlices";
+import { quickAccess } from "features/authSlices";
 import { useForm } from "react-hook-form";
 import usePaths from "@/lib/paths";
 import { GetStaticProps, GetStaticPropsContext, InferGetStaticPropsType } from "next";

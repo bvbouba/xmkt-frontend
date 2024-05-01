@@ -3,10 +3,10 @@ import { Dispatch, SetStateAction, createContext, useContext, useEffect, useStat
 import { useRouter } from 'next/router';
 import usePaths from '../paths';
 import { useAppDispatch } from '../hooks/redux';
-import { authCheckState, checkAuthTimeout, logout } from '../features/authSlices';
+import {checkAuthTimeout, logout } from 'features/authSlices';
 import axios from 'axios';
-import { errorLogProps } from '../features/participantSlices';
-import { BudgetDetailsProps } from "../type"
+import { errorLogProps } from 'features/participantSlices';
+import { BudgetDetailsProps } from "types"
 
 
 type User = {

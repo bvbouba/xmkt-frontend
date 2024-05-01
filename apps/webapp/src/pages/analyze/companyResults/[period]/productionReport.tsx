@@ -1,6 +1,6 @@
 
 import {  productionItems, transformConstants } from "@/lib/constants";
-import { getBrandData } from "@/lib/features/analyzeSlices";
+import { getBrandData } from "features/analyzeSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { getValueByBrand } from "@/lib/utils";
 import {  useEffect } from "react";

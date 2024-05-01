@@ -1,6 +1,6 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { setSuccess, signup } from "@/lib/features/authSlices";
+import { setSuccess, signup } from "features/authSlices";
 import { useForm } from "react-hook-form";
 import { DisplaySuccessMessage } from "@/components/ToastMessages";
 import { GetStaticProps, InferGetStaticPropsType } from "next";

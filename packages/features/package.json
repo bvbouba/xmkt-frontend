@@ -5,7 +5,8 @@
       "./store": "./src/store.ts",
       "./analyzeSlices": "./src/analyzeSlices.ts",
       "./authSlices": "./src/authSlices.ts",
-      "./decideSlices": "./src/decideSlices.ts"
+      "./decideSlices": "./src/decideSlices.ts",
+      "./participantSlices": "./src/participantSlices.ts"
     },
     "dependencies": {
       "typescript": "latest",

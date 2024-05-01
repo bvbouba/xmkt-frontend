@@ -1,6 +1,6 @@
 
-import { getChannelsData, getSegmentsData } from "@/lib/features/analyzeSlices";
-import { fetchMarketResearchChoices, getMarketingMixData } from "@/lib/features/decideSlices";
+import { getChannelsData, getSegmentsData } from "features/analyzeSlices";
+import { fetchMarketResearchChoices, getMarketingMixData } from "features/decideSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { getValueByBrand } from "@/lib/utils";
 import {  useEffect } from "react";

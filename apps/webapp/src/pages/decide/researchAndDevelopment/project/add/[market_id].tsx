@@ -7,7 +7,7 @@ import {
   Description,
   FormData,
 } from "@/components/wizard/project";
-import { fetchDecisionStatus } from "@/lib/features/decideSlices";
+import { fetchDecisionStatus } from "features/decideSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";

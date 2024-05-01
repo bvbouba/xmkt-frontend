@@ -1,8 +1,8 @@
 import { Layout } from "@/components/Layout";
 import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { SuccessMessage } from "@/components/ToastMessages";
-import { getMarketsData } from "@/lib/features/analyzeSlices";
-import { fetchBudgetDetails, fetchDecisionStatus, fetchMarketResearchChoices, resetState, updateMarketResearchChoice } from "@/lib/features/decideSlices";
+import { getMarketsData } from "features/analyzeSlices";
+import { fetchBudgetDetails, fetchDecisionStatus, fetchMarketResearchChoices, resetState, updateMarketResearchChoice } from "features/decideSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
 import { useAuth } from "@/lib/providers/AuthProvider";

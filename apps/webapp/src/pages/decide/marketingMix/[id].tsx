@@ -1,13 +1,13 @@
 import { Layout } from "@/components/Layout";
 import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { SuccessMessage } from "@/components/ToastMessages";
-import { fetchDimensions, getFeaturesData, getSegmentsData } from "@/lib/features/analyzeSlices";
+import { fetchDimensions, getFeaturesData, getSegmentsData } from "features/analyzeSlices";
 import {
   fetchBudgetDetails,
   fetchDecisionStatus,
   fetchMarketingMixById,
   partialUpdateMarketingMix,
-} from "@/lib/features/decideSlices";
+} from "features/decideSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
 import { useAuth } from "@/lib/providers/AuthProvider";

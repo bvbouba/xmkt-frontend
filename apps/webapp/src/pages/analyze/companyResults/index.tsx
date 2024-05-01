@@ -2,7 +2,6 @@ import { Layout } from "@/components/Layout";
 import { Section } from "@/components/Section";
 import usePaths from "@/lib/paths";
 import { useAuth } from "@/lib/providers/AuthProvider";
-import { RegionProvider } from "@/lib/providers/RegionProvider";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";

@@ -1,8 +1,8 @@
 import { Layout } from "@/components/Layout";
 import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { SuccessMessage } from "@/components/ToastMessages";
-import { getChannelsData } from "@/lib/features/analyzeSlices";
-import { fetchBudgetDetails, fetchDecisionStatus, getMarketingMixData, partialUpdateMarketingMix } from "@/lib/features/decideSlices";
+import { getChannelsData } from "features/analyzeSlices";
+import { fetchBudgetDetails, fetchDecisionStatus, getMarketingMixData, partialUpdateMarketingMix } from "features/decideSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
 import { useAuth } from "@/lib/providers/AuthProvider";

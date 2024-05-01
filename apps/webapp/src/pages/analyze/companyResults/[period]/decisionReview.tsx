@@ -9,12 +9,12 @@ import {
   getOnlineQueryInfoData,
   getProjectAllData,
   getSegmentsData,
-} from "@/lib/features/analyzeSlices";
+} from "features/analyzeSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import {  useEffect } from "react";
 
 import { OnlineQueryTable, ProjectTableBasic, Table } from "@/components/Table";
-import { getMarketingMixData } from "@/lib/features/decideSlices";
+import { getMarketingMixData } from "features/decideSlices";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";

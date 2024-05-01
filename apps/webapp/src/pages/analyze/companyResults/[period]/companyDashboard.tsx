@@ -1,7 +1,7 @@
 
 import {  useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { getBrandData, getFirmData } from "@/lib/features/analyzeSlices";
+import { getBrandData, getFirmData } from "features/analyzeSlices";
 
 import { barThickness, unit } from "@/lib/constants";
 import { BlockHeader } from "@/components/blockHeader";

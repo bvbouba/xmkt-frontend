@@ -1,17 +1,17 @@
 
-import { getFeaturesData, getSegmentsData, getSemanticIdealsData, getSemanticScalesData } from "@/lib/features/analyzeSlices";
+import { getFeaturesData, getSegmentsData, getSemanticIdealsData, getSemanticScalesData } from "features/analyzeSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import {  getMapData, getValueByBrandFeature, getValueBySegmentFeature } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { TableSimple } from "@/components/Table/Table";
 import { useRouter } from "next/router";
-import { fetchMarketResearchChoices } from "@/lib/features/decideSlices";
+import { fetchMarketResearchChoices } from "features/decideSlices";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { HeaderContainer, ParagraphContainer } from "@/components/container";
-import { featureProps } from "@/lib/type";
+import { featureProps } from "types";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import ScatterChart from "@/components/charts/ScatterChart";
 

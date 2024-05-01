@@ -1,11 +1,11 @@
 
-import { getChannelsData, getDistributionCoverageData, getSalesData } from "@/lib/features/analyzeSlices";
+import { getChannelsData, getDistributionCoverageData, getSalesData } from "features/analyzeSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import {  getValueByBrandChannel } from "@/lib/utils";
 import { useEffect } from "react";
 import { TableSimple, columnProps } from "@/components/Table/Table";
 import { useRouter } from "next/router";
-import { fetchMarketResearchChoices } from "@/lib/features/decideSlices";
+import { fetchMarketResearchChoices } from "features/decideSlices";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";

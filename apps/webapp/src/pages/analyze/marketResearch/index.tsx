@@ -1,7 +1,7 @@
 import { Layout } from "@/components/Layout";
 import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { Section } from "@/components/Section";
-import { fetchMarketResearchChoices } from "@/lib/features/decideSlices";
+import { fetchMarketResearchChoices } from "features/decideSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
 import { useAuth } from "@/lib/providers/AuthProvider";

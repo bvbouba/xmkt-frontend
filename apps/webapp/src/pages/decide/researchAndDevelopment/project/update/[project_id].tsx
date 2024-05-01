@@ -1,10 +1,10 @@
 import { Layout } from "@/components/Layout";
-import { deleteProject, fetchDecisionStatus, fetchProjectById, partialUpdateProject } from "@/lib/features/decideSlices";
+import { deleteProject, fetchDecisionStatus, fetchProjectById, partialUpdateProject } from "features/decideSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { getFeaturesData } from "@/lib/features/analyzeSlices";
+import { getFeaturesData } from "features/analyzeSlices";
 import { BlockHeader } from "@/components/blockHeader";
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

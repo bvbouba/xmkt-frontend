@@ -4,10 +4,10 @@ import {
   getLevelsData,
   getSegmentsData,
   getUtilitiesData,
-} from "@/lib/features/analyzeSlices";
+} from "features/analyzeSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useEffect } from "react";
-import { fetchMarketResearchChoices } from "@/lib/features/decideSlices";
+import { fetchMarketResearchChoices } from "features/decideSlices";
 import { useRouter } from "next/router";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";

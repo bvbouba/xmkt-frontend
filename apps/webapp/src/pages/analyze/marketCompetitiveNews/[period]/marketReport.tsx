@@ -1,21 +1,17 @@
-import { Layout } from "@/components/Layout";
 import { Loading } from "@/components/Loading";
-import { RedirectToLogin } from "@/components/RedirectToLogin";
-import { Table } from "@/components/Table";
-import { BlockHeader } from "@/components/blockHeader";
 import { HeaderContainer, ParagraphContainer } from "@/components/container";
 import { unitMsItems, valueMsItems } from "@/lib/constants";
-import { getBrandData, getFeaturesData } from "@/lib/features/analyzeSlices";
-import { getMarketingMixData } from "@/lib/features/decideSlices";
+import { getBrandData, getFeaturesData } from "features/analyzeSlices";
+import { getMarketingMixData } from "features/decideSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useAuth } from "@/lib/providers/AuthProvider";
-import { unitMsProps, valueMsProps } from "@/lib/type";
+import { unitMsProps, valueMsProps } from "types";
 import { formatPrice, getValueByBrand, lowercase, translateFeatures } from "@/lib/utils";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect } from "react";
+import {  useEffect } from "react";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'en';

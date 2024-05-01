@@ -1,6 +1,6 @@
 
 import { brandFinancialChartItems, firmFinancialChartItems, transformConstants } from "@/lib/constants";
-import { getBrandData, getFirmData } from "@/lib/features/analyzeSlices";
+import { getBrandData, getFirmData } from "features/analyzeSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useEffect } from "react";
 import { unit } from "@/lib/constants";

@@ -1,9 +1,9 @@
 
 import { Table } from "@/components/Table";
 import {  industryFinancialItems,industryMarketShareItems, unit } from "@/lib/constants";
-import { getBrandData, getFirmData, getMarketsData } from "@/lib/features/analyzeSlices";
+import { getBrandData, getFirmData, getMarketsData } from "features/analyzeSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { industryDataProps } from "@/lib/type";
+import { industryDataProps } from "types";
 import { useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { Loading } from "@/components/Loading";

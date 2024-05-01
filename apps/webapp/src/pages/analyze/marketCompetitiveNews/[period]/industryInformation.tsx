@@ -1,7 +1,7 @@
 import { Layout } from "@/components/Layout";
 import { Loading } from "@/components/Loading";
 import { HeaderContainer, ParagraphContainer } from "@/components/container";
-import { getIndustryInfoData } from "@/lib/features/analyzeSlices";
+import { getIndustryInfoData } from "features/analyzeSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import { getEconomicData } from "@/lib/utils";

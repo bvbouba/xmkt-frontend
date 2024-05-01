@@ -1,7 +1,7 @@
 import { Loading } from "@/components/Loading";
 import { ProjectTable } from "@/components/Table";
 import { HeaderContainer } from "@/components/container";
-import { getFeaturesData, getProjectData } from "@/lib/features/analyzeSlices";
+import { getFeaturesData, getProjectData } from "features/analyzeSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useAuth } from "@/lib/providers/AuthProvider";
 import { translateFeatures } from "@/lib/utils";

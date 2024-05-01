@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios,{AxiosError} from "axios";
-import { AppThunk } from ".";
+import { AppThunk } from "./store";
 import { authProps, signupProps } from "types";
 
 interface props {

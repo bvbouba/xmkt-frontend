@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "isolatedModules": true,
+      "preserveWatchOutput": true,
+      "skipLibCheck": true,
+      "noEmit": true,
+      "target": "es6",
+    "module": "commonjs",
+    "jsx": "react",
+    "strict": true
+    },
+    "exclude": ["node_modules"]
+  }
