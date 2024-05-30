@@ -1,12 +1,20 @@
+import { useAppDispatch } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
+import { useAuth } from "@/lib/providers/AuthProvider";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { logout } from "features/authSlices";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 
 function DesktopNav() {
   const { t } = useTranslation("common");
   const paths = usePaths()
+  const { isAuthenticated } = useAuth();
+  const dispatch = useAppDispatch();
+  const router = useRouter()
+
   const menus = [
     {
       label:t("About"),
@@ -30,18 +38,31 @@ function DesktopNav() {
     }
   ]
 
+  const onLogout = () => {
+    dispatch(logout());
+    void router.push(paths.auth.login.$url());
+  };
+
   return (
     <nav className="bg-white absolute w-full left-0 -bottom-[86px] shadow-custom1 h-16 rounded-[10px] hidden lg:flex
                lg:items-center lg:justify-between lg:px-[50px]">
       <ul className="flex gap-x-4">
-       {menus.map((menu,idx)=><li key={idx}>
+       {menus.map((menu,idx)=>{
+          if(isAuthenticated && (idx===menus.length-1 || idx===menus.length-2)) return<></>
+        return(<li key={idx}>
           <Link
             href={menu.url}
             className={`border-r ${idx === menus.length - 1 ? '' : 'pr-4'} text-secondary hover:text-accent transition-all duration-300`}
           >
             {menu.label}
           </Link>
-        </li>)}
+        </li>)})}
+
+        {isAuthenticated && (
+        <li>
+       <button className="text-secondary hover:text-accent transition-all duration-300" onClick={() => onLogout()}>{t("Logout")}</button>
+        </li>)
+}
       </ul>
       <form className="relative flex gap-x-[10px]">
       <label htmlFor="search-input" className="flex justify-center items-center group">

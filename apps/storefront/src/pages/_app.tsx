@@ -3,6 +3,9 @@ import { NextPage } from 'next';
 import type { AppProps } from 'next/app'
 import { ReactElement, ReactNode } from 'react';
 import { appWithTranslation } from 'next-i18next'
+import StoreProvider from "@/lib/providers/StoreProvider";
+import { AuthProvider } from "@/lib/providers/AuthProvider";
+import { isAuthenticated } from "@/lib/auth";
 
 type NextPageWithLayout = NextPage & {
     getLayout?: (page: ReactElement) => ReactNode;
@@ -15,7 +18,12 @@ type AppPropsWithLayout = AppProps & {
 function App({ Component, pageProps }: AppPropsWithLayout) {
     const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
 
-  return getLayout(<Component {...pageProps} />)
+  return     <StoreProvider>
+    <AuthProvider isAuthenticated={typeof window !== "undefined" ? isAuthenticated(): false}>
+  {getLayout(<Component {...pageProps} />)}
+  </AuthProvider>
+  </StoreProvider>
 }
 
 export default appWithTranslation(App)
+ 

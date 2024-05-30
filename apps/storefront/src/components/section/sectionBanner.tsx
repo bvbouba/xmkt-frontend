@@ -1,31 +1,58 @@
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { fetchCourseById } from "features/storeSlices";
+
+type FormValues = {
+  courseid: string;
+};
+
 
 
 export function SectionBanner() {
   const { t } = useTranslation("common");
+  const dispatch = useAppDispatch();
+  const {loading} = useAppSelector((state) => state.store.course);
 
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+    setError: setErrorForm,
+  } = useForm<FormValues>();
+  
+  const onSubmit = (data: FormValues) => {
+    const {
+      courseid
+    } = data;
+    // Validate and handle form submission
+      dispatch(fetchCourseById( {courseid}));
+    
+  };
+  
   return (
-    <section className="hero bg-banner py-12 xl:pt-12 xl:pb-12 overflow-hidden">
+    <section className="hero bg-banner bg-no-repeat py-12 xl:pt-12 xl:pb-12 overflow-hidden">
       <div className="container mx-auto h-full">
         <div className="">
           <div className="flex flex-col items-center">
             <h2 className="h2 mb-6">{t("Welcome to the simulation Store")}</h2>
             <div className="col-md-6 col-md-offset-3">
               <div className="">
-                <form className="flex items-center max-w-sm mx-auto">
+                <form className="flex items-center max-w-sm mx-auto" onSubmit={handleSubmit(onSubmit)}>
                   <div className="relative w-full">
-                    <div className="items-center space-y-5">
+                    <div className="items-center space-y-5 w-full">
                       <input
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
-                        focus:border-blue-500 block w-96 ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 
-                        dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      {...register("courseid", {
+                        required: true,
+                      })}
                         type="text"
-                        name="input_value"
-                        placeholder={t("Enter the class code (eg. 57AB832E).")}
+                        className="input focus:outline-none focus:border-blue-500"
+                        placeholder={t("Enter the class code")}
                       />
 
-                      <button className="btn btn-lg btn-accent mx-auto xl:mx-0">
-                        {t("Enter")}
+                      <button className="btn btn-lg btn-accent mx-auto xl:mx-0"  type="submit">
+                      {loading ?  t("Searching..."):t("Search")}
                       </button>
                     </div>
                   </div>

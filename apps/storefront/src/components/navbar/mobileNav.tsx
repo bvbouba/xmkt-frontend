@@ -8,11 +8,18 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import usePaths from "@/lib/paths";
+import { useAuth } from "@/lib/providers/AuthProvider";
+import { useAppDispatch } from "@/lib/hooks/redux";
+import { useRouter } from "next/router";
+import { logout } from "features/authSlices";
 
 function MobileNav() {
   const { t } = useTranslation("common");
   const paths = usePaths()
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const dispatch = useAppDispatch();
+  const router = useRouter()
 
   const toggleMobileNav = () => {
     setIsMobileNavOpen(!isMobileNavOpen);
@@ -41,6 +48,11 @@ function MobileNav() {
     }
   ]
 
+  const onLogout = () => {
+    dispatch(logout());
+    void router.push(paths.auth.login.$url());
+  };
+
   return (
     <nav
       className={`mnav bg-white fixed w-[300px] top-0 h-screen ${
@@ -61,15 +73,21 @@ function MobileNav() {
           <img src="/logo.svg" alt="" />
         </Link>
         <ul className="flex flex-col gap-y-5">
-          {menus.map((menu,idx)=><li key={idx}>
+          {menus.map((menu,idx)=>{
+            if(isAuthenticated && (idx===menus.length-1 || idx===menus.length-2)) return<></>
+            return(<li key={idx}>
             <Link
               href={menu.url}
               className="text-secondary hover:text-accent transition-all duration-300"
             >
               {menu.label}
             </Link>
-          </li>)}
-         
+          </li>)})}
+          {isAuthenticated && (
+        <li>
+       <button className="text-secondary hover:text-accent transition-all duration-300" onClick={() => onLogout()}>{t("Logout")}</button>
+        </li>)
+}
         </ul>
         <form className="relative flex gap-x-[10px]">
           <label htmlFor="mnav-search-input">

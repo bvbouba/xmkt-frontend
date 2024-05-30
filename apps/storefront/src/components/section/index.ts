@@ -7,3 +7,4 @@ export {SectionTeam} from "./sectionTeam"
 export {SectionFaq} from "./sectionFaq"
 export {SectionBanner} from "./sectionBanner";
 export {BannerAboutUs} from "./bannerAboutUs"
+export {SectionCourseDetail} from "./sectionCourseDetails"
