@@ -4,8 +4,8 @@ import {  useForm } from "react-hook-form";
 import { FormData } from ".";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useEffect } from "react";
-import { getFeaturesData } from "@/lib/features/analyzeSlices";
-import { fetchDecisionStatus } from "@/lib/features/decideSlices";
+import { getFeaturesData } from "features/analyzeSlices";
+import { fetchDecisionStatus } from "features/decideSlices";
 import { useTranslation } from "next-i18next";
 
 type props = {

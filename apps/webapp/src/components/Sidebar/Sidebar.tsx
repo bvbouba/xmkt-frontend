@@ -4,11 +4,11 @@ import { faSignOutAlt, faInfoCircle, faBook, faQuestionCircle,
     faExclamationTriangle, faBell,faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/redux';
-import { errorLogProps, loadInfo } from '@/lib/features/participantSlices';
+import { errorLogProps, loadInfo } from 'features/participantSlices';
 import { useRouter } from 'next/router';
 import usePaths from '@/lib/paths';
-import { logout } from '@/lib/features/authSlices';
-import { fetchBudgetDetails } from '@/lib/features/decideSlices';
+import { logout } from 'features/authSlices';
+import { fetchBudgetDetails } from 'features/decideSlices';
 import { useTranslation } from 'next-i18next';
 import { formatPrice, uppercase } from '@/lib/utils';
 import {CustomModal as Modal } from "@/components/Modal"

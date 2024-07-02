@@ -4,6 +4,7 @@ import authReducer from './authSlices';
  import analyzeReducer from './analyzeSlices';
 import participantReducer from './participantSlices';
 import decideReducer from './decideSlices'
+import storeReducer from './storeSlices'
 
 
 
@@ -15,6 +16,7 @@ import decideReducer from './decideSlices'
       participant: participantReducer,
       analyze:analyzeReducer,
       decide:decideReducer,
+      store:storeReducer,
       }
     })
   }

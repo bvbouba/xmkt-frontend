@@ -1,4 +1,4 @@
-import { setSuccess } from "@/lib/features/authSlices";
+import { setSuccess } from "features/authSlices";
 import { useAppDispatch } from "@/lib/hooks/redux";
 import { useTranslation } from "next-i18next";
 

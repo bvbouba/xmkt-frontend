@@ -6,7 +6,9 @@
       "./analyzeSlices": "./src/analyzeSlices.ts",
       "./authSlices": "./src/authSlices.ts",
       "./decideSlices": "./src/decideSlices.ts",
-      "./participantSlices": "./src/participantSlices.ts"
+      "./participantSlices": "./src/participantSlices.ts",
+      "./storeSlices": "./src/storeSlices.ts"
+
     },
     "dependencies": {
       "typescript": "latest",

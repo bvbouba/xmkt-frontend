@@ -7,8 +7,8 @@ import usePaths from "@/lib/paths";
 import Link from "next/link";
 import { ButtonNext, ButtonPrev } from "@/components/button";
 import { useEffect } from "react";
-import { getMarketsData } from "@/lib/features/analyzeSlices";
-import { fetchDecisionStatus } from "@/lib/features/decideSlices";
+import { getMarketsData } from "features/analyzeSlices";
+import { fetchDecisionStatus } from "features/decideSlices";
 import { useTranslation } from "next-i18next";
 
 

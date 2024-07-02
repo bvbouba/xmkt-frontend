@@ -1,6 +1,9 @@
 {
     "name": "types",
     "version": "0.0.1",
+    "scripts": {
+        "build": "tsc"
+    },
     "exports": {
         ".": "./src/index.ts"
       },

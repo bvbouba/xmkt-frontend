@@ -1,4 +1,4 @@
-import { resetState } from "@/lib/features/decideSlices";
+import { resetState } from "features/decideSlices";
 import { useAppDispatch } from "@/lib/hooks/redux";
 import { useTranslation } from "next-i18next";
 

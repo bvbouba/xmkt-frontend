@@ -3,10 +3,21 @@ import axios,{AxiosError} from "axios";
 import { AppThunk } from "./store";
 import { authProps, signupProps } from "types";
 
-interface props {
+
+type PropObject<T> = {  error?: string | null ; loading?: boolean; success?:boolean};
+
+type Props<T> = {
+    [K in keyof T]: PropObject<T[K]>;
+};
+export interface props extends Props<{
+  signupState:{},
+  loginState:{},
+  confirmState:{},
+}>{
+  loading?: boolean;
+  error?: string | null;
   token: string | null;
-  error?: any;
-  loading: boolean;
+  message:{detail:string} | null;
   userName: string | null;
   lastName: string | null;
   firstName: string | null;
@@ -15,8 +26,10 @@ interface props {
   country: string | null;
   school: string | null;
   success: boolean;
+  schools:{id:number,name:string,country_id:number}[],
+  functions:{id:number,name:string}[],
 }
-
+ 
 export const checkAuthTimeout =
   (expirationTime: number): AppThunk =>
   (dispatch) => {
@@ -111,51 +124,29 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ email, password }: authProps) => {
+  async ({ email, password }: authProps,{rejectWithValue}) => {
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/rest-auth/login/",
         { email, password }
       );
-      const { token } = response.data;
-
-      const additionalDataResponse = await axios.get(
-        "http://127.0.0.1:8000/rest-auth/user/",
-        {
-          headers: {
-            Authorization: `token ${token}`,
-          },
-        }
-      );
-
-      const username = additionalDataResponse.data.first_name;
-      const lastname = additionalDataResponse.data.last_name;
-      const firstname = additionalDataResponse.data.first_name;
-      const usertype = additionalDataResponse.data.profile.user_type;
-      const country = additionalDataResponse.data.profile.country;
-      const school = additionalDataResponse.data.profile.school;
+      const { key:token}  = response.data;
       const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
       localStorage.setItem("token", token ?? "");
       localStorage.setItem("expirationDate", expirationDate.toISOString());
 
       checkAuthTimeout(3600);
-
       return {
         token,
-        username,
-        lastname,
-        email,
-        firstname,
-        usertype,
-        country,
-        school,
-        expirationDate,
+        expirationDate: expirationDate.toISOString(), // Serialize expirationDate
       };
     } catch (error: any) {
-      throw error.response.data;
+      const axiosError = error as AxiosError;
+      return rejectWithValue(axiosError.response?.data)
     }
   }
 );
+
 
 export const signup = createAsyncThunk(
   "auth/signup",
@@ -165,6 +156,9 @@ export const signup = createAsyncThunk(
     password2,
     firstName,
     lastName,
+    userType,
+    school="",
+    phone=""
   }: signupProps,{rejectWithValue}) => {
     try {
       const response = await axios.post(
@@ -179,11 +173,11 @@ export const signup = createAsyncThunk(
             prefix:null,
             job: null,
             function: null,
-            school:null,
+            school,
             country:1,
-            phone: null,
+            phone,
             objective: "",
-            user_type: 2,
+            user_type:userType,
           },
         }
       );
@@ -194,6 +188,8 @@ export const signup = createAsyncThunk(
     }
   }
 );
+
+
 
 export const checkEmail = createAsyncThunk(
   "auth/checkEmail",
@@ -333,7 +329,7 @@ export const quickAccess = createAsyncThunk(
     teamID: number;
     userID: number;
     password: string;
-  },{rejectWithValue}) => {
+  }) => {
     const params = {
       team: teamID,
       user: userID,
@@ -381,8 +377,44 @@ export const quickAccess = createAsyncThunk(
         school,
       };
     } catch (error: any) {
-      const axiosError = error as AxiosError;
-      return rejectWithValue(axiosError.response?.data)
+      throw error.response.data;
+    }
+  }
+);
+
+export const fetchSchools = createAsyncThunk(
+  "auth/fetchSchools",
+  async () => {
+    try {
+      const response  = await axios.get('http://127.0.0.1:8000/api/school/');
+        return response.data
+    } catch (error: any) {
+      throw error.response.data;
+    }
+  }
+);
+
+export const fetchFunctions = createAsyncThunk(
+  "auth/fetchFunctions",
+  async () => {
+    try {
+      const response  = await axios.get('http://127.0.0.1:8000/api/function/');
+        return response.data
+    } catch (error: any) {
+      throw error.response.data;
+    }
+  }
+);
+
+export const confirmEmail = createAsyncThunk(
+  'auth/confirmEmail',
+  async ({key}:{key:string}) => {
+    try {
+      // Call the confirm email API function
+      const response = await axios.post('http://127.0.0.1:8000/api/confirm-email/', { key })
+      return response.data;
+    } catch (error: any) {
+      throw error.response.data;
     }
   }
 );
@@ -399,6 +431,12 @@ const initialState: props = {
   country: null,
   school: null,
   success: false,
+  schools:[],
+  functions:[],
+  message:null,
+  signupState:{},
+  loginState:{},
+  confirmState:{},
 };
 
 
@@ -424,37 +462,30 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.loginState.loading = true;
+        state.loginState.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.token = action.payload.token;
-        state.error = null;
-        state.loading = false;
-        state.userName = action.payload.username;
-        state.lastName = action.payload.lastname;
-        state.firstName = action.payload.firstname;
-        state.email = action.payload.email;
-        state.userType = action.payload.usertype;
-        state.country = action.payload.country;
-        state.school = action.payload.school;
+        state.loginState.success = true;
+        state.loginState.loading = false;
       })
       .addCase(login.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.loginState.loading = false;
+        state.loginState.error = action.error.message;
       })
       .addCase(signup.pending, (state) => {
-        state.loading = true;
-        state.success = false;
+        state.signupState.loading = true;
+        state.signupState.success = false;
       })
-      .addCase(signup.fulfilled, (state) => {
-        state.loading = false;
-        state.success = true;
-        state.error = null
+      .addCase(signup.fulfilled, (state,action) => {
+        state.signupState.loading = false;
+        state.signupState.success = true;
+        state.message = action.payload;
       })
       .addCase(signup.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.signupState.loading = false;
+        state.signupState.error = action.error.message;
       })
       .addCase(logout.pending, (state) => {
         state.loading = true;
@@ -483,8 +514,46 @@ const authSlice = createSlice({
       })
       .addCase(quickAccess.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.error.message;
       })
+
+      .addCase(fetchSchools.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchSchools.fulfilled, (state,action) => {
+        state.loading = false;
+        state.schools = action.payload;
+       
+      })
+      .addCase(fetchSchools.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      .addCase(fetchFunctions.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchFunctions.fulfilled, (state,action) => {
+        state.loading = false;
+        state.functions = action.payload;
+
+      })
+      .addCase(fetchFunctions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      .addCase(confirmEmail.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(confirmEmail.fulfilled, (state,action) => {
+        state.loading = false;
+        state.message =  action.payload;
+      })
+      .addCase(confirmEmail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
   },
 });
 
