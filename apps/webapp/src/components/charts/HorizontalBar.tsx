@@ -22,6 +22,8 @@ interface Props {
   legendDisplay?:boolean
 }
 
+
+// @ts-ignore
 Array.prototype.SumArray = function (arr) {
 
   var sum = this.map(function (num, idx) {
@@ -37,6 +39,7 @@ const HorizontalBar = ({ data, title, inPercent,inThousand,legendPos,legendDispl
   let arr = Array.apply(null, Array(data.labels?.length)).map(Number.prototype.valueOf,0);
     data.datasets.map(row =>
     {
+      // @ts-ignore
       arr = arr.SumArray(row.data)
       return arr
     })

@@ -1,7 +1,7 @@
-import { featureProps, projectProps } from "@/lib/type";
 import { useTranslation } from "next-i18next";
 import { ParagraphContainer } from "../container";
 import { formatPrice, lowercase } from '@/lib/utils';
+import { featureProps, projectProps } from "@/lib/type";
 
 interface props {
     projects?:projectProps[]

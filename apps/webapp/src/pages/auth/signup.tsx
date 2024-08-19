@@ -54,17 +54,23 @@ const SignupPage = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
 
   const renderErrorMessages = () => {
     if (!error || typeof error !== "object") return null;
-
-    return Object.keys(error).map((key) => {
-      const errorMessages = error[key].map((message: string, index: number) => (
-        <p key={index} className="text-sm text-red-500 pt-2">
-          {`${key} : ${message}`}
-        </p>
-      ));
-
-      return <div key={key}>{errorMessages}</div>;
+  
+    const errorObject = error as Record<string, string[]>;
+  
+    return Object.keys(errorObject).map((key) => {
+      const messages = errorObject[key];
+      if (Array.isArray(messages)) {
+        return messages.map((message: string, index: number) => (
+          <p key={index} className="text-sm text-red-500 pt-2">
+            {`${key} : ${message}`}
+          </p>
+        ));
+      }
+      return null;
     });
   };
+  
+  
 
   
 

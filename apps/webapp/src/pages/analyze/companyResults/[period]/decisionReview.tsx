@@ -249,7 +249,7 @@ if (typeof firmID === 'number') {
       <ProjectTableBasic projects={selectedProjects} features={translateFeatures(selectedFeatures,locale)} />
         }
       </div>
-      </div>
+      </div> 
 
       <div>
       <ParagraphContainer  title={t("ONLINE_QUERY")} content={`${t("THE_TABLE_BELOW_LISTS_THE_ONLINE_QUERIES_MADE_BY_R&D_DEPARTEMENT_")} ${selectedPeriod} decisions.`}/>

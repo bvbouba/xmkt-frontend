@@ -1,2 +1,2 @@
 export {SuccessMessage,DangerMessage,WarningMessage} from './ToatMessages'
-export {DisplaySuccessMessage} from './SuccessMessage'
+export {DisplaySuccessMessage} from './success-message'

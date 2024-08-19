@@ -196,7 +196,7 @@ function AddBrand({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
             <div className="mt-2 grid grid-cols-1 gap-4">
               {t("SELECT_A_NEW_BASE_PROJECT:")}
              {projects.past?.map(entry=>(
-                <div className="row align-items-start">
+                <div key={entry.id} className="row align-items-start">
                 <label>
                   <input
                     type="radio"

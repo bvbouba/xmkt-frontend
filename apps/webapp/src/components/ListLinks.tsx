@@ -17,8 +17,8 @@ const ListLinks = (props:Props) => {
 
   return (
     <div>
-        {links.map((link) =>
-           <ItemDisplay label={link.label} icon={link.icon} to={link.to} />
+        {links.map((link,index) =>
+           <ItemDisplay key={index} label={link.label} icon={link.icon} to={link.to} />
       )}
       </div>
   )
