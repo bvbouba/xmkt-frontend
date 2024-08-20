@@ -1,12 +1,12 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { useRouter } from "next/router";
 import usePaths from "@/lib/paths";
-import { GetStaticPaths, GetStaticProps, GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from "next-i18next";
 import { AuthLayout } from "@/components/layout";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { confirmEmail, login } from "features/authSlices";
+import { confirmEmail } from "features/authSlices";
 import Link from "next/link";
 
 
@@ -20,13 +20,15 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
-const Page = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Page = (
+  // { locale }: InferGetStaticPropsType<typeof getStaticProps>
+) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { t } = useTranslation('common');
   const {confirmState, message} = useAppSelector((state) => state.auth);
   const paths = usePaths()
-  const { loading, error, success } = confirmState;
+  const {  error } = confirmState;
   const key = Array.isArray(router.query.key) ? router.query.key[0] : router.query.key;
 
   useEffect(() => {

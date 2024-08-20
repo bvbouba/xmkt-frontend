@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
       <div className="flex flex-col xl:flex-row gap-x-5 gap-y-10">
         <div className="footer__item flex-1">
           <Link href={paths.$url()}>
-          <img className="mb-[30px]" src="/logo.svg"/>
+          <img className="mb-[30px]" src="/logo.svg" alt=''/>
           </Link>
           <p className="mb-[20px]">
             {t("Start transforming your courses with our simulations today. Contact us")}
@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
           <div className="flex flex-col gap-y-3 mb-10">
             <div className="flex items-center gap-x-[6px]">
             <FontAwesomeIcon className="text-[24px] text-accent" icon={faLocationDot} />
-            <div>Abidjan, Cote d'Ivoire</div>
+            <div>{"Abidjan, Cote d'Ivoire"}</div>
             </div>
             <div className="flex items-center gap-x-[6px]">
             <FontAwesomeIcon className="text-[24px] text-accent" icon={faEnvelope} />

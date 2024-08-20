@@ -26,7 +26,7 @@ export const Navbar: React.FC = () => {
         <div className="flex flex-col gap-y-4 lg:flex-row lg:gap-x-10 lg:gap-y-0">
           <div className="flex justify-center items-center gap-x-2 lg:justify-normal">
             <FontAwesomeIcon className="text-2xl text-accent" icon={faLocationDot} />
-            Abidjan, Cote d'Ivoire
+            {"Abidjan, Cote d'Ivoire"}
           </div>
           <div className="flex justify-center items-center gap-x-2 lg:justify-normal">
             <FontAwesomeIcon className="text-2xl text-accent" icon={faPhone} />

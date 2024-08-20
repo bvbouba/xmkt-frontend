@@ -1,6 +1,6 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { GetStaticProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { AuthLayout } from "@/components/layout";
@@ -8,8 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import {fetchSchools, signup } from "features/authSlices";
 import { useRouter } from "next/router";
 import usePaths from "@/lib/paths";
-import Image from 'next/image';
-import loadingIcon from "../../../public/loading.svg"
+
 
 type FormValues = {
   email: string;
@@ -32,7 +31,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
-const Page = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Page = (
+  // { locale }: InferGetStaticPropsType<typeof getStaticProps>
+) => {
   const { t } = useTranslation("common");
   const dispatch = useAppDispatch();
   const {signupState} = useAppSelector((state) => state.auth);
@@ -46,7 +47,6 @@ const Page = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) => {
     register,
     watch,
     formState: { errors: errorsForm },
-    setError: setErrorForm,
   } = useForm<FormValues>();
 
   useEffect(() => {

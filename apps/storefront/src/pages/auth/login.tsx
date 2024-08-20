@@ -1,13 +1,13 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { GetStaticProps, GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import { GetStaticProps } from "next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from "next-i18next";
 import { AuthLayout } from "@/components/layout";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { login } from "features/authSlices";
 import Link from "next/link";
+import { login } from "features/authSlices";
 import usePaths from "@/lib/paths";
 
 interface FormValues {
@@ -26,7 +26,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
-const Page = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Page = (
+  // { locale }: InferGetStaticPropsType<typeof getStaticProps>
+) => {
   const router = useRouter();
   const paths = usePaths()
   const { t } = useTranslation('common');
@@ -40,12 +42,13 @@ const Page = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) => {
     formState: { errors: errorsForm },
   } = useForm<FormValues>();
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit: (data: FormValues) => Promise<void> = async (data) =>  {
     const { email, password } = data;
     try {
       await dispatch(login({ email, password }));
-    } catch (error) {
-      console.error(`${t('Login error')}:`, error);
+    } catch (error1) {
+      // eslint-disable-next-line no-console
+      console.error(`${t('Login error')}:`, error1);
     }
   };
 
@@ -73,7 +76,7 @@ const Page = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) => {
                 type="text"
                 className="input focus:outline-none focus:border-blue-500"
               />
-              {!!errorsForm.email && (
+              {Boolean(errorsForm.email) && (
                 <p className="text-sm text-red-500 pt-2">
                   {errorsForm.email?.message}
                 </p>
