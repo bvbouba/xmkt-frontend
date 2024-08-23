@@ -1,21 +1,22 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import {API_URI} from "myconstants"
 
 export const loadInfo = createAsyncThunk(
-  "participant/loadInfo",
+  `participant/loadInfo`,
   async ({ pak }: { pak?: string }) => {
 
-    const  pass = pak || localStorage.getItem("pak"); 
+    const  pass = pak || localStorage.getItem(`pak`); 
     if (!pass) {
       return {
         error:{
-          message:"Please fill in the PAK field before retrieving data."
+          message:`Please fill in the PAK field before retrieving data.`
         }
       }
     }
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/participant_detail/${pass}/`
+        `${API_URI}api/participant_detail/${pass}/`
       );
       
       const userID = response.data.user;
@@ -49,12 +50,12 @@ export const loadInfo = createAsyncThunk(
 );
 
 export const overtakeAccess = createAsyncThunk(
-  "participant/overtakeAccess",
+  `participant/overtakeAccess`,
   async ({ id }: { id: string }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       await axios.patch(
-        `http://127.0.0.1:8000/api/online_user/${id}/`,
+        `${API_URI}api/online_user/${id}/`,
         {
           decide: false,
         },
@@ -73,12 +74,12 @@ export const overtakeAccess = createAsyncThunk(
 );
 
 export const getErrorLog = createAsyncThunk(
-  "participant/getErrorLog",
+  `participant/getErrorLog`,
   async ({ teamID,period }: { teamID: number,period:number }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/analyze/errorlog/${teamID}/${period}/`,
+        `${API_URI}api/analyze/errorlog/${teamID}/${period}/`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -156,7 +157,7 @@ const initialState: props = {
   
   
   const participantSlice = createSlice({
-    name: "participant",
+    name: `participant`,
     initialState,
     reducers: {
       setInfo: (state, action) => {

@@ -8,10 +8,10 @@
       "./decideSlices": "./src/decideSlices.ts",
       "./participantSlices": "./src/participantSlices.ts",
       "./storeSlices": "./src/storeSlices.ts"
-
     },
     "dependencies": {
       "typescript": "latest",
-      "types": "*"
+      "types": "*",
+      "myconstants":"*"
     }
   }

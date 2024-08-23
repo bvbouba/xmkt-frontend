@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios,{AxiosError} from "axios";
 import { AppThunk } from "./store";
 import { authProps, signupProps } from "types";
-
+import {API_URI} from "myconstants"
 
 type PropObject<T> = {  error?: string | null ; loading?: boolean; success?:boolean};
 
@@ -40,13 +40,13 @@ export const checkAuthTimeout =
   };
 
 export const authCheckState = (): AppThunk => async (dispatch) => {
-    const token = localStorage.getItem("token"); 
+    const token = localStorage.getItem(`token`); 
     if (!token)  {
       dispatch(logout());
       return;
     }
 
-    const storedExpirationDate = localStorage.getItem("expirationDate");
+    const storedExpirationDate = localStorage.getItem(`expirationDate`);
     if (storedExpirationDate) {
       const expirationDate = new Date(storedExpirationDate);
       if (expirationDate <= new Date()) {
@@ -57,7 +57,7 @@ export const authCheckState = (): AppThunk => async (dispatch) => {
       try {
         // Simulate fetching additional user data using the stored token (replace with actual logic)
         const response = await axios.get(
-          "http://127.0.0.1:8000/rest-auth/user/",
+          `${API_URI}rest-auth/user/`,
           {
             headers: {
               Authorization: `token ${token}`,
@@ -92,18 +92,18 @@ export const authCheckState = (): AppThunk => async (dispatch) => {
           )
         );
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error(`Error fetching user data:`, error);
       }
     }
 
 };
 
-export const logout = createAsyncThunk("auth/logout", async () => {
+export const logout = createAsyncThunk(`auth/logout`, async () => {
   // Clear user data from state (replace with actual logic)
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem(`token`);
     const response = await axios.get(
-      "http://127.0.0.1:8000/rest-auth/logout/",
+      `${API_URI}rest-auth/logout/`,
       {
         headers: {
           Authorization: `token ${token}`,
@@ -111,29 +111,29 @@ export const logout = createAsyncThunk("auth/logout", async () => {
       }
     );
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("expirationDate");
-    localStorage.removeItem("pak");
+    localStorage.removeItem(`token`);
+    localStorage.removeItem(`expirationDate`);
+    localStorage.removeItem(`pak`);
 
   } catch (error: any) {
     // Handle error (e.g., network error, 401 Unauthorized)
     throw error.response.data;
   }
-  return { message: "Logout successful!" };
+  return { message: `Logout successful!` };
 });
 
 export const login = createAsyncThunk(
-  "auth/login",
+  `auth/login`,
   async ({ email, password }: authProps,{rejectWithValue}) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/rest-auth/login/",
+        `${API_URI}rest-auth/login/`,
         { email, password }
       );
       const { key:token}  = response.data;
       const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
-      localStorage.setItem("token", token ?? "");
-      localStorage.setItem("expirationDate", expirationDate.toISOString());
+      localStorage.setItem(`token`, token ?? ``);
+      localStorage.setItem(`expirationDate`, expirationDate.toISOString());
 
       checkAuthTimeout(3600);
       return {
@@ -149,7 +149,7 @@ export const login = createAsyncThunk(
 
 
 export const signup = createAsyncThunk(
-  "auth/signup",
+  `auth/signup`,
   async ({
     email,
     password1,
@@ -157,12 +157,12 @@ export const signup = createAsyncThunk(
     firstName,
     lastName,
     userType,
-    school="",
-    phone=""
+    school=``,
+    phone=``
   }: signupProps,{rejectWithValue}) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/rest-auth/registration/",
+        `${API_URI}rest-auth/registration/`,
         {
           email,
           password1,
@@ -176,7 +176,7 @@ export const signup = createAsyncThunk(
             school,
             country:1,
             phone,
-            objective: "",
+            objective: ``,
             user_type:userType,
           },
         }
@@ -192,16 +192,16 @@ export const signup = createAsyncThunk(
 
 
 export const checkEmail = createAsyncThunk(
-  "auth/checkEmail",
+  `auth/checkEmail`,
   async ({ token }: { token: string }) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/account-confirm-email/",
+        `${API_URI}account-confirm-email/`,
         {
           key: token,
         }
       );
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem(`token`, response.data.token);
       return response;
     } catch (error: any) {
       throw error.response.data;
@@ -210,7 +210,7 @@ export const checkEmail = createAsyncThunk(
 );
 
 export const authChangePassword = createAsyncThunk(
-  "auth/changePassword",
+  `auth/changePassword`,
   async ({
     password1,
     password2,
@@ -219,9 +219,9 @@ export const authChangePassword = createAsyncThunk(
     password2: string;
   }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       await axios.post(
-        "http://127.0.0.1:8000/rest-auth/password/change/",
+        `${API_URI}rest-auth/password/change/`,
         {
           new_password1: password1,
           new_password2: password2,
@@ -234,7 +234,7 @@ export const authChangePassword = createAsyncThunk(
       );
 
       const response = await axios.get(
-        "http://127.0.0.1:8000/rest-auth/user/",
+        `${API_URI}rest-auth/user/`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -250,8 +250,8 @@ export const authChangePassword = createAsyncThunk(
       const country = response.data.profile.country;
       const school = response.data.profile.school;
       const expirationDate = new Date(new Date().getTime() + 36000 * 1000);
-      localStorage.setItem("token", token ?? "");
-      localStorage.setItem("expirationDate", expirationDate.toISOString());
+      localStorage.setItem(`token`, token ?? ``);
+      localStorage.setItem(`expirationDate`, expirationDate.toISOString());
       checkAuthTimeout(3600);
 
       return {
@@ -271,11 +271,11 @@ export const authChangePassword = createAsyncThunk(
 );
 
 export const resetPassword = createAsyncThunk(
-  "auth/resetPassword",
+  `auth/resetPassword`,
   async ({ email }: { email: string }) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/rest-auth/password/reset/",
+        `${API_URI}rest-auth/password/reset/`,
         {
           email,
         }
@@ -289,7 +289,7 @@ export const resetPassword = createAsyncThunk(
 );
 
 export const resetPasswordConfirm = createAsyncThunk(
-  "auth/resetPasswordConfirm",
+  `auth/resetPasswordConfirm`,
   async ({
     uid,
     token,
@@ -303,7 +303,7 @@ export const resetPasswordConfirm = createAsyncThunk(
   }) => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/rest-auth/password/reset/confirm/",
+        `${API_URI}rest-auth/password/reset/confirm/`,
         {
           uid,
           token,
@@ -320,7 +320,7 @@ export const resetPasswordConfirm = createAsyncThunk(
 );
 
 export const quickAccess = createAsyncThunk(
-  "auth/quickAccess",
+  `auth/quickAccess`,
   async ({
     teamID,
     userID,
@@ -337,7 +337,7 @@ export const quickAccess = createAsyncThunk(
     }
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/participant-auth-token/",
+        `${API_URI}api/participant-auth-token/`,
         {
           ...params
         }
@@ -346,7 +346,7 @@ export const quickAccess = createAsyncThunk(
       const token = response.data.key;
 
       const response2 = await axios.get(
-        "http://127.0.0.1:8000/rest-auth/user/",
+        `${API_URI}rest-auth/user/`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -362,8 +362,8 @@ export const quickAccess = createAsyncThunk(
       const country = response2.data.profile.country;
       const school = response2.data.profile.school;
       const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
-      localStorage.setItem("token", token ?? "");
-      localStorage.setItem("expirationDate", expirationDate.toISOString());
+      localStorage.setItem(`token`, token ?? ``);
+      localStorage.setItem(`expirationDate`, expirationDate.toISOString());
       checkAuthTimeout(3600);
 
       return {
@@ -383,10 +383,10 @@ export const quickAccess = createAsyncThunk(
 );
 
 export const fetchSchools = createAsyncThunk(
-  "auth/fetchSchools",
+  `auth/fetchSchools`,
   async () => {
     try {
-      const response  = await axios.get('http://127.0.0.1:8000/api/school/');
+      const response  = await axios.get(`${API_URI}api/school/`);
         return response.data
     } catch (error: any) {
       throw error.response.data;
@@ -395,10 +395,10 @@ export const fetchSchools = createAsyncThunk(
 );
 
 export const fetchFunctions = createAsyncThunk(
-  "auth/fetchFunctions",
+  `auth/fetchFunctions`,
   async () => {
     try {
-      const response  = await axios.get('http://127.0.0.1:8000/api/function/');
+      const response  = await axios.get(`${API_URI}api/function/`);
         return response.data
     } catch (error: any) {
       throw error.response.data;
@@ -411,7 +411,7 @@ export const confirmEmail = createAsyncThunk(
   async ({key}:{key:string}) => {
     try {
       // Call the confirm email API function
-      const response = await axios.post('http://127.0.0.1:8000/api/confirm-email/', { key })
+      const response = await axios.post(`${API_URI}api/confirm-email/`, { key })
       return response.data;
     } catch (error: any) {
       throw error.response.data;
@@ -426,7 +426,7 @@ const initialState: props = {
   userName: null,
   lastName: null,
   firstName: null,
-  email: "",
+  email: ``,
   userType: null,
   country: null,
   school: null,
@@ -441,7 +441,7 @@ const initialState: props = {
 
 
 const authSlice = createSlice({
-  name: "auth",
+  name: `auth`,
   initialState,
   reducers: {
     authCheckStateSuccess: (state, action) => {

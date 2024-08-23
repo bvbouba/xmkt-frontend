@@ -1,13 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { analyzeProps } from "types";
+import {API_URI} from "myconstants"
 
 export const getFirmData = createAsyncThunk(
   "analyze/getFirmData",
   async ({ firmID,industryID }: { firmID: number,industryID:number }) => {
     try {
       const token = localStorage.getItem("token");
-      const response  = await axios.get(`http://127.0.0.1:8000/api/analyze/firm/${ industryID }/${firmID}`,
+      const response  = await axios.get(`${API_URI}api/analyze/firm/${ industryID }/${firmID}`,
       {
         headers: {
                  'Authorization': `token ${token}`
@@ -27,7 +28,7 @@ export const getBrandData = createAsyncThunk(
     async ({ firmID,industryID }: { firmID: number,industryID:number }) => {
       try {
         const token = localStorage.getItem("token");
-        const response  = await axios.get(`http://127.0.0.1:8000/api/analyze/brand/${ industryID }/${firmID}`,
+        const response  = await axios.get(`${API_URI}api/analyze/brand/${ industryID }/${firmID}`,
         {
           headers: {
                    'Authorization': `token ${token}`
@@ -48,26 +49,26 @@ export const getBrandData = createAsyncThunk(
     async ({ firmID,industryID,period }: { firmID: number,industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/decide/project/now/${industryID}/${firmID}/${period}/`,
+    const response = await axios.get(`${API_URI}api/decide/project/now/${industryID}/${firmID}/${period}/`,
       {
         headers: {
                  'Authorization': `token ${token}`
                  }
       })
-  const response1 = await axios.get(`http://127.0.0.1:8000/api/decide/project/past/${industryID}/${firmID}/${period}/`,
+  const response1 = await axios.get(`${API_URI}api/decide/project/past/${industryID}/${firmID}/${period}/`,
     {
       headers: {
                'Authorization': `token ${token}`
                }
     })
-    const response2 = await axios.get(`http://127.0.0.1:8000/api/decide/project/shelved/${industryID}/${firmID}/${period}/`,
+    const response2 = await axios.get(`${API_URI}api/decide/project/shelved/${industryID}/${firmID}/${period}/`,
       {
         headers: {
                  'Authorization': `token ${token}`
                  }
       })
 
-      const response3 = await axios.get(`http://127.0.0.1:8000/api/decide/project/going/${industryID}/${firmID}/${period}/`,
+      const response3 = await axios.get(`${API_URI}api/decide/project/going/${industryID}/${firmID}/${period}/`,
         {
           headers: {
                    'Authorization': `token ${token}`
@@ -91,7 +92,7 @@ export const getBrandData = createAsyncThunk(
     "analyze/getFeaturesData",
     async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/features/1/`)
+        const response = await axios.get(`${API_URI}api/features/1/`)
           return response.data  
       } catch (error: any) {
         throw error.response.data;
@@ -103,7 +104,7 @@ export const getBrandData = createAsyncThunk(
     "analyze/fetchDimensions",
     async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/dimensions/`)
+        const response = await axios.get(`${API_URI}api/dimensions/`)
           return response.data  
       } catch (error: any) {
         throw error.response.data;
@@ -115,7 +116,7 @@ export const getBrandData = createAsyncThunk(
     "analyze/getMarketsData",
     async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/markets/`)
+        const response = await axios.get(`${API_URI}api/markets/`)
           return response.data  
       } catch (error: any) {
         throw error.response.data;
@@ -127,7 +128,7 @@ export const getBrandData = createAsyncThunk(
     "analyze/getChannelsData",
     async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/channels/`)
+        const response = await axios.get(`${API_URI}api/channels/`)
           return response.data  
       } catch (error: any) {
         throw error.response.data;
@@ -139,7 +140,7 @@ export const getBrandData = createAsyncThunk(
     "analyze/getSegmentsData",
     async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/segments/`)
+        const response = await axios.get(`${API_URI}api/segments/`)
           return response.data  
       } catch (error: any) {
         throw error.response.data;
@@ -153,7 +154,7 @@ export const getBrandData = createAsyncThunk(
     async ({ firmID,industryID,period }: { firmID: number,industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/decide/project/all/${industryID}/${firmID}/${period}/`,
+    const response = await axios.get(`${API_URI}api/decide/project/all/${industryID}/${firmID}/${period}/`,
         {
           headers: {
                   'Authorization': `token ${token}`
@@ -172,7 +173,7 @@ export const getBrandData = createAsyncThunk(
     async ({ firmID,industryID,period }: { firmID: number,industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/decide/onlinequery/${industryID}/${firmID}/${period}/`,
+    const response = await axios.get(`${API_URI}api/decide/onlinequery/${industryID}/${firmID}/${period}/`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -191,7 +192,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID }: { industryID:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/industry_information/${ industryID }/`,
+    const response = await axios.get(`${API_URI}api/industry_information/${ industryID }/`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -209,7 +210,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID,period }: { industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/analyze/sales/${ industryID }/${period}`,
+    const response = await axios.get(`${API_URI}api/analyze/sales/${ industryID }/${period}`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -228,7 +229,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID,period }: { industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/brand_awareness/${ industryID }/${period}/`,
+    const response = await axios.get(`${API_URI}api/brand_awareness/${ industryID }/${period}/`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -246,7 +247,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID,period }: { industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/purchase_intent/${ industryID }/${period}/`,
+    const response = await axios.get(`${API_URI}api/purchase_intent/${ industryID }/${period}/`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -264,7 +265,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID,period }: { industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/shopping_habit/${ industryID }/${period}/`,
+    const response = await axios.get(`${API_URI}api/shopping_habit/${ industryID }/${period}/`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -283,7 +284,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID,period }: { industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/market_demand/${ industryID }/${period}/`,
+    const response = await axios.get(`${API_URI}api/market_demand/${ industryID }/${period}/`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -302,7 +303,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID,period }: { industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/distribution_coverage/${ industryID }/${period}`,
+    const response = await axios.get(`${API_URI}api/distribution_coverage/${ industryID }/${period}`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -321,7 +322,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID,period }: { industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/semantic_scales/${ industryID }/${period}`,
+    const response = await axios.get(`${API_URI}api/semantic_scales/${ industryID }/${period}`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -341,7 +342,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID,period }: { industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/semantic_ideals/${ industryID }/${period}`,
+    const response = await axios.get(`${API_URI}api/semantic_ideals/${ industryID }/${period}`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -360,7 +361,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID,period }: { industryID:number,period: number}) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/dimensional_scales/${ industryID }/${period}`,
+    const response = await axios.get(`${API_URI}api/dimensional_scales/${ industryID }/${period}`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -380,7 +381,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID,period }: { industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/dimensional_ideals/${ industryID }/${period}`,
+    const response = await axios.get(`${API_URI}api/dimensional_ideals/${ industryID }/${period}`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -400,7 +401,7 @@ export const getBrandData = createAsyncThunk(
     async ({ industryID,period }: { industryID:number,period:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/market_forecast/${industryID}/${period}/`,
+    const response = await axios.get(`${API_URI}api/market_forecast/${industryID}/${period}/`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -419,7 +420,7 @@ export const getBrandData = createAsyncThunk(
     async ({ courseID }: { courseID:number }) => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/utilities/${courseID}/`,
+    const response = await axios.get(`${API_URI}api/utilities/${courseID}/`,
     {
       headers: {
                'Authorization': `token ${token}`
@@ -439,7 +440,7 @@ export const getBrandData = createAsyncThunk(
     async () => {
       try {
         const token = localStorage.getItem("token");
-    const response = await axios.get(`http://127.0.0.1:8000/api/levels/`,
+    const response = await axios.get(`${API_URI}api/levels/`,
     {
       headers: {
                'Authorization': `token ${token}`

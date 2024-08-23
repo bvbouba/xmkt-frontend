@@ -5,6 +5,7 @@ import usePaths from '../paths';
 import { useAppDispatch } from '../hooks/redux';
 import {checkAuthTimeout, logout } from 'features/authSlices';
 import axios from 'axios';
+import { API_URI } from 'myconstants';
 
 
 
@@ -64,7 +65,7 @@ export const AuthProvider= ({ children,isAuthenticated }: { children: React.Reac
 
         try {
           const response = await axios.get(
-          "http://127.0.0.1:8000/rest-auth/user/",
+          `${API_URI}rest-auth/user/`,
           {
             headers: {
               Authorization: `token ${token}`,

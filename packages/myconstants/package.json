@@ -1,0 +1,14 @@
+{
+    "name": "myconstants",
+    "version": "0.0.1",
+    "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+    "exports": {
+        ".": "./src/index.ts"
+      },
+    "dependencies": {
+      "typescript": "latest"
+    }
+  }

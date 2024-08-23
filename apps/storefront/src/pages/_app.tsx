@@ -17,7 +17,6 @@ type AppPropsWithLayout = AppProps & {
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
     const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
-
   return     <StoreProvider>
     <AuthProvider isAuthenticated={typeof window !== "undefined" ? isAuthenticated(): false}>
   {getLayout(<Component {...pageProps} />)}

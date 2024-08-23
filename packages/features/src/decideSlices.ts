@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { decideProps } from "types";
+import {API_URI} from "myconstants"
 
 export const getMarketingMixData = createAsyncThunk(
-  "decide/getMarketingMixData",
+  `decide/getMarketingMixData`,
   async ({
     industryID,
     firmID,
@@ -14,9 +15,9 @@ export const getMarketingMixData = createAsyncThunk(
     period: number;
   }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/decide/marketingmix/${industryID}/${firmID}/${period}/`,
+        `${API_URI}api/decide/marketingmix/${industryID}/${firmID}/${period}/`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -32,12 +33,12 @@ export const getMarketingMixData = createAsyncThunk(
 
 // Create an async thunk for fetching decision status
 export const fetchDecisionStatus = createAsyncThunk(
-  "decide/fetchDecisionStatus",
+  `decide/fetchDecisionStatus`,
   async ({ industryID }: { industryID: number }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/decision_status/?industry_id=${industryID}`,
+        `${API_URI}api/decision_status/?industry_id=${industryID}`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -54,7 +55,7 @@ export const fetchDecisionStatus = createAsyncThunk(
 ////
 
 export const fetchMarketResearchChoices = createAsyncThunk(
-  "decide/fetchMarketResearchChoices",
+  `decide/fetchMarketResearchChoices`,
   async ({
     industry,
     firm,
@@ -65,9 +66,9 @@ export const fetchMarketResearchChoices = createAsyncThunk(
     period: number;
   }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/market-research-choices/?industry=${industry}&firm=${firm}&period=${period}`,
+        `${API_URI}api/market-research-choices/?industry=${industry}&firm=${firm}&period=${period}`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -82,12 +83,12 @@ export const fetchMarketResearchChoices = createAsyncThunk(
 );
 
 export const updateMarketResearchChoice = createAsyncThunk(
-  "decide/updateMarketResearchChoice",
+  `decide/updateMarketResearchChoice`,
   async ({ id, choice }: { id: number; choice: boolean }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.patch(
-        `http://127.0.0.1:8000/api/market-research-choices/${id}/`,
+        `${API_URI}api/market-research-choices/${id}/`,
         { choice },
         {
           headers: {
@@ -103,12 +104,12 @@ export const updateMarketResearchChoice = createAsyncThunk(
 );
 
 export const fetchBudgetDetails = createAsyncThunk(
-  "decide/fetchBudgetDetails",
+  `decide/fetchBudgetDetails`,
   async ({ teamId, periodId }: { teamId: number; periodId: number }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/budget-details/${teamId}/${periodId}/`,
+        `${API_URI}api/budget-details/${teamId}/${periodId}/`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -124,12 +125,12 @@ export const fetchBudgetDetails = createAsyncThunk(
 
 // Fetch MarketingMix by ID
 export const fetchMarketingMixById = createAsyncThunk(
-  "decide/fetchMarketingMixById",
+  `decide/fetchMarketingMixById`,
   async ({ id }: { id: number }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/marketing_mix/${id}/`,
+        `${API_URI}api/marketing_mix/${id}/`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -144,7 +145,7 @@ export const fetchMarketingMixById = createAsyncThunk(
 );
 
 export const partialUpdateMarketingMix = createAsyncThunk(
-  "decide/partialUpdateMarketingMix",
+  `decide/partialUpdateMarketingMix`,
   async ({
     id,
     production,
@@ -187,9 +188,9 @@ export const partialUpdateMarketingMix = createAsyncThunk(
     team_id: number;
   }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.patch(
-        `http://127.0.0.1:8000/api/marketing_mix/update/${id}/`,
+        `${API_URI}api/marketing_mix/update/${id}/`,
         {
           production,
           price,
@@ -224,12 +225,12 @@ export const partialUpdateMarketingMix = createAsyncThunk(
 );
 
 export const fetchProjectById = createAsyncThunk(
-  "decide/fetchProjectById",
+  `decide/fetchProjectById`,
   async ({ id, period }: { id: number; period: number }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/projects/${id}/`,
+        `${API_URI}api/projects/${id}/`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -247,12 +248,12 @@ export const fetchProjectById = createAsyncThunk(
 );
 
 export const fetchBrandById = createAsyncThunk(
-  "decide/fetchBrandById",
+  `decide/fetchBrandById`,
   async ({ id }: { id: number }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/brands/${id}/`,
+        `${API_URI}api/brands/${id}/`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -267,7 +268,7 @@ export const fetchBrandById = createAsyncThunk(
 );
 
 export const partialUpdateProject = createAsyncThunk(
-  "decide/partialUpdate",
+  `decide/partialUpdate`,
   async ({
     projectID,
     objective,
@@ -280,9 +281,9 @@ export const partialUpdateProject = createAsyncThunk(
     period: number;
   }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.patch(
-        `http://127.0.0.1:8000/api/projects/update/${projectID}/`,
+        `${API_URI}api/projects/update/${projectID}/`,
         {
           objective,
           allocated_budget: allocatedBudget,
@@ -302,12 +303,12 @@ export const partialUpdateProject = createAsyncThunk(
 );
 
 export const deleteProject = createAsyncThunk(
-  "decide/deleteProject",
+  `decide/deleteProject`,
   async ({ projectID }: { projectID: number }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/projects/update/${projectID}/`,
+        `${API_URI}api/projects/update/${projectID}/`,
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -322,12 +323,12 @@ export const deleteProject = createAsyncThunk(
 );
 
 export const fetchBrands = createAsyncThunk(
-  "decide/fetchBrands",
+  `decide/fetchBrands`,
   async ({ industryID, firmID }: { industryID: number; firmID: number }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/brands/${industryID}/${firmID}/`,
+        `${API_URI}api/brands/${industryID}/${firmID}/`,
         {
           headers: {
             Authorization: `Token ${token}`,
@@ -343,7 +344,7 @@ export const fetchBrands = createAsyncThunk(
 
 // Thunks
 export const submitBrand = createAsyncThunk(
-  "decide/submitBrand",
+  `decide/submitBrand`,
   async ({
     name,
     market,
@@ -362,9 +363,9 @@ export const submitBrand = createAsyncThunk(
     team: number;
   }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.put(
-        "http://127.0.0.1:8000/api/brands/add/",
+        `${API_URI}api/brands/add/`,
         {
           name,
           is_active: 1,
@@ -389,7 +390,7 @@ export const submitBrand = createAsyncThunk(
 );
 
 export const updateBrand = createAsyncThunk(
-  "decide/updateBrand",
+  `decide/updateBrand`,
   async ({
     id,
     name,
@@ -406,9 +407,9 @@ export const updateBrand = createAsyncThunk(
     period: number;
   }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.patch(
-        `http://127.0.0.1:8000/api/brands/update/${id}/`,
+        `${API_URI}api/brands/update/${id}/`,
         {
           name,
           role,
@@ -430,12 +431,12 @@ export const updateBrand = createAsyncThunk(
 );
 
 export const updateTeamName = createAsyncThunk(
-  "decide/updateTeamName",
+  `decide/updateTeamName`,
   async ({ teamID, newName }: { teamID: number; newName: string }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/decide/teams/${teamID}/`,
+        `${API_URI}api/decide/teams/${teamID}/`,
         { name: newName },
         {
           headers: {
@@ -452,7 +453,7 @@ export const updateTeamName = createAsyncThunk(
 );
 
 export const fetchNumberOfQueries = createAsyncThunk(
-  "decide/fetchNumberOfQueries",
+  `decide/fetchNumberOfQueries`,
   async ({
     industryID,
     firmID,
@@ -465,9 +466,9 @@ export const fetchNumberOfQueries = createAsyncThunk(
     marketID: number;
   }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/queries/${industryID}/${firmID}/${period}/${marketID}/`,
+        `${API_URI}api/queries/${industryID}/${firmID}/${period}/${marketID}/`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -482,7 +483,7 @@ export const fetchNumberOfQueries = createAsyncThunk(
 );
 
 export const runOnlineQueries = createAsyncThunk(
-  "decide/fetchOnlineQueries",
+  `decide/fetchOnlineQueries`,
   async ({
     industryID,
     firmID,
@@ -511,9 +512,9 @@ export const runOnlineQueries = createAsyncThunk(
     baseCost?: number;
   }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/online-query/${industryID}/${firmID}/${period}/${marketID}/`,
+        `${API_URI}api/online-query/${industryID}/${firmID}/${period}/${marketID}/`,
         {
           params: {
             choice,
@@ -544,7 +545,7 @@ export const runOnlineQueries = createAsyncThunk(
 );
 
 export const createProject = createAsyncThunk(
-  "decide/createProject",
+  `decide/createProject`,
   async ({
     industryID,
     firmID,
@@ -577,16 +578,16 @@ export const createProject = createAsyncThunk(
     allocatedBudget: number;
   }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem(`token`);
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/projects/add/`,
+        `${API_URI}api/projects/add/`,
         {
           industry_id: industryID,
           firm_id: firmID,
           period_id: period,
           market_id: marketID,
           name,
-          objective: objective || "",
+          objective: objective || ``,
           choice,
           feature_1: feature1,
           feature_2: feature2,
@@ -616,7 +617,7 @@ export const createProject = createAsyncThunk(
 );
 
 export const checkCostReduction = createAsyncThunk(
-  "decide/checkCostReduction",
+  `decide/checkCostReduction`,
   async (projectData: {
     feature_1: string;
     feature_2: string;
@@ -626,7 +627,7 @@ export const checkCostReduction = createAsyncThunk(
   }) => {
     try {
       const queryParams = new URLSearchParams(projectData).toString();
-      const url = `http://127.0.0.1:8000/api/check_cost_reduction/?${queryParams}`;
+      const url = `${API_URI}api/check_cost_reduction/?${queryParams}`;
       const response = await axios.get(url);
       return response.data;
     } catch (error: any) {
@@ -656,7 +657,7 @@ const initialState: decideProps = {
 };
 
 const decideSlice = createSlice({
-  name: "decide",
+  name: `decide`,
   initialState,
   reducers: {
     resetState: (state, action) => {

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import {API_URI} from "myconstants";
 
 type PropObject<T> = { data: T;  error?: string | null ; loading?: boolean; success?:boolean};
 
@@ -40,7 +41,7 @@ export const fetchCourseById = createAsyncThunk(
   'courses/fetchCourseById',
   async ({courseid}:{courseid:string}) => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/courses/${courseid}/`);
+      const response = await axios.get(`${API_URI}api/courses/${courseid}/`);
       return response.data;
     } catch (error: any) {
         throw error.response.data;
@@ -52,7 +53,7 @@ export const registerForCourse = createAsyncThunk(
     'courses/registerForCourse',
     async ({courseCode}:{ courseCode:string }) => {
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/course-participant/', { course_code: courseCode });
+        const response = await axios.post(`${API_URI}api/course-participant/`, { course_code: courseCode });
         return response.data.message;
       } catch (error:any) {
         throw error.response.data;
