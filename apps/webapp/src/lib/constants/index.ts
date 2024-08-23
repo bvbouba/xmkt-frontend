@@ -352,3 +352,4 @@ export function transformConstants(locale:string) {
 }
 
 export const barThickness = 40
+

@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_URI } from 'myconstants';
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api', // Replace with your API base URL
+  baseURL: `${API_URI}api`, // Replace with your API base URL
 });
 
 export const fetchData = async (endpoint:string) => {

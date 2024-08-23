@@ -7,6 +7,7 @@ import {checkAuthTimeout, logout } from 'features/authSlices';
 import axios from 'axios';
 import { errorLogProps } from 'features/participantSlices';
 import { BudgetDetailsProps } from "types"
+import { API_URI } from 'myconstants';
 
 
 type User = {
@@ -75,7 +76,7 @@ export const AuthProvider= ({ children,isAuthenticated }: { children: React.Reac
     { try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/analyze/errorlog/${teamID}/${period}/`,
+        `${API_URI}api/analyze/errorlog/${teamID}/${period}/`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -84,7 +85,7 @@ export const AuthProvider= ({ children,isAuthenticated }: { children: React.Reac
       );
 
       const response1 = await axios.get(
-        `http://127.0.0.1:8000/api/budget-details/${teamID}/${period}/`,
+        `${API_URI}api/budget-details/${teamID}/${period}/`,
         {
           headers: {
             Authorization: `token ${token}`,
@@ -126,7 +127,7 @@ export const AuthProvider= ({ children,isAuthenticated }: { children: React.Reac
 
         try {
           const response = await axios.get(
-          "http://127.0.0.1:8000/rest-auth/user/",
+          `${API_URI}rest-auth/user/`,
           {
             headers: {
               Authorization: `token ${token}`,
@@ -152,7 +153,7 @@ export const AuthProvider= ({ children,isAuthenticated }: { children: React.Reac
 
 
             const response1 = await axios.get(
-              `http://127.0.0.1:8000/api/participant_detail/${pass}/`
+              `${API_URI}api/participant_detail/${pass}/`
             );
             
             const userID = response1.data.user;
@@ -179,7 +180,7 @@ export const AuthProvider= ({ children,isAuthenticated }: { children: React.Reac
             });
             setSelectedPeriod(activePeriod-1)
           
-          const response2 = await axios.get(`http://127.0.0.1:8000/api/analyze/errorlog/${teamID}/${activePeriod}/`, {
+          const response2 = await axios.get(`${API_URI}api/analyze/errorlog/${teamID}/${activePeriod}/`, {
           headers: {
             Authorization: `Token ${token}`,
           },
