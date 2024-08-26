@@ -3,8 +3,8 @@
 import { useTranslation } from '../i18n'
 
 
-export default async function HomePage({ params: { lng } }:{params: { lng: string };}) {
-  const { t } = await useTranslation(lng)
+export default  function HomePage({ params: { lng } }:{params: { lng: string };}) {
+  const { t } =  useTranslation(lng)
   return (
     <main className="flex items-start min-h-screen p-8 bg-gray-100">
       <div className="space-y-6 text-black">

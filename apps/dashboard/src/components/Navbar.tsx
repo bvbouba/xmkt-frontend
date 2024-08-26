@@ -4,14 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import usePaths from '@/lib/paths';
 import { useTranslation } from '@/app/i18n';
 
-export const Sidebar = async ({lng}:{lng:string}) => {
+export const Sidebar =  ({lng}:{lng:string}) => {
   const [active, setActive] = useState<number | null>(null);
   const [open, setOpen] = useState(true);
-  const paths = usePaths();
-  const { t } = await useTranslation(lng, 'sidebar')
+  const { t } =  useTranslation(lng, 'sidebar')
 
   const navLinks = [
     { id: 0, title: t('home'), path: `/${lng}/` },
@@ -30,14 +28,11 @@ export const Sidebar = async ({lng}:{lng:string}) => {
 
   return (
     <div className={`relative flex flex-col h-screen bg-blue-500 ${open ? 'w-64' : 'w-20'} transition-width duration-300`}>
-      {/* Header Section with Logo and Toggle Button */}
       <div className="flex items-center justify-between h-20 bg-blue-600 px-4">
-        {/* Logo */}
         <div className={`flex items-center ${!open && 'hidden'}`}>
           <span className="text-white text-lg font-semibold">SIMUPROF</span>
         </div>
 
-        {/* Toggle Button */}
         <button
           onClick={handleDrawerToggle}
           className="text-white p-2 rounded hover:bg-blue-700"
@@ -46,7 +41,6 @@ export const Sidebar = async ({lng}:{lng:string}) => {
         </button>
       </div>
 
-      {/* Navigation Links */}
       <ul className="flex-1 mt-4">
         {navLinks.map((link) => (
           <li
@@ -65,7 +59,6 @@ export const Sidebar = async ({lng}:{lng:string}) => {
         ))}
       </ul>
 
-      {/* Logout Button */}
       <div className="absolute bottom-4 w-full px-4">
         <button
           onClick={()=>console.log("log out")}
