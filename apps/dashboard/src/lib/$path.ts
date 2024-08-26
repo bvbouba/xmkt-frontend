@@ -7,19 +7,24 @@ const buildSuffix = (url?: {query?: Record<string, string>, hash?: string}) => {
 };
 
 export const pagesPath = {
-  "about": {
-    $url: (url?: { hash?: string }) => ({ pathname: '/about' as const, hash: url?.hash, path: `/about${buildSuffix(url)}` })
-  },
-  "contact": {
-    $url: (url?: { hash?: string }) => ({ pathname: '/contact' as const, hash: url?.hash, path: `/contact${buildSuffix(url)}` })
-  },
-  "course": {
-    $url: (url?: { hash?: string }) => ({ pathname: '/course' as const, hash: url?.hash, path: `/course${buildSuffix(url)}` })
-  },
-  "profile": {
-    $url: (url?: { hash?: string }) => ({ pathname: '/profile' as const, hash: url?.hash, path: `/profile${buildSuffix(url)}` })
-  },
-  $url: (url?: { hash?: string }) => ({ pathname: '/' as const, hash: url?.hash, path: `/${buildSuffix(url)}` })
+  _lng: (lng: string | number) => ({
+    "about": {
+      $url: (url?: { hash?: string }) => ({ pathname: '/[lng]/about' as const, query: { lng }, hash: url?.hash, path: `/${lng}/about${buildSuffix(url)}` })
+    },
+    "contact": {
+      $url: (url?: { hash?: string }) => ({ pathname: '/[lng]/contact' as const, query: { lng }, hash: url?.hash, path: `/${lng}/contact${buildSuffix(url)}` })
+    },
+    "course": {
+      $url: (url?: { hash?: string }) => ({ pathname: '/[lng]/course' as const, query: { lng }, hash: url?.hash, path: `/${lng}/course${buildSuffix(url)}` })
+    },
+    "login": {
+      $url: (url?: { hash?: string }) => ({ pathname: '/[lng]/login' as const, query: { lng }, hash: url?.hash, path: `/${lng}/login${buildSuffix(url)}` })
+    },
+    "profile": {
+      $url: (url?: { hash?: string }) => ({ pathname: '/[lng]/profile' as const, query: { lng }, hash: url?.hash, path: `/${lng}/profile${buildSuffix(url)}` })
+    },
+    $url: (url?: { hash?: string }) => ({ pathname: '/[lng]' as const, query: { lng }, hash: url?.hash, path: `/${lng}${buildSuffix(url)}` })
+  }),
 };
 
 export type PagesPath = typeof pagesPath;

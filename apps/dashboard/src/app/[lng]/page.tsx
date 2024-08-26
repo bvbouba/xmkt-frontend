@@ -1,20 +1,19 @@
 "use client"; // Necessary if using hooks like useState or useEffect in the App Router
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '../i18n'
 
 
-export default function HomePage() {
-  const { t } = useTranslation('common');
-
+export default async function HomePage({ params: { lng } }:{params: { lng: string };}) {
+  const { t } = await useTranslation(lng)
   return (
     <main className="flex items-start min-h-screen p-8 bg-gray-100">
       <div className="space-y-6 text-black">
         <h1 className="text-3xl font-bold">{t('welcome')}</h1>
-        <p className="text-lg">Here are your options:</p>
+        <p className="text-lg">{t('here_are_your_options')}:</p>
         <ul className="list-disc list-inside space-y-2 text-lg">
-          <li>{t('editProfile')}</li>
-          <li>{t('createCourses')}</li>
-          <li>{t('contactUs')}</li>
+          <li>{t('edit_profile')}</li>
+          <li>{t('manage_courses')}</li>
+          <li>{t('contact_us')}</li>
         </ul>
       </div>
     </main>

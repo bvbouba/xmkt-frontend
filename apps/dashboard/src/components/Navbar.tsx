@@ -5,17 +5,19 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import usePaths from '@/lib/paths';
+import { useTranslation } from '@/app/i18n';
 
-const Sidebar = () => {
+export const Sidebar = async ({lng}:{lng:string}) => {
   const [active, setActive] = useState<number | null>(null);
   const [open, setOpen] = useState(true);
   const paths = usePaths();
+  const { t } = await useTranslation(lng, 'sidebar')
 
   const navLinks = [
-    { id: 0, title: 'Home', path: paths.$url() },
-    { id: 1, title: 'Profile', path: paths.profile.$url() },
-    { id: 2, title: 'Course', path: paths.course.$url() },
-    { id: 4, title: 'Contact Us', path: paths.contact.$url() },
+    { id: 0, title: t('home'), path: `/${lng}/` },
+    { id: 1, title: t('profile'), path: `/${lng}/profile` },
+    { id: 2, title: t('course'), path: `/${lng}/course` },
+    { id: 4, title: t('contact_us'), path:`/${lng}/contact` },
   ];
 
   const handleDrawerToggle = () => {
@@ -70,7 +72,7 @@ const Sidebar = () => {
           className="text-white p-2 rounded hover:bg-blue-700 w-full text-left flex items-center justify-start"
         >
           <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-          <span className={`text-sm ${!open && 'hidden'}`}>Logout</span>
+          <span className={`text-sm ${!open && 'hidden'}`}>{t("logout")}</span>
         </button>
       </div>
     </div>
