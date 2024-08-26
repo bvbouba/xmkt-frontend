@@ -7,14 +7,12 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
-  children,
-  params
+  children
 }: {
   children: React.ReactNode;
-  params: { locale: string };
 }): JSX.Element {
   return (
-    <html lang={params.locale}>
+    <html lang="en">
       <body className={`${inter.className} bg-gray-100`}>
         <div className="flex h-screen">
           {/* Sidebar */}
