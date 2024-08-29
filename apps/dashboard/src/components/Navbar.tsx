@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from '@/app/i18n';
+import { signOut, useSession } from 'next-auth/react';
 
 export const Sidebar =  ({lng}:{lng:string}) => {
   const [active, setActive] = useState<number | null>(null);
   const [open, setOpen] = useState(true);
   const { t } =  useTranslation(lng, 'sidebar')
+  const { data: session } = useSession();
 
   const navLinks = [
     { id: 0, title: t('home'), path: `/${lng}/` },
@@ -60,13 +62,19 @@ export const Sidebar =  ({lng}:{lng:string}) => {
       </ul>
 
       <div className="absolute bottom-4 w-full px-4">
-        <button
+        <form
+        action={async () => {
+          await signOut();
+        }}
+        >
+        {session?.user && <button
           onClick={()=>console.log("log out")}
           className="text-white p-2 rounded hover:bg-blue-700 w-full text-left flex items-center justify-start"
         >
           <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
           <span className={`text-sm ${!open && 'hidden'}`}>{t("logout")}</span>
-        </button>
+        </button>}
+        </form>
       </div>
     </div>
   );

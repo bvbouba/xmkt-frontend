@@ -1,3 +1,5 @@
+'use client';
+
 import Sidebar from "@/components/Navbar";
 import { dir } from 'i18next'
 
@@ -5,12 +7,9 @@ import "../globals.css";
 import "@repo/ui/styles.css";
 import { Inter } from "next/font/google";
 import { languages } from '../i18n/settings'
+import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
-
-export async function generateStaticParams() {
-  return languages.map((lng) => ({ lng }))
-}
 
 export default function RootLayout({
   children,
@@ -22,6 +21,7 @@ export default function RootLayout({
   params: { lng: string }
 }): JSX.Element {
   return (<>
+  <SessionProvider>
     <html lang={lng} dir={dir(lng)}>
       <body className={`${inter.className} bg-gray-100`}>
         <div className="flex h-screen">
@@ -35,5 +35,6 @@ export default function RootLayout({
         </div>
       </body>
     </html>
+    </SessionProvider>
     </> );
 }
