@@ -26,7 +26,6 @@ export const isAuthenticated = () => {
         const usertype = res.data.profile.user_type
         const country = res.data.profile.country
         const school = res.data.profile.school
-        localStorage.setItem('token',token);
         
       return {
         id,

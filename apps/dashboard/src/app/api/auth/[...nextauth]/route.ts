@@ -2,26 +2,27 @@ import NextAuth, { DefaultSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from 'axios';
 import { API_URI } from "myconstants";
+import { getUser } from "@/lib/auth";
 
 declare module "next-auth" {
   interface Session {
     user: {
       id: number;
       token: string;
+      username: string;
+      email: string;
+      firstname: string;
+      lastname: string;
+      usertype: number;
+      country: number;
+      school: number;
     } & DefaultSession["user"];
     accessToken: string;  // Add accessToken to the session
+
   }
 
   interface User {
-    token: string;
-    id: number;
-    username: string;
-    email: string;
-    firstname: string;
-    lastname: string;
-    usertype: number;
-    country: number;
-    school: number;
+    token: string;  
   }
 
   interface JWT {
@@ -30,6 +31,12 @@ declare module "next-auth" {
 }
 
 const handler = NextAuth({
+    session:{
+       strategy:'jwt'
+    },
+    pages: {
+        signIn: '/[lng]/login', // Custom login page route
+      },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -62,9 +69,6 @@ const handler = NextAuth({
       },
     }),
   ],
-  pages: {
-    signIn: '/[lng]/login', // Custom login page route
-  },
   callbacks: {
     async jwt({ token, user }) {
       if (user?.token) {
@@ -77,15 +81,12 @@ const handler = NextAuth({
       session.accessToken = token.accessToken as string;  // Assign accessToken to session
 
       if (session.accessToken) {
+        
         try {
-          const response = await axios.get(`${API_URI}rest-auth/user/`, {
-            headers: {
-              Authorization: `token ${session.accessToken}`,
-            },
-          });
+          const user = await getUser(session.accessToken)
           session.user = {
             ...session.user,
-            ...response.data,
+            ...user,
           };
         } catch (error) {
           console.error('Error fetching user data:', error);
@@ -93,6 +94,7 @@ const handler = NextAuth({
       }
       return session;
     },
+
   },
   secret: process.env.NEXTAUTH_SECRET, // Use a strong secret key
 });

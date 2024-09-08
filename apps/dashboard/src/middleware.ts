@@ -1,19 +1,21 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import acceptLanguage from 'accept-language'
-import { fallbackLng, languages, cookieName } from './app/i18n/settings'
-
+import { fallbackLng, languages, cookieName } from '@/app/i18n/settings'
 
 acceptLanguage.languages(languages)
 
 
 export const config = {
-  // matcher: '/:lng*'
-  matcher: ['/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js|site.webmanifest).*)']
+  matcher: ['/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js|site.webmanifest).*)',
+  ]
 }
 
-export function middleware(req) {
+export function middleware(req: NextRequest) {
+  const url = req.nextUrl.clone();
+  console.log(`Request URL: ${url.pathname}`);
+
   let lng
-  if (req.cookies.has(cookieName)) lng = acceptLanguage.get(req.cookies.get(cookieName).value)
+  if (req.cookies.has(cookieName)) lng = acceptLanguage.get(req.cookies.get(cookieName)?.value)
   if (!lng) lng = acceptLanguage.get(req.headers.get('Accept-Language'))
   if (!lng) lng = fallbackLng
 
@@ -24,9 +26,9 @@ export function middleware(req) {
   ) {
     return NextResponse.redirect(new URL(`/${lng}${req.nextUrl.pathname}`, req.url))
   }
-
-  if (req.headers.has('referer')) {
-    const refererUrl = new URL(req.headers.get('referer'))
+  const refererHeader = req.headers.get('referer')
+  if (refererHeader) {
+    const refererUrl = new URL(refererHeader)
     const lngInReferer = languages.find((l) => refererUrl.pathname.startsWith(`/${l}`))
     const response = NextResponse.next()
     if (lngInReferer) response.cookies.set(cookieName, lngInReferer)

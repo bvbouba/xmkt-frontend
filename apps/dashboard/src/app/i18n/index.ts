@@ -44,7 +44,7 @@ export function useTranslation(lng: string, ns: string = defaultNS, options: any
       return () => {
         isMounted = false;
       };
-    }, [lng, ns, options]);
+    }, []);
   
     return { t, i18n };
   }
