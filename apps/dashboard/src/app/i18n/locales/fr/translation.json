@@ -5,7 +5,7 @@
   "contact_us": "Contactez-nous",
   "here_are_your_options": "Voici vos options",
   "home": "Accueil",
-  "profile": "Profil",
+  "profile": "Mon Profil",
   "course": "Mes cours",
   "logout": "Déconnexion",
   "login": "Connexion",
@@ -48,9 +48,9 @@
   "registered_participants": "participants inscrits",
   "set_up_your_course": "Configurez votre cours",
   "action_for_creating_industries": "Créez les industries pour vos équipes",
-  "create_industries": "Créer Industries",
+  "create_industries": "Créer les industries",
   "action_for_forming_teams": "Regroupez vos participants en équipes et attribuez-les à des industries et des entreprises",
-  "form_teams": "Former des équipes",
+  "form_teams": "Former les équipes",
   "manage_your_course": "Gérez votre cours",
   "action_for_the_decision_round_dashboard": "Exécutez votre cours jusqu'à 10 cycles de décision. Le tableau de bord de gestion des cycles de décision vous aidera à effectuer cette tâche obligatoire et très importante",
   "decision_round_dashboard": "Tableau de bord des décisions",
@@ -176,6 +176,6 @@
   "principal_must_be_less_than_or_equal_to_5000": "Le capital doit être inférieur ou égal à 5000",
   "principal_required": "Le capital est requis",
   "number_of_periods_required": "Le nombre de périodes est requis",
-  "number_of_periods_less_than_remaining": "Le nombre de périodes doit être inférieur au nombre de périodes restantes"
-
+  "number_of_periods_less_than_remaining": "Le nombre de périodes doit être inférieur au nombre de périodes restantes",
+  "go_back":"Retour"
 }

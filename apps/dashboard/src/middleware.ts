@@ -12,7 +12,6 @@ export const config = {
 
 export function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
-  console.log(`Request URL: ${url.pathname}`);
 
   let lng
   if (req.cookies.has(cookieName)) lng = acceptLanguage.get(req.cookies.get(cookieName)?.value)

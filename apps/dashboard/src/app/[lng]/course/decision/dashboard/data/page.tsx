@@ -17,7 +17,7 @@ interface FormValues {
     period: string;
 }
 
-export default function Page({ params: { lng, id } }: { params: { lng: string; id: number } }) {
+export default function Page({ params: { lng } }: { params: { lng: string; } }) {
     const { t } = useTranslation(lng); // For translating texts
     const { register, handleSubmit, watch } = useForm<FormValues>();
     const [selectedData, setSelectedData] = useState<ChartDataType>();
@@ -30,10 +30,10 @@ export default function Page({ params: { lng, id } }: { params: { lng: string; i
     const [selectedTitle, setSelectedTitle] = useState('');
 
     useEffect(() => {
-        if (id && status === "authenticated") {
+        if ( status === "authenticated") {
             const fetchData = async () => {
                 try {
-                    const courseData = await getCourse({ courseId: id, token: session.accessToken, fields: 'industry', industry_fields: 'id,name' });
+                    const courseData = await getCourse({ courseId: session.courseId, token: session.accessToken, fields: 'industry', industry_fields: 'id,name' });
                     setIndustries(courseData.industry);
                 } catch (error) {
                     console.error('Error fetching data:', error);

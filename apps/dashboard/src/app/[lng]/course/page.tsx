@@ -3,13 +3,14 @@ import { deleteCourse, fetchCourses } from "@/lib/data";
 import { course } from "@/lib/data/type";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import moment from 'moment';
 import { useTranslation } from "@/app/i18n";
 
 export default function CoursePage({ params: { lng } }:{params: { lng: string };}) {
-  const { data: session, status } = useSession()
+  const { data: session, status,update } = useSession()
+  const router = useRouter()
   const { t } =  useTranslation(lng)
   const [courses, setCourses] = useState<course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,14 +59,21 @@ export default function CoursePage({ params: { lng } }:{params: { lng: string };
     return redirect(`/${lng}/login`)
   }
 
-  
+  const goToCourse=(courseId:number)=>{
+
+     update({
+      ...session,
+      courseId
+    })
+    
+  }
   
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">{t("my_courses")}</h1>
-        <Link href={`/${lng}/course/create_or_edit`} className="bg-blue-500 text-white px-4 py-2 rounded-lg">
+        <Link href={`/${lng}/course/manage`} className="bg-blue-500 text-white px-4 py-2 rounded-lg">
           {t("create_new_course")}
         </Link>
       </div>
@@ -85,7 +93,7 @@ export default function CoursePage({ params: { lng } }:{params: { lng: string };
             {courses.map((course) => (
               <tr key={course.id} className="hover:bg-gray-50">
                 <td className="p-3 border-b">
-                  <Link href={`/${lng}/course/${course.id}`} className="text-blue-500 hover:underline">
+                  <Link href={`/${lng}/course/decision/`} onClick={()=>goToCourse(course.id)} className="text-blue-500 hover:underline">
                     {course.course_name}
                   </Link>
                 </td>

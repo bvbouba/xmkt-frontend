@@ -9,19 +9,20 @@ import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function CourseDetailsPage({ params: { lng,id } }:{params: { lng: string,id:number };}) {
+export default function CourseDetailsPage({ params: { lng } }:{params: { lng: string };}) {
   const { t } = useTranslation(lng);
   const { data: session, status } = useSession()
   const router = useRouter();
   const [course, setCourse] = useState<CourseDetails>();
   const [loading, setLoading] = useState(true);
   const [totalParticipants, setTotalParticipants] = useState(0);
+
   useEffect(() => {
     
     if (status === "authenticated") {
       const loadCourse = async () => {
         try {
-          const coursesData = await getCourse({courseId:id,token:session.accessToken});
+          const coursesData = await getCourse({courseId:session.courseId,token:session.accessToken});
           setCourse(coursesData);
           setTotalParticipants(calculateTotalParticipants(coursesData));
 
@@ -55,7 +56,7 @@ export default function CourseDetailsPage({ params: { lng,id } }:{params: { lng:
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold">{course?.courseid} - {course?.course_name}</h1>
           <Link
-           href={`/${lng}/course/create_or_edit/${course?.id}`}
+           href={`/${lng}/course/manage/${course?.id}`}
             className="bg-blue-500 text-white px-4 py-2 rounded-lg"
           >
            {t("edit_course")}
@@ -77,7 +78,7 @@ export default function CourseDetailsPage({ params: { lng,id } }:{params: { lng:
               {t("action_for_creating_industries")}.
             </p>
             <div className="mt-3">
-            <Link href={`/${lng}/course/${id}/industry`} className="mt-2 bg-green-500 text-white px-4 py-2 rounded-lg">
+            <Link href={`/${lng}/course/decision/industry`} className="mt-2 bg-green-500 text-white px-4 py-2 rounded-lg">
               {t("create_industries")}
             </Link>
             </div>
@@ -87,7 +88,7 @@ export default function CourseDetailsPage({ params: { lng,id } }:{params: { lng:
               {t("action_for_forming_teams")}.
             </p>
             <div className="mt-3">
-            <Link href={`/${lng}/course/${id}/team`} className="mt-2 bg-green-500 text-white px-4 py-2 rounded-lg">
+            <Link href={`/${lng}/course/decision/team`} className="mt-2 bg-green-500 text-white px-4 py-2 rounded-lg">
               {t("form_teams")}
             </Link>
             </div>
@@ -102,7 +103,7 @@ export default function CourseDetailsPage({ params: { lng,id } }:{params: { lng:
               {t("action_for_the_decision_round_dashboard")}.
             </p>
             <div className="mt-3">
-            <Link href={`/${lng}/course/${id}/dashboard`} className="mt-2 bg-purple-500 text-white px-4 py-2 rounded-lg">
+            <Link href={`/${lng}/course/decision/dashboard`} className="mt-2 bg-purple-500 text-white px-4 py-2 rounded-lg">
               {t("decision_round_dashboard")}
             </Link>
             </div>

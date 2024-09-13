@@ -18,7 +18,7 @@ declare module "next-auth" {
       school: number;
     } & DefaultSession["user"];
     accessToken: string;  // Add accessToken to the session
-    courseId: string,
+    courseId: number,
     industryId: number,
     teamId: number,
     teamName:string,
@@ -87,6 +87,9 @@ const handler = NextAuth({
         if (session?.industryId) {
           token.industryId = session.industryId;
         }
+        if (session?.courseId) {
+          token.courseId = session.courseId;
+        }
         if (session?.teamName) {
           token.teamName = session.teamName;
         }
@@ -103,6 +106,7 @@ const handler = NextAuth({
       session.activePeriod = token.activePeriod as number;  ;
       session.industryId = token.industryId as number;
       session.teamName = token.teamName as string;
+      session.courseId = token.courseId as number;
 
       if (session.accessToken) {
         try {

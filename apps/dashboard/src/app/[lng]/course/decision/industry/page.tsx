@@ -9,7 +9,7 @@ import { calculateTotalParticipants } from '@/lib';
 import { useRouter } from 'next/navigation';
 
 
-export default function IndustryPage ({ params: { lng,id } }:{params: { lng: string,id:number };}) {
+export default function IndustryPage ({ params: { lng } }:{params: { lng: string };}) {
   const { t } = useTranslation(lng);
   const { data: session, status } = useSession()
   const router = useRouter();
@@ -21,10 +21,10 @@ export default function IndustryPage ({ params: { lng,id } }:{params: { lng: str
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    if (id && status === "authenticated") {
+    if ( status === "authenticated") {
       const fetchData = async () => {
         try {
-          const courseData = await getCourse({courseId:id,token:session.accessToken});
+          const courseData = await getCourse({courseId:session.courseId,token:session.accessToken});
           setCourse(courseData);
           setIndustries(courseData.industry);
           setTotalParticipants(calculateTotalParticipants(courseData));
@@ -119,10 +119,17 @@ export default function IndustryPage ({ params: { lng,id } }:{params: { lng: str
               </tbody>
             </table>
             <button
-              onClick={() => router.push(`/course/${id}/industry/create`)}
+              onClick={() => router.push(`/course/decision/industry/create`)}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg"
             >
               {t('create_industry')}
+            </button>
+            <button
+              type="button"
+              className="bg-gray-500 text-white py-2 px-4 ml-4 rounded-md shadow-lg"
+              onClick={() => router.back()}
+            >
+              {t("go_back")}
             </button>
           </div>
           <div className="mt-5">

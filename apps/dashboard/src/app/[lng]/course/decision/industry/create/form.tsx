@@ -12,7 +12,7 @@ interface FormValues {
     numberOfTeams: number;
   }
 
-export default function Form({ lng ,courseId }: { lng: string,courseId:number }) {
+export default function Form({ lng }: { lng: string }) {
   const { t } =  useTranslation(lng)
   const router = useRouter();
   const {
@@ -27,16 +27,16 @@ export default function Form({ lng ,courseId }: { lng: string,courseId:number })
   
   const onSubmit = async (data: FormValues) => {
     const { name,numberOfTeams } = data;  
-    if (courseId && status === "authenticated") {
+    if (status === "authenticated") {
     setLoading(true)
     try {
     await createIndustry({
         name,
         number_of_teams:numberOfTeams,
-        course:courseId
+        course:session.courseId
     },session.accessToken)
     setLoading(false)
-    router.push(`/${lng}/course/${courseId}/industry`);
+    router.push(`/${lng}/course/decision/industry`);
     router.refresh();
     }catch (error:any) {
       const code = error.response.data.code
@@ -101,10 +101,17 @@ export default function Form({ lng ,courseId }: { lng: string,courseId:number })
       <div>
         <button
           type="submit"
-          className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className=" inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {t("create_industry")} {loading && "...."}
         </button>
+        <button
+              type="button"
+              className="bg-gray-500 text-white py-2 px-4 ml-4 rounded-md shadow-lg"
+              onClick={() => router.back()}
+            >
+              {t("go_back")}
+            </button>
       </div>
     </form>
     <div className="mt-5">

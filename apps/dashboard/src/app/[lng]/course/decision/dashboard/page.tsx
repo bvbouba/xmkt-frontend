@@ -7,12 +7,13 @@ import { useSession } from 'next-auth/react';
 import { getCourse, getDecision, getTeamsErrors, updateDecision } from '@/lib/data';
 import { Decision, ErrorLog, Industry, IsErrorLog } from '@/lib/data/type';
 import ProgressBar from '@/components/ProgressBar'; // Import ProgressBar
+import { useRouter } from 'next/navigation';
 
 interface DashboardFormValues {
     industry: string;
 }
 
-export default function Page({ params: { lng, id } }: { params: { lng: string; id: number } }) {
+export default function Page({ params: { lng } }: { params: { lng: string; } }) {
     const { register, watch } = useForm<DashboardFormValues>();
     const { t } = useTranslation(lng);
     const { data: session, status, update } = useSession();
@@ -23,12 +24,13 @@ export default function Page({ params: { lng, id } }: { params: { lng: string; i
     const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false); // Button state
     const industry = watch("industry");
     const [errors, setErrors] = useState<IsErrorLog[]>()
+    const router = useRouter()
 
     useEffect(() => {
-        if (id && status === "authenticated") {
+        if (status === "authenticated") {
             const fetchData = async () => {
                 try {
-                    const courseData = await getCourse({ courseId: id, token: session.accessToken, fields: "industry", industry_fields: 'id,name,number_of_teams,participant_count' });
+                    const courseData = await getCourse({ courseId: session.courseId, token: session.accessToken, fields: "industry", industry_fields: 'id,name,number_of_teams,participant_count' });
                     setIndustries(courseData.industry);
                 } catch (error) {
                     console.error('Error fetching data:', error);
@@ -122,7 +124,7 @@ export default function Page({ params: { lng, id } }: { params: { lng: string; i
                 industryId: industry,
                 teamName: team_name
               });
-        window.open(`/${lng}/course/${id}/dashboard/team/`, '_blank')
+        window.open(`/${lng}/course/decision/dashboard/team/`, '_blank')
     }
     }
     return (
@@ -147,7 +149,7 @@ export default function Page({ params: { lng, id } }: { params: { lng: string; i
             </form>
             {industry && (
                 <button
-                    onClick={() => window.open(`/${lng}/course/${id}/dashboard/data/`, '_blank')}
+                    onClick={() => window.open(`/${lng}/course/decision/dashboard/data/`, '_blank')}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                     {t('see_data')}
@@ -238,6 +240,15 @@ export default function Page({ params: { lng, id } }: { params: { lng: string; i
                     {t("note_2")}
                 </p>
             </div>}
+            <div>
+            <button
+              type="button"
+              className="bg-gray-500 text-white py-2 px-4 mt-4 rounded-md shadow-lg"
+              onClick={() => router.back()}
+            >
+              {t("go_back")}
+            </button>
+            </div>
         </div>
     );
 }

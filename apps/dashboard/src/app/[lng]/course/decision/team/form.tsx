@@ -8,6 +8,7 @@ import { assignParticipantTeam, fetchParticipants, getCourse } from '@/lib/data'
 import { useTranslation } from '@/app/i18n';
 import { useSession } from 'next-auth/react';
 import { Industry, Participant, Team } from '@/lib/data/type';
+import { useRouter } from 'next/navigation';
 
 interface TeamFormValues {
   industry: string;
@@ -16,7 +17,7 @@ interface TeamFormValues {
   assignedParticipants: Participant[];
 }
 
-export default function Form ({ lng, id }: { lng: string, id: number }) {
+export default function Form ({ lng }: { lng: string }) {
   const { register, handleSubmit, watch } = useForm<TeamFormValues>();
   const { t } = useTranslation(lng);
   const { data: session, status } = useSession();
@@ -28,12 +29,13 @@ export default function Form ({ lng, id }: { lng: string, id: number }) {
   const team = watch("team")
   const [assignedParticipants, setAssignedParticipants] = useState<Participant[]>([]);
   const [error, setError] = useState<string>()
+  const router = useRouter()
 
   useEffect(() => {
-    if (id && status === "authenticated") {
+    if ( status === "authenticated") {
       const fetchData = async () => {
         try {
-          const courseData = await getCourse({courseId:id, token:session.accessToken});
+          const courseData = await getCourse({courseId:session.courseId, token:session.accessToken});
           setIndustries(courseData.industry);
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -45,10 +47,10 @@ export default function Form ({ lng, id }: { lng: string, id: number }) {
   }, [status]);
   
   useEffect(() => {
-    if (id && status === "authenticated") {
+    if (status === "authenticated") {
       const fetch = async () => {
         try {
-          const response = await fetchParticipants(id, session.accessToken);
+          const response = await fetchParticipants(session.courseId, session.accessToken);
           setParticipants(response);
           setAvailableParticipants(response.filter(row => row.team.length === 0));
         } catch (error) {
@@ -206,6 +208,13 @@ export default function Form ({ lng, id }: { lng: string, id: number }) {
         >
           {t('submit')}
         </button> */}
+        <button
+              type="button"
+              className="bg-gray-500 text-white py-2 px-4 rounded-md shadow-lg"
+              onClick={() => router.back()}
+            >
+              {t("go_back")}
+            </button>
       </form>
     </div>
   );

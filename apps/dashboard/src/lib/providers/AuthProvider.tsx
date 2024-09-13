@@ -107,7 +107,6 @@ export const AuthProvider = ({
       router.push(`/${lng}/login/`);
     }
   }, [isAuthenticated, lng, router, dispatch]);
-  console.log("helloo")
   return (
     <AuthContext.Provider value={{ isAuthenticated, user }}>
       {children}

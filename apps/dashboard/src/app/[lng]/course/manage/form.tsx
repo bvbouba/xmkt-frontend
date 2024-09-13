@@ -276,6 +276,15 @@ export default function Form({ lng, id }: { lng: string, id?: number }) {
             {id ? t("update_course") : t("create_course")}
               {loading && "...."}
             </button>
+
+            <button
+              type="button"
+              className="bg-gray-500 text-white py-2 px-4 ml-4 rounded-md shadow-lg"
+              onClick={() => router.back()}
+            >
+              {t("go_back")}
+            </button>
+
             {error && <span className="text-red-600 text-sm">{error}</span>}
           </div>
         </form>

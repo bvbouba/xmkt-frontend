@@ -28,7 +28,6 @@ const ChartX = ({chartType,data,options,title,displayType}:ChartDataType) => {
                 formatter: function(value:number, context:any) {
                     var index = context.dataIndex;
                     var dataValue = context.dataset.data[index];
-                    console.log(displayType)
                       switch (displayType) {
                         case "basic1":
                             return dataValue
@@ -37,7 +36,6 @@ const ChartX = ({chartType,data,options,title,displayType}:ChartDataType) => {
                         case "percentage":
                             return Math.round(dataValue*100) + ' %'
                         case "label":
-                            console.log(context.dataset)
                             return context.dataset.label;
                         default:
                             break;

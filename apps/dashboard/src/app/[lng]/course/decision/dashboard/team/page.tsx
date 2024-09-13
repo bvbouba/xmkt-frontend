@@ -10,7 +10,7 @@ import LoanHistoryModal from '@/components/LoanHistoryModal';
 import Form from './form';
 
 
-export default function Page({ params: { lng, id } }: { params: { lng: string; id: number } }) {
+export default function Page({ params: { lng } }: { params: { lng: string; } }) {
   const { t } = useTranslation(lng);
   const [teamDecision, setTeamDecision] = useState<MarketingMixType[]>();
   const [errors, setErrors] = useState<ErrorLog[]>([]);
@@ -22,7 +22,7 @@ export default function Page({ params: { lng, id } }: { params: { lng: string; i
   const [isLoanFormOpen, setIsLoanFormOpen] = useState(false); 
   
   useEffect(() => {
-    if (id && status === "authenticated") {
+    if ( status === "authenticated") {
       const fetchData = async () => {
         try {
           const decisionData = await fetchMarketingMixDecisionByTeam({
