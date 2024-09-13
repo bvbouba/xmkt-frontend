@@ -24,7 +24,7 @@ export default function IndustryPage ({ params: { lng,id } }:{params: { lng: str
     if (id && status === "authenticated") {
       const fetchData = async () => {
         try {
-          const courseData = await getCourse(id,session.accessToken);
+          const courseData = await getCourse({courseId:id,token:session.accessToken});
           setCourse(courseData);
           setIndustries(courseData.industry);
           setTotalParticipants(calculateTotalParticipants(courseData));

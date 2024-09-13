@@ -18,11 +18,15 @@ declare module "next-auth" {
       school: number;
     } & DefaultSession["user"];
     accessToken: string;  // Add accessToken to the session
-
+    courseId: string,
+    industryId: number,
+    teamId: number,
+    teamName:string,
+    activePeriod: number
   }
 
   interface User {
-    token: string;  
+    token: string;
   }
 
   interface JWT {
@@ -31,12 +35,12 @@ declare module "next-auth" {
 }
 
 const handler = NextAuth({
-    session:{
-       strategy:'jwt'
-    },
-    pages: {
-        signIn: '/[lng]/login', // Custom login page route
-      },
+  session: {
+    strategy: 'jwt'
+  },
+  pages: {
+    signIn: '/[lng]/login', // Custom login page route
+  },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -70,7 +74,23 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+
+    async jwt({ token, user, trigger, session }) {
+
+      if (trigger === 'update') {
+        if (session?.teamId) {
+          token.teamId = session.teamId;
+        }
+        if (session?.activePeriod) {
+          token.activePeriod = session.activePeriod;
+        }
+        if (session?.industryId) {
+          token.industryId = session.industryId;
+        }
+        if (session?.teamName) {
+          token.teamName = session.teamName;
+        }
+      }
       if (user?.token) {
         token.accessToken = user.token as string;
       }
@@ -78,10 +98,13 @@ const handler = NextAuth({
     },
 
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string;  // Assign accessToken to session
+      session.accessToken = token.accessToken as string; 
+      session.teamId = token.teamId as number;  
+      session.activePeriod = token.activePeriod as number;  ;
+      session.industryId = token.industryId as number;
+      session.teamName = token.teamName as string;
 
       if (session.accessToken) {
-        
         try {
           const user = await getUser(session.accessToken)
           session.user = {
@@ -99,4 +122,4 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET, // Use a strong secret key
 });
 
-export {handler as GET, handler as POST}
+export { handler as GET, handler as POST }

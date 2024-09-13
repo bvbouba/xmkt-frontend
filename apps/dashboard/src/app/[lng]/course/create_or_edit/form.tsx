@@ -70,7 +70,7 @@ export default function Form({ lng, id }: { lng: string, id?: number }) {
     if (id && status === "authenticated") {
       const fetch = async () => {
         try {
-          const courseData: CourseDetails = await getCourse(id,session.accessToken);
+          const courseData: CourseDetails = await getCourse({courseId:id,token:session.accessToken});
           if (courseData) {
             setValue("simulation", courseData.simulation);
             setValue("courseName", courseData.course_name);

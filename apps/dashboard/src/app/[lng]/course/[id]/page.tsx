@@ -21,7 +21,7 @@ export default function CourseDetailsPage({ params: { lng,id } }:{params: { lng:
     if (status === "authenticated") {
       const loadCourse = async () => {
         try {
-          const coursesData = await getCourse(id,session.accessToken);
+          const coursesData = await getCourse({courseId:id,token:session.accessToken});
           setCourse(coursesData);
           setTotalParticipants(calculateTotalParticipants(coursesData));
 

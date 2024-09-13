@@ -33,7 +33,7 @@ export default function Form ({ lng, id }: { lng: string, id: number }) {
     if (id && status === "authenticated") {
       const fetchData = async () => {
         try {
-          const courseData = await getCourse(id, session.accessToken);
+          const courseData = await getCourse({courseId:id, token:session.accessToken});
           setIndustries(courseData.industry);
         } catch (error) {
           console.error('Error fetching data:', error);
