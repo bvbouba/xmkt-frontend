@@ -1,5 +1,4 @@
 import { Layout } from "@/components/Layout";
-import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { CardBasic } from "@/components/card/Card";
 import usePaths from "@/lib/paths";
 import { GetStaticProps, InferGetStaticPropsType } from "next";

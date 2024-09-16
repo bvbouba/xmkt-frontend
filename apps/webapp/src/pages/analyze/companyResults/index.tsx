@@ -1,8 +1,8 @@
 import { Layout } from "@/components/Layout";
 import { Section } from "@/components/Section";
 import usePaths from "@/lib/paths";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ReactElement } from "react";
@@ -19,10 +19,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function CompanyResultsPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const {selectedPeriod} = useAuth();
   const paths = usePaths();
   const { t } = useTranslation('common')
-  
+  const { data: session, status } = useSession()
+  const selectedPeriod = session?.selectedPeriod || 0
   const companyItems = [
     {
       url: paths.analyze.companyResults._period(selectedPeriod).companyDashboard.$url(),
@@ -55,7 +55,6 @@ function CompanyResultsPage({ locale }: InferGetStaticPropsType<typeof getStatic
       title: t("DECISION_REVIEW"),
     },
   ];
-
 
   return (
     <>

@@ -1,5 +1,4 @@
 import { Layout } from "@/components/Layout";
-import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { fetchDecisionStatus, getMarketingMixData } from "features/decideSlices";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";

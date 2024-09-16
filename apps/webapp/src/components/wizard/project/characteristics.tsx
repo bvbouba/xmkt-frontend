@@ -1,4 +1,3 @@
-import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { ButtonNext, ButtonPrev } from "@/components/button";
 import {  useForm } from "react-hook-form";
 import { FormData } from ".";

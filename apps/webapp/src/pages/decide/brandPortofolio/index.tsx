@@ -1,5 +1,4 @@
 import { Layout } from "@/components/Layout";
-import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { ButtonNext } from "@/components/button";
 import { getMarketsData } from "features/analyzeSlices";
 import { fetchBrands, fetchDecisionStatus } from "features/decideSlices";

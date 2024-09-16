@@ -1,5 +1,4 @@
 import { Layout } from "@/components/Layout";
-import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { SuccessMessage } from "@/components/ToastMessages";
 import { getChannelsData } from "features/analyzeSlices";
 import { fetchBudgetDetails, fetchDecisionStatus, getMarketingMixData, partialUpdateMarketingMix } from "features/decideSlices";

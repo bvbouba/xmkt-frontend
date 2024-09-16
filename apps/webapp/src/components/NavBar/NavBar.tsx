@@ -1,22 +1,20 @@
 import usePaths from "@/lib/paths";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, {  useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Breadcrumb, ILink } from "../breadcumb/Breadcrumb";
-import { useAppDispatch } from "@/lib/hooks/redux";
 import Head from "next/head";
 import { useTranslation } from "next-i18next";
-import { useAuth } from "@/lib/providers/AuthProvider";
+import { useSession } from "next-auth/react";
 
 export const NavBar: React.FC = () => {
   const router = useRouter();
   const paths = usePaths();
   const { t } = useTranslation('common')
-  const {participant,selectedPeriod,setSelectedPeriod} =useAuth()
-  const {activePeriod} = participant || {}
-  
-useEffect(()=>{
-},[participant])  
+  const { data: session, update } = useSession()
+  const {activePeriod} = session || {}
+  const selectedPeriod = session?.selectedPeriod || 0
+ 
   const menuItems = [
     {
       id: 1,
@@ -220,7 +218,9 @@ useEffect(()=>{
                 <div>
                   <select
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    onChange={(e) => setSelectedPeriod(parseInt(e.target.value))} // Handle the selected period
+                    onChange={(e) => update({
+                      ...session,
+                      selectedPeriod:parseInt(e.target.value)})} // Handle the selected period
                     value={selectedPeriod}
                   >
                     <option value="" disabled>

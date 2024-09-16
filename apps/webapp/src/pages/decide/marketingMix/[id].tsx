@@ -1,5 +1,4 @@
 import { Layout } from "@/components/Layout";
-import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { SuccessMessage } from "@/components/ToastMessages";
 import { fetchDimensions, getFeaturesData, getSegmentsData } from "features/analyzeSlices";
 import {

@@ -1,5 +1,4 @@
 import { Layout } from "@/components/Layout";
-import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { SuccessMessage } from "@/components/ToastMessages";
 import { fetchDecisionStatus, updateTeamName } from "features/decideSlices";
 import { loadInfo } from "features/participantSlices";

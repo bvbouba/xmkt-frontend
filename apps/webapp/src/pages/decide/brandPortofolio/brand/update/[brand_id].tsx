@@ -1,6 +1,5 @@
 import { Layout } from "@/components/Layout";
 import { CustomModal } from "@/components/Modal";
-import { RedirectToLogin } from "@/components/RedirectToLogin";
 import { SuccessMessage } from "@/components/ToastMessages";
 import { getMarketsData, getProjectData } from "features/analyzeSlices";
 import { fetchBrandById, fetchDecisionStatus, updateBrand } from "features/decideSlices";
