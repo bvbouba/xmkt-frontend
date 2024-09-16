@@ -1,8 +1,8 @@
 'use client'
 
 import { useTranslation } from "@/app/i18n";
-import { createCourse, fetchCountries, fetchSchools, getCourse, editCourse } from "@/lib/data";
-import { country, school, CourseDetails } from "@/lib/data/type";
+import { createCourse, fetchCountries, fetchSchools, getCourse, editCourse } from "features/data";
+import { country, school, CourseDetails } from "types";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

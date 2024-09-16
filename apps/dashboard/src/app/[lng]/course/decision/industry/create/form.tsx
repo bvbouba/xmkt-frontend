@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from "@/app/i18n";
-import { createIndustry } from "@/lib/data";
+import { createIndustry } from "features/data";
 import {  useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

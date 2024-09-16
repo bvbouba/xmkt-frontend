@@ -17,8 +17,6 @@ export default function Form({ lng  }: { lng: string }) {
   const {
     handleSubmit,
     register,
-    formState: { errors },
-    setValue,
   } = useForm<FormValues>();
   const [error,setError] = useState<string>()
   const [loading,setLoading] = useState<boolean>()

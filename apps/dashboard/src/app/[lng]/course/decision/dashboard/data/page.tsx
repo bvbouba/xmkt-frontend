@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from '@/app/i18n'; // For translations if needed
 import dynamic from 'next/dynamic'; // For dynamically importing the chart component
 import { useSession } from 'next-auth/react';
-import { fetchChartData, getCourse, getDecision } from '@/lib/data';
-import { ChartDataType, Decision, Industry } from '@/lib/data/type';
+import { fetchChartData, getCourse, getDecision } from 'features/data';
+import { ChartDataType, Decision, Industry } from 'types';
 
 // Dynamically load the chart component
 const DynamicChart = dynamic(() => import('@/components/Chart'), { ssr: false });

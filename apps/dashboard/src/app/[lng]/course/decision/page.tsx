@@ -2,8 +2,8 @@
 
 import { useTranslation } from "@/app/i18n";
 import { calculateTotalParticipants } from "@/lib";
-import { getCourse } from "@/lib/data";
-import { CourseDetails } from "@/lib/data/type";
+import { getCourse } from "features/data";
+import { CourseDetails } from "types";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";

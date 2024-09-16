@@ -1,6 +1,6 @@
 'use client'
-import { deleteCourse, fetchCourses } from "@/lib/data";
-import { course } from "@/lib/data/type";
+import { deleteCourse, fetchCourses } from "features/data";
+import { course } from "types";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";

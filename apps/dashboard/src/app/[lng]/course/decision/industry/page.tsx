@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/app/i18n';
-import { getCourse, deleteIndustry } from '@/lib/data'; // Assume these functions are defined in your data module
+import { getCourse, deleteIndustry } from 'features/data'; // Assume these functions are defined in your data module
 import { useSession } from 'next-auth/react';
-import { CourseDetails, Industry } from '@/lib/data/type';
+import { CourseDetails, Industry } from 'types';
 import { calculateTotalParticipants } from '@/lib';
 import { useRouter } from 'next/navigation';
 

@@ -1,5 +1,5 @@
 import { useTranslation } from '@/app/i18n';
-import { Reimbursement } from '@/lib/data/type';
+import { Reimbursement } from 'types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 

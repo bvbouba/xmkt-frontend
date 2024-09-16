@@ -1,4 +1,4 @@
-import { ChartDataType } from '@/lib/data/type';
+import { ChartDataType } from 'types';
 import { Bar, Line } from 'react-chartjs-2';
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";

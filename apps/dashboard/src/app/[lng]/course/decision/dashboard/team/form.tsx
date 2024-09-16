@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { SetStateAction, useState } from 'react';
 import { useTranslation } from '@/app/i18n';
 import { useSession } from 'next-auth/react';
-import { createLoan } from '@/lib/data';
+import { createLoan } from 'features/data';
 
 interface LoanFormData {
     rate: number;

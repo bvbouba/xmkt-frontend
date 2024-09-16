@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from '@/app/i18n';
 import { useSession } from 'next-auth/react';
-import { getCourse, getDecision, getTeamsErrors, updateDecision } from '@/lib/data';
-import { Decision, ErrorLog, Industry, IsErrorLog } from '@/lib/data/type';
+import { getCourse, getDecision, getTeamsErrors, updateDecision } from 'features/data';
+import { Decision, ErrorLog, Industry, IsErrorLog } from 'types';
 import ProgressBar from '@/components/ProgressBar'; // Import ProgressBar
 import { useRouter } from 'next/navigation';
 

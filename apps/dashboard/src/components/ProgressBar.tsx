@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getTaskProgress } from '@/lib/data';
+import { getTaskProgress } from 'features/data';
 import { useTranslation } from '@/app/i18n';
 
 interface ProgressBarProps {

@@ -35,7 +35,7 @@ const LoginPage = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) =
   const [loading,setLoading] = useState(false)
   const [errors1,setErrors1] = useState("")
   const [loading1,setLoading1] = useState(false)
-  const { data: session, update } = useSession()
+  const { update } = useSession()
 
   const {
     handleSubmit,
@@ -52,27 +52,14 @@ const LoginPage = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) =
     setLoading1(true)
     const result = await signIn("credentials", {
         redirect: false,
+        pak,
         teamID:participantData?.team,
         userID:participantData?.user,
         password,
       });
       setLoading1(false)
       if (result?.ok) {
-        const updatedSession = await getSession();
-      
-        const res = await update({
-          ...updatedSession,
-          industryName:participantData?.industry_name,
-          courseCode:participantData?.courseid,
-          teamName:participantData?.team_name,
-          activePeriod:participantData?.active_period,
-          teamIDa :participantData?.team,
-          firmID:participantData?.firm_id,
-          industryID:participantData?.industry_id
-        })
-        console.log(res)
         router.push(paths.$url());
-    
       } else {
         setErrors1("Invalid credentials");
       }

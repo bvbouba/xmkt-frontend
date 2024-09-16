@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { assignParticipantTeam, fetchParticipants, getCourse } from '@/lib/data';
+import { assignParticipantTeam, fetchParticipants, getCourse } from 'features/data';
 import { useTranslation } from '@/app/i18n';
 import { useSession } from 'next-auth/react';
-import { Industry, Participant, Team } from '@/lib/data/type';
+import { Industry, Participant, Team } from 'types';
 import { useRouter } from 'next/navigation';
 
 interface TeamFormValues {

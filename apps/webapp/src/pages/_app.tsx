@@ -28,4 +28,5 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLa
 }
 
 
+
 export default appWithTranslation(App)

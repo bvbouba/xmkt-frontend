@@ -15,7 +15,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "@repo/ui": "*",
-    "utils":"*"
+    "utils":"*",
+    "features":"*"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^14.1.1",
@@ -28,6 +29,7 @@
     "@repo/tailwind-config": "*",
     "tailwindcss": "^3.4.1",
     "@repo/typescript-config": "*",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "types":"*"
   }
 }

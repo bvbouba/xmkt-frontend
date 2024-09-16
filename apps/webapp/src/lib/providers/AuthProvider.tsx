@@ -94,7 +94,6 @@ export const AuthProvider= ({ children,isAuthenticated }: { children: React.Reac
       );
       
       setErrorLog(response.data)
-      console.log(response.data)
       setBudget(response1.data)
     } catch (error: any) {
       console.error('Error fetching data:', error);

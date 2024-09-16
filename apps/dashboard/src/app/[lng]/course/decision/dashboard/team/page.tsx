@@ -3,9 +3,9 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from '@/app/i18n';
-import { BudgetDetails, ErrorLog, Loans, MarketingMixType, Reimbursement } from '@/lib/data/type';
+import { BudgetDetails, ErrorLog, Loans, MarketingMixType, Reimbursement } from 'types';
 import { useSession } from 'next-auth/react';
-import { fetchMarketingMixDecisionByTeam, getBudgetDetail, getErrorLogByTeam, getLoansByTeam, getReimbursementsByTeam } from '@/lib/data';
+import { fetchMarketingMixDecisionByTeam, getBudgetDetail, getErrorLogByTeam, getLoansByTeam, getReimbursementsByTeam } from 'features/data';
 import LoanHistoryModal from '@/components/LoanHistoryModal';
 import Form from './form';
 
