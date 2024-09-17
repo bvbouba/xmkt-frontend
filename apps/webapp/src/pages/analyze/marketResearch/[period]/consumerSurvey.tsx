@@ -1,28 +1,19 @@
 
-import {
-  getBrandAwarenessData,
-  getChannelsData,
-  getMarketDemandData,
-  getPurchaseIntentData,
-  getSegmentsData,
-  getShoppingHabitData,
-} from "features/analyzeSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import {  getValueByBrandSegment, getValueByChannelSegment } from "@/lib/utils";
-import {  useEffect } from "react";
+import {  useEffect, useState } from "react";
 
 
-import { useRouter } from "next/router";
-import { fetchMarketResearchChoices } from "features/decideSlices";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
 import { channelColors } from "@/lib/constants/colors";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import VerticalBar from "@/components/charts/VerticalBar";
 import HorizontalBar from "@/components/charts/HorizontalBar";
+import { useSession } from "next-auth/react";
+import { fetchMarketResearchChoices, getBrandAwarenessData, getChannelsData, getMarketDemandData, getPurchaseIntentData, getSegmentsData, getShoppingHabitData } from "features/data";
+import { brandAwarenessProps, channelProps, demandProps, marketProps, marketResearchProps, segmentProps, shoppingHabitProps } from "types";
 
 
 interface columnProps {
@@ -43,52 +34,67 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const dispatch = useAppDispatch();
+  const { data: session, status } = useSession(); // Fetch session data
+  const { industryID, firmID } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0;
+  const [segments, setSegments] = useState<segmentProps[]>([]);
+  const [brandAwareness, setBrandAwareness] = useState<brandAwarenessProps[]>([]);
+  const [purchaseIntent, setPurchaseIntent] = useState<brandAwarenessProps[]>([]);
+  const [shoppingHabit, setShoppingHabit] = useState<shoppingHabitProps[]>([]);
+  const [marketDemand, setMarketDemand] = useState<demandProps[]>([]);
+  const [channels, setChannels] = useState<channelProps[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    const { t } = useTranslation('common')
-
-  const router = useRouter()
-
-  const { period } = router.query as { period: string};
-  const selectedPeriod = parseInt(period)
-  const {participant} = useAuth()
-  const { industryID, firmID } =participant || {};
- 
-
-  useEffect(()=>{
-    if (firmID && industryID ) {
-    dispatch(fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod }));
-    }
-    dispatch(getSegmentsData());
-  },[dispatch,firmID,industryID,selectedPeriod])
-
-  const { data: marketResearchChoices } = useAppSelector((state) => state.decide.marketResearchChoices);
-  const { data: segments } = useAppSelector((state) => state.analyze.segments);
-
+  const { t } = useTranslation('common');
 
   useEffect(() => {
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (industryID) {
-      dispatch(getBrandAwarenessData({ industryID, period:selectedPeriod }));
-      dispatch(getPurchaseIntentData({ industryID, period:selectedPeriod }));
-      dispatch(getShoppingHabitData({ industryID, period:selectedPeriod }));
-      dispatch(getMarketDemandData({ industryID, period:selectedPeriod }));
-      dispatch(getChannelsData());
+    if (status === "authenticated" && firmID && industryID) {
+      const loadData = async () => {
+        setLoading(true);
+        try {
+    
+          const response2 = await getSegmentsData();
+          setSegments(response2);
 
+          const brandAwarenessData = await getBrandAwarenessData({
+            industryID,
+            period: selectedPeriod,
+            token: session.accessToken,
+          });
+          const purchaseIntentData = await getPurchaseIntentData({
+            industryID,
+            period: selectedPeriod,
+            token: session.accessToken,
+          });
+          const shoppingHabitData = await getShoppingHabitData({
+            industryID,
+            period: selectedPeriod,
+            token: session.accessToken,
+          });
+          const marketDemandData = await getMarketDemandData({
+            industryID,
+            period: selectedPeriod,
+            token: session.accessToken,
+          });
+          const channelsData = await getChannelsData();
+
+          setBrandAwareness(brandAwarenessData);
+          setPurchaseIntent(purchaseIntentData);
+          setShoppingHabit(shoppingHabitData);
+          setMarketDemand(marketDemandData);
+          setChannels(channelsData);
+          
+        } catch (error) {
+          console.error("Error fetching market research data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadData();
     }
-  }, [dispatch,selectedPeriod,industryID,]);
+  }, [status, firmID, industryID, selectedPeriod, session?.accessToken]);
 
-  const {data:brandAwareness, loading:aloading} = useAppSelector(
-    (state) => state.analyze.brandAwareness
-  );
-  const {data:purchaseIntent, loading:ploading} = useAppSelector(
-    (state) => state.analyze.purchaseIntent
-  );
-  const {data:shoppingHabit, loading:sloading} = useAppSelector((state) => state.analyze.shoppingHabit);
-  const {data:marketDemand} = useAppSelector((state) => state.analyze.marketDemand);
-  const {data:channels, loading:cloading} = useAppSelector(
-    (state) => state.analyze.channels
-  );
+
 
   const total_size = marketDemand.reduce((a, c) => a + c.size, 0);
   let teamJson: { [key: string]: any } = {};
@@ -215,7 +221,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
         <div className="grid grid-cols-1 gap-4 m-4 h-80">
           <GraphContainer>
-          {aloading ? <Loading />:  
+          {loading ? <Loading />:  
             <VerticalBar data={chart1Data} title={t("AVERAGE_BRAND_AWARENESS")} inPercent={true} />
   }
           </GraphContainer>
@@ -225,7 +231,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
           <div className="col p-7">
           <h4 className="pb-4">{t("BRAND_AWARENESS_BY_CONSUMER_SEGMENT")}</h4>
-          {aloading ? <Loading />:  
+          {loading ? <Loading />:  
             <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -270,7 +276,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
         <div className="grid grid-cols-1 gap-4 m-4 h-80">
           <GraphContainer>
-          {ploading ? <Loading />:  
+          {loading ? <Loading />:  
             <VerticalBar data={chart2Data} title={t("AVERAGE_PURCHASE_INTENT")} inPercent={true} />
 }
           </GraphContainer>
@@ -280,7 +286,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
           <div className="col p-7">
           <h4 className="pb-4"> {t("PURCHASE_INTENTION_BY_CONSUMER_SEGMENT")} </h4>
-          {ploading ? <Loading />:  
+          {loading ? <Loading />:  
             <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -324,7 +330,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
     
         <div className="grid grid-cols-1 gap-4 m-4 h-80">
           <GraphContainer>
-          {sloading ? <Loading />:  
+          {loading ? <Loading />:  
             <HorizontalBar data={chart3Data}  title="" inPercent={true} legendPos="right" />
 }
           </GraphContainer>

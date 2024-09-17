@@ -1,15 +1,14 @@
-import { Layout } from "@/components/Layout";
+
 import { Loading } from "@/components/Loading";
 import { HeaderContainer, ParagraphContainer } from "@/components/container";
-import { getIndustryInfoData } from "features/analyzeSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { getEconomicData } from "@/lib/utils";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useRouter } from "next/router";
-import { ReactElement, useEffect } from "react";
+import {  useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { getIndustryInfoData } from "features/data";
+import { industryInfoProps } from "types";
 
 
 
@@ -24,25 +23,36 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const router = useRouter()
-  const { period } = router.query as { period: string};
-  const selectedPeriod = parseInt(period)
-  const {participant} = useAuth();
-  const dispatch = useAppDispatch();
-  const {industryID, firmID, } = participant || {};
-    const { t } = useTranslation('common')
-
+  const { data: session, status } = useSession()
+  const {  industryID, firmID } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0
+  const { t } = useTranslation('common')
+  const [industryInfo,setIndustryInfo] = useState<industryInfoProps[]>()
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (firmID && industryID) {
-      dispatch(getIndustryInfoData({ industryID}));
+    
+    if (status === "authenticated" && firmID && industryID) {
+     
+      const loadData = async () => {
+        setLoading(true)
+        try {
+          const response = await getIndustryInfoData({ industryID,token: session.accessToken});
+          setIndustryInfo(response)
+        } catch (error) {
+          console.error('Error getting data:', error);
+        } finally{
+          setLoading(false)
+        }
+      }
+      loadData()
+
     }
-  }, [dispatch,firmID,industryID]);
 
-  const {data:industryInfo, loading} = useAppSelector((state) => state.analyze.industryInfo);
+  }, [status]);
 
-  const selectedIndustryInfo = industryInfo.filter(row => row.period_id===selectedPeriod).map(
+
+  const selectedIndustryInfo = industryInfo?.filter(row => row.period_id===selectedPeriod).map(
                     row1 => ({
                     id:row1.id,
                     label: (locale === "fr") ? row1.label.name_fr : row1.label.name,
@@ -75,7 +85,7 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
                 </tr>
               </thead>
               <tbody>
-                {selectedIndustryInfo.map((entry) => (
+                {selectedIndustryInfo?.map((entry) => (
                   <tr key={entry.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
                     <td scope="row " className={`px-2 py-1 font-medium font-bold text-gray-900 whitespace-nowrap dark:text-white`}>
                       {entry.label}

@@ -21,7 +21,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 function CompanyResultsPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
   const paths = usePaths();
   const { t } = useTranslation('common')
-  const { data: session, status } = useSession()
+  const { data: session } = useSession()
   const selectedPeriod = session?.selectedPeriod || 0
   const companyItems = [
     {

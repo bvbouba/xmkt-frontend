@@ -10,7 +10,7 @@ import { formatPrice, uppercase } from '@/lib/utils';
 import { CustomModal as Modal } from "@/components/Modal"
 import { useSession, signOut } from 'next-auth/react';
 import { BudgetDetails, ErrorLog } from 'types';
-import { getBudgetDetail, getErrorLogByTeam } from 'features/data';
+import { getBudgetDetail, getErrorLogByTeam, logout } from 'features/data';
 
 export const SideBar: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,6 +62,17 @@ export const SideBar: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const handleClick = async() =>{
+  if(status ==="authenticated"){
+   try {
+    await logout(session?.accessToken)
+    signOut()
+   } catch (error) {
+     console.log("Couldn't logout")
+   }
+  }
+  }
+
   return (
     <aside className="w-1/6 bg-gray-100 border-r border-gray-300  text-gray-500">
       {/* Logo */}
@@ -82,7 +93,7 @@ export const SideBar: React.FC = () => {
         <div className="text-center">
       
             {session?.user && <button
-              onClick={() => signOut()}
+              onClick={() => handleClick()}
             >
               <FontAwesomeIcon icon={faSignOutAlt} size="lg" className="text-orange-500" />
               {t("LOGOUT")}

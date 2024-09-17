@@ -9,7 +9,6 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer } from "@/components/container";
 import { colorGrades } from "@/lib/constants/colors";
-import { useRouter } from "next/router";
 import VerticalBar from "@/components/charts/VerticalBar";
 import DoughnutChart from "@/components/charts/DoughnutChart";
 import { useSession } from "next-auth/react";
@@ -30,12 +29,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 
 function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const router = useRouter()
-  const { period } = router.query as { period: string };
-  const selectedPeriod = parseInt(period)
   const { data: session, status } = useSession()
-
   const { teamName, industryID, firmID, industryName } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0
+
   const { t } = useTranslation('common')
   const [firmData,setFirmData] = useState<firmProps[]>()
   const [brandData,setBrandData] = useState<brandProps[]>()
@@ -43,7 +40,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
 
   useEffect(() => {
     if (status === "authenticated" && firmID && industryID) {
-
+     
       const loadData = async () => {
         setLoading(true)
         try {
@@ -63,7 +60,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
 
   }, [status]);
 
-
+  
   let firmColors: string[] = []; // Default color array
 
   if (typeof firmID === 'number') {

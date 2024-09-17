@@ -1,17 +1,15 @@
 import { Loading } from "@/components/Loading";
 import { HeaderContainer, ParagraphContainer } from "@/components/container";
 import { unitMsItems, valueMsItems } from "@/lib/constants";
-import { getBrandData, getFeaturesData } from "features/analyzeSlices";
-import { getMarketingMixData } from "features/decideSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { useAuth } from "@/lib/providers/AuthProvider";
-import { unitMsProps, valueMsProps } from "types";
+
+import { brandProps, featureProps, firmProps, markertingMixProps, unitMsProps, valueMsProps } from "types";
 import { formatPrice, getValueByBrand, lowercase, translateFeatures } from "@/lib/utils";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useRouter } from "next/router";
-import {  useEffect } from "react";
+import {  useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { getBrandData, getFeaturesData, getMarketingMixData } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'en';
@@ -24,37 +22,45 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function MarketReport({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const { data: session, status } = useSession()
+  const {  industryID, firmID,  } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0
+  const [brandData,setBrandData] = useState<brandProps[]>()
+  const [featuresData,setGetfeaturesData] = useState<featureProps[]>()
+  const [m2Data,setM2Data] = useState<markertingMixProps[]>([])
 
-  const router = useRouter()
-  const { period } = router.query as { period: string};
-  const selectedPeriod = parseInt(period)
-  const {participant} = useAuth();
+  const [loading,setLoading] = useState(false)
   
-  const dispatch = useAppDispatch();
-  const {  industryID, firmID } = participant || {};
-    const { t } = useTranslation('common')
+  const { t } = useTranslation('common')
 
   useEffect(() => {
-    if (industryID) {
-        dispatch(getBrandData({ industryID, firmID:0 }));
-      dispatch(getFeaturesData());
+    if (status === "authenticated" && firmID && industryID) {
+     
+      const loadData = async () => {
+        setLoading(true)
+        try {
+          const response1 = await getBrandData({ industryID, firmID:0, token: session.accessToken });
+          const response2 = await getMarketingMixData({ industryID, firmID:0,period:selectedPeriod , token: session.accessToken,fields:"is_active,brand_name,price,project" });
+          const response3 = await getFeaturesData()
+          setBrandData(response1)
+          setM2Data(response2)
+          setGetfeaturesData(response3)
+        } catch (error) {
+          console.error('Error getting data:', error);
+        } finally{
+          setLoading(false)
+        }
+      }
+      loadData()
     }
-  }, [dispatch,industryID,firmID]);
-
-  useEffect(() => {
-    if (industryID) {
-      dispatch(getMarketingMixData({ industryID, firmID:0,period:selectedPeriod }));
-    }
-  }, [dispatch,selectedPeriod,industryID]);
+  },[status])
 
 
-  const {data:brandData, loading:bloading} = useAppSelector((state) => state.analyze.brand);
-  const {data:m2Data, loading:mloading} = useAppSelector((state) => state.decide.marketingMix);
-  const {data:featuresData} = useAppSelector((state) => state.analyze.features);
+
 
   const features = translateFeatures(featuresData,locale)
 
-  const selectedValueMsData = brandData.filter(row => row.period_id === selectedPeriod).map((row1) => {
+  const selectedValueMsData = brandData?.filter(row => row.period_id === selectedPeriod).map((row1) => {
     let temp:valueMsProps={
         name: '',
       market_share: 0,
@@ -74,7 +80,7 @@ function MarketReport({ locale }: InferGetStaticPropsType<typeof getStaticProps>
     return temp })
 
     
-const selectedUnitMsData = brandData.filter(row => row.period_id === selectedPeriod).map((row1) => {
+const selectedUnitMsData = brandData?.filter(row => row.period_id === selectedPeriod).map((row1) => {
     let temp:unitMsProps={
         name: '',
       market_share: 0,
@@ -109,7 +115,7 @@ const selectedUnitMsData = brandData.filter(row => row.period_id === selectedPer
         
         <div className="grid grid-cols-2 gap-4 m-4">
           <div className="col">
-          {bloading ? <Loading />:  
+          {loading ? <Loading />:  
           <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -120,7 +126,7 @@ const selectedUnitMsData = brandData.filter(row => row.period_id === selectedPer
                 </tr>
               </thead>
               <tbody>
-                {selectedValueMsData.sort((a,b)=>a.market_share - b.market_share).slice().sort((a, b) => b.revenue - a.revenue).map((entry,index) => (
+                {selectedValueMsData?.sort((a,b)=>a.market_share - b.market_share).slice().sort((a, b) => b.revenue - a.revenue).map((entry,index) => (
                   <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                     <td scope="row " className={`px-2 py-1 font-bold font-medium text-gray-900 whitespace-nowrap dark:text-white`}>
                       {entry.brand_name}
@@ -141,7 +147,7 @@ const selectedUnitMsData = brandData.filter(row => row.period_id === selectedPer
           </div>
 
            <div className="col">
-           {bloading ? <Loading />:  
+           {loading ? <Loading />:  
            <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -152,7 +158,7 @@ const selectedUnitMsData = brandData.filter(row => row.period_id === selectedPer
                 </tr>
               </thead>
               <tbody>
-                {selectedUnitMsData.sort((a, b) => b.unit_market_share - a.unit_market_share).map((entry,index) => (
+                {selectedUnitMsData?.sort((a, b) => b.unit_market_share - a.unit_market_share).map((entry,index) => (
                   <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
                     <td scope="row " className={`px-2 py-1 font-medium font-bold text-gray-900 whitespace-nowrap dark:text-white`}>
                       {entry.brand_name}
@@ -179,7 +185,7 @@ const selectedUnitMsData = brandData.filter(row => row.period_id === selectedPer
 
         <div className="row align-items-center p-4">
 
-        {mloading ? <Loading />:  
+        {loading ? <Loading />:  
            <div className="col">
             {features && (
               <>

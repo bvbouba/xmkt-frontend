@@ -1,15 +1,15 @@
 import { Loading } from "@/components/Loading";
 import { ProjectTable } from "@/components/Table";
 import { HeaderContainer } from "@/components/container";
-import { getFeaturesData, getProjectData } from "features/analyzeSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { translateFeatures } from "@/lib/utils";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
-import {  useEffect } from "react";
+import {  useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { getFeaturesData, getProjectData } from "features/data";
+import { featureProps, projectProps, rndProjectProps } from "types";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'en';
@@ -22,24 +22,36 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function RndReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const router = useRouter()
-  const { period } = router.query as { period: string};
-  const selectedPeriod = parseInt(period)
-  const {participant} = useAuth();
-  const dispatch = useAppDispatch();
-  const { teamName, industryID, firmID } = participant || {};
+  const { data: session, status } = useSession()
+  const { teamName, industryID, firmID,  } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0
+  const [featureData,setFeatureData] = useState<featureProps[]>([])
+  const [projectData,setProjectData] = useState<rndProjectProps>({})
+  const [loading,setLoading] = useState(false)
+
     const { t } = useTranslation('common')
 
     useEffect(() => {
-        // Dispatch actions to get firm and brand data when the component mounts
-        if (firmID && industryID) {
-          dispatch(getProjectData({ industryID, firmID,period:selectedPeriod }));
-          dispatch(getFeaturesData());
+
+      if (status === "authenticated" && firmID && industryID) {
+        const loadData = async () => {
+          setLoading(true)
+          try {
+            const response1 = await getProjectData({ industryID, firmID,period:selectedPeriod, token: session.accessToken });
+            const response2  = await getFeaturesData();
+            setProjectData(response1)
+            setFeatureData(response2)
+          } catch (error) {
+            console.error('Error getting course:', error);
+          }finally{
+            setLoading(false)
+          }
         }
-      }, [dispatch,selectedPeriod,firmID,industryID]);
+        loadData()
+         
+        }
+      }, [status,]);
     
-  const {data:projectData, loading:ploading} = useAppSelector((state) => state.analyze.projects);
-  const {data:featureData, loading:floading} = useAppSelector((state) => state.analyze.features);
 
   const selectedFeatures = featureData?.filter(feature=>['feature_1','feature_2',
   'feature_3','feature_4','feature_5'].includes(feature.surname))
@@ -54,7 +66,7 @@ function RndReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps
 
       <HeaderContainer title={title} content={`${t("THIS_REPORT_PROVIDES_INFORMATION_ON_THE_ACTIVITIES_CONDUCTED_FOR_")} ${selectedPeriod}`}/>
       {
-      ploading && floading ? <Loading />:
+      loading ? <Loading />:
       <>
       <ProjectTable
         projects={projectData.now}

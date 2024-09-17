@@ -1,10 +1,8 @@
 
 import { Table } from "@/components/Table";
 import {  industryFinancialItems,industryMarketShareItems, unit } from "@/lib/constants";
-import { getBrandData, getFirmData, getMarketsData } from "features/analyzeSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { industryDataProps } from "types";
-import { useEffect } from "react";
+import { brandProps, firmProps, industryDataProps, marketProps } from "types";
+import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
@@ -13,11 +11,11 @@ import { useTranslation } from "next-i18next";
 import { getValueByTeam } from "@/lib/utils";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
 import { colorGrades, marketColors } from "@/lib/constants/colors";
-import { useRouter } from "next/router";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import LineChart from "@/components/charts/LineChart";
 import HorizontalBar from "@/components/charts/HorizontalBar";
 import VerticalBar, { options } from "@/components/charts/VerticalBar";
+import { useSession } from "next-auth/react";
+import { getBrandData, getFirmData, getMarketsData } from "features/data";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -31,31 +29,44 @@ export const getStaticProps: GetStaticProps = async (context) => {
 }
 
 function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-
-  const router = useRouter()
-  const { period } = router.query as { period: string};
-  const selectedPeriod = parseInt(period)
-  const {participant} = useAuth();
-  const dispatch = useAppDispatch();
-  const { teamName, industryID, firmID } = participant || {};
+  const { data: session, status } = useSession()
+  const { teamName, industryID, firmID, industryName } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0
+  const [firmData,setFirmData] = useState<firmProps[]>()
+  const [brandData,setBrandData] = useState<brandProps[]>()
+  const [marketsData,setMarketsData] = useState<marketProps[]>([])
+  const [loading,setLoading] = useState(false)
     const { t } = useTranslation('common')
   
 
   useEffect(() => {
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (firmID && industryID) {
-      dispatch(getFirmData({ industryID, firmID:0 }));
-      dispatch(getBrandData({ industryID, firmID:0 }));
-      dispatch(getMarketsData());
+
+    if (status === "authenticated" && firmID && industryID) {
+     
+      const loadData = async () => {
+        setLoading(true)
+        try {
+          const response1 = await getFirmData({ industryID, firmID:0, token: session.accessToken });
+          const response2 = await getBrandData({ industryID, firmID:0, token: session.accessToken });
+          const response3 = await getMarketsData()
+          setFirmData(response1)
+          setBrandData(response2)
+          setMarketsData(response3)
+        } catch (error) {
+          console.error('Error getting data:', error);
+        } finally{
+          setLoading(false)
+        }
+      }
+      loadData()
+
     }
-  }, [dispatch,industryID,firmID]);
+ 
+  }, [status]);
 
-  const {data:firmData,loading:floading} = useAppSelector((state) => state.analyze.firm);
-  const {data:brandData, loading:bloading} = useAppSelector((state) => state.analyze.brand);
-  const {data:marketsData} = useAppSelector((state) => state.analyze.markets);
-  const periods = Array.from(Array(selectedPeriod+1).keys())
+ const periods = Array.from(Array(selectedPeriod+1).keys())
 
-  const industryData = firmData.filter(row => row.period_id === selectedPeriod).map((row1) => {
+  const industryData = firmData?.filter(row => row.period_id === selectedPeriod).map((row1) => {
                     let temp: industryDataProps = {
                         team_name: '', // Initialize with a default value or set the actual value
                         stockprice: 0, // Initialize with a default value or set the actual value
@@ -72,8 +83,8 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
                 return temp })
 
         const industryChartData = {
-    labels:periods.map((item) => `${(selectedPeriod < 4 ) ? t("PERIOD"): t("PER")} ${item}`),
-    datasets: firmData.filter(row => row.period_id === selectedPeriod).map(
+    labels:periods.map((item) => `${(selectedPeriod < 4 ) ? t("PERIOD"): t("PER")} ${item}`) || [],
+    datasets: firmData?.filter(row => row.period_id === selectedPeriod).map(
           (row,id) => ({
             data: periods.map(per => getValueByTeam(firmData,row.team_name,per,'stockprice')),
             label: row.team_name,
@@ -86,14 +97,15 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
               backgroundColor: colorGrades[id][0],
         borderColor: colorGrades[id][0],
           })
-            )}
+            ) || []
+          }
 
 
 const byMarketChartData = {
     labels:periods.map((item) => `${(selectedPeriod < 4 ) ? t("PERIOD"): t("PER")} ${item}`),
     datasets: marketsData.map(
               (m,id) => ({
-              data: periods.map(p => firmData.filter(d => d.period_id === p
+              data: periods.map(p => firmData?.filter(d => d.period_id === p
                     && d.market_id === m.id).reduce((a,c) => a+c.revenue,0)),
               label: m.name,
               lineTension: 0,
@@ -110,7 +122,7 @@ const byMarketChartData = {
 
 const byFirmChartData = {
     labels:periods.map((item) => `${(selectedPeriod < 4 ) ? t("PERIOD"): t("PER")} ${item}`),
-      datasets: firmData.filter(row => row.period_id === selectedPeriod).map(
+      datasets: firmData?.filter(row => row.period_id === selectedPeriod).map(
             (f,id) => ({
             data: periods.map(p => getValueByTeam(firmData,f.team_name,p,'revenue')),
             label: f.team_name,
@@ -124,12 +136,13 @@ const byFirmChartData = {
               backgroundColor: colorGrades[id][0],
         borderColor: colorGrades[id][0],
           })
-            )}
+            ) || []
+          }
 
             
 const marketShareChartData = {
      labels: industryMarketShareItems.map(row => row.label),
-      datasets: firmData.filter(f => f.period_id === selectedPeriod).map(
+      datasets: firmData?.filter(f => f.period_id === selectedPeriod).map(
               (row,id) => ({
               data: industryMarketShareItems.map(row1 => getValueByTeam(firmData,row.team_name,selectedPeriod,row1.id)),
               label: row.team_name,
@@ -137,29 +150,30 @@ const marketShareChartData = {
               backgroundColor: colorGrades[id][0],
             borderColor: colorGrades[id][0],
             })
-              )}
+              ) || []
+            }
 
-const vSelected = brandData.filter(row => row.period_id === selectedPeriod).sort((a, b) =>
+const vSelected = brandData?.filter(row => row.period_id === selectedPeriod).sort((a, b) =>
                   b.unit_sold - a.unit_sold).slice(0,6)
 
 const topSellingVolumeChartData = {
-    labels:vSelected.map(row => row.brand_name),
+    labels:vSelected?.map(row => row.brand_name) || [],
     datasets: [{
             label: '',
-            data: vSelected.map(row => row.unit_sold),
+            data: vSelected?.map(row => row.unit_sold) || [],
             borderWidth: 1,
             backgroundColor: "rgba(54, 162, 235, 1)",
             borderColor: "rgba(54, 162, 235, 1)",
         }]}
 
-const rSelected = brandData.filter(row => row.period_id === selectedPeriod).sort((a, b) =>
+const rSelected = brandData?.filter(row => row.period_id === selectedPeriod).sort((a, b) =>
                   b.revenue - a.revenue).slice(0,6)
 
 const topSellingRevenueChartData =  {
-    labels:rSelected.map(row => row.brand_name),
+    labels:rSelected?.map(row => row.brand_name) || [],
 datasets:[{
             label: '',
-            data: rSelected.map(row => Math.round(row.revenue/unit)),
+            data: rSelected?.map(row => Math.round(row.revenue/unit)) || [],
             borderWidth: 1,
             backgroundColor: "rgba(54, 162, 235, 1)",
             borderColor: "rgba(54, 162, 235, 1)",
@@ -180,7 +194,7 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
           <div className="pl-4"><ParagraphContainer title={t("SHARE_PRICE_INDEX_EVOLUTION")} /></div>
         </div>
         <div className="grid grid-cols-2 gap-4 h-80">
-        {floading ? <Loading />:
+        {loading ? <Loading />:
           <div className="col pt-4 pr-4">
             {industryData && (
                <Table data={industryData}  headerless={true} items={industryFinancialItems} lookup="team_name" heads={[...new Set(industryData.map((entry) => entry.team_name))]}/>
@@ -192,7 +206,7 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
           </div>
           }
 
-       {floading ? <Loading />:  
+       {loading ? <Loading />:  
           <GraphContainer>
           {(selectedPeriod !== 0) ? <LineChart data={industryChartData} title="" yGrid={true}  />
           :
@@ -209,7 +223,7 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
         <div className="pl-4"><ParagraphContainer title={t("INDUSTRY_RETAIL_SALES_-_BY_FIRM")} /></div>
         </div>
         <div className="grid grid-cols-2 gap-4 h-80">
-        {floading ? <Loading />:
+        {loading ? <Loading />:
           <GraphContainer>
           {(selectedPeriod !== 0) ? <LineChart data={byMarketChartData} title="" yGrid={true} inThousand={true} stacked={true}/>
           :
@@ -217,7 +231,7 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
           }
           </GraphContainer>
 }
-{floading ? <Loading />:
+{loading ? <Loading />:
           <GraphContainer>
           {(selectedPeriod !== 0) ? <LineChart data={byFirmChartData} title="" yGrid={true} inThousand={true} stacked={true} />
           :
@@ -240,7 +254,7 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
         <div className="pl-4"><ParagraphContainer title={t("UNIT_AND_VALUE_MARKET_SHARES_-_TOTAL")} /></div>
         <div className="col">
         </div>
-        {floading ? <Loading />:
+        {loading ? <Loading />:
           <GraphContainer>
            <HorizontalBar data={marketShareChartData} title="" inPercent={true} stacked={true} />
           </GraphContainer>
@@ -255,12 +269,12 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
         </div>
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {bloading ? <Loading />:
+          {loading ? <Loading />:
           <VerticalBar data={topSellingVolumeChartData} title=""/>
         }
           </GraphContainer>
           <GraphContainer>
-          {bloading ? <Loading />:
+          {loading ? <Loading />:
           <VerticalBar data={topSellingRevenueChartData} title=""/>
           }
           </GraphContainer>

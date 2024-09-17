@@ -1,13 +1,4 @@
-
-import {
-  getFeaturesData,
-  getLevelsData,
-  getSegmentsData,
-  getUtilitiesData,
-} from "features/analyzeSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { useEffect } from "react";
-import { fetchMarketResearchChoices } from "features/decideSlices";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
@@ -15,9 +6,11 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
 import { featureColors } from "@/lib/constants/colors";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import VerticalBar from "@/components/charts/VerticalBar";
 import LineChart from "@/components/charts/LineChart";
+import { useSession } from "next-auth/react";
+import { fetchMarketResearchChoices, getFeaturesData, getLevelsData, getSegmentsData, getUtilitiesData } from "features/data";
+import { featureProps, levelProps, marketResearchProps, segmentProps, utilitiesProps } from "types";
 
 
 
@@ -33,47 +26,51 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 
 function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const dispatch = useAppDispatch();
-  const router = useRouter()
-  const { t } = useTranslation('common')
-  const { period } = router.query as { period: string};
-  const selectedPeriod = parseInt(period)
-  const {participant} = useAuth()
-  const { industryID, firmID,courseID } =participant || {};
-  
+  const { data: session, status } = useSession();
+  const { industryID, firmID, courseID } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0;
 
-  useEffect(()=>{
-    if (firmID && industryID ) {
-    dispatch(fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod }));
-    }
-  },[dispatch,firmID,industryID,selectedPeriod])
+  const [utilities, setUtilities] = useState<utilitiesProps[]>();
+  const [levels, setLevels] = useState<levelProps[]>();
+  const [featureList, setFeatureList] = useState<featureProps[]>();
+  const [segments, setSegments] = useState<segmentProps[]>();
+  const [loading, setLoading] = useState(false);
 
-  const { data: marketResearchChoices } = useAppSelector((state) => state.decide.marketResearchChoices);
-
+  const { t } = useTranslation('common');
   useEffect(() => {
+    if (status === 'authenticated' && firmID && industryID && courseID) {
+      const loadData = async () => {
+        setLoading(true);
+        try {
+    
 
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (courseID) {
-      dispatch(getUtilitiesData({ courseID }));
-      dispatch(getLevelsData());
-      dispatch(getFeaturesData());
+          const [utilitiesData, levelsData, featuresData, segmentsData] = await Promise.all([
+            getUtilitiesData({ courseID, token: session?.accessToken }),
+            getLevelsData({ token: session?.accessToken }),
+            getFeaturesData(),
+            getSegmentsData(),
+          ]);
+
+          setUtilities(utilitiesData);
+          setLevels(levelsData);
+          setFeatureList(featuresData);
+          setSegments(segmentsData);
+        } catch (error) {
+          console.error('Error fetching market research choices:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadData();
     }
-    dispatch(getSegmentsData());
-  }, [dispatch,courseID]);
+  }, [status]);
 
-  const {data:utilities,loading:uloading} = useAppSelector((state) => state.analyze.utilities);
-  const {data:levels ,loading:lloading} = useAppSelector((state) => state.analyze.levels);
-  const {data:featureList} = useAppSelector((state) => state.analyze.features);
-  const {data:segments} = useAppSelector(
-    (state) => state.analyze.segments
-  );
-  
 
 
   let features: string[] = [];
 
   let ids: { [key: string]: any } = {};
-  if (utilities.length > 0)
+  if (utilities && utilities.length > 0)
     features = utilities[0].utilities.map((row) => {
       ids[row.feature_name] = row.feature;
       return row.feature_name;
@@ -81,16 +78,15 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
   let w_utils: { [key: string]: any } = {};
   let m_utils: { [key: string]: any } = {};
 
-  segments.forEach((row) => {
+  segments?.forEach((row) => {
     m_utils[row.name] = [];
     w_utils[row.name] = [];
 
     features.forEach((row1) => {
       let array = [0, 0, 0, 0];
-      let length = utilities.filter((row2) => row2.segment_name === row.name).length;
+      let length = utilities?.filter((row2) => row2.segment_name === row.name).length || 1;
 
-      utilities
-        .filter((row2) => row2.segment_name === row.name)
+      utilities?.filter((row2) => row2.segment_name === row.name)
         .forEach((row2) => {
           row2.utilities
             .filter((row3) => row3.feature_name === row1)
@@ -110,14 +106,14 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
   });
 
   const chart1Data = {
-    labels: segments.map(entry=>(locale==="fr")?entry.name_fr:entry.name),
+    labels: segments?.map(entry=>(locale==="fr")?entry.name_fr:entry.name) || [],
     datasets: features.map((row, id) => ({
-      label: (locale==="fr")? featureList.find((row1) => row1.abbrev === row)?.abbrev_fr:featureList.find((row1) => row1.abbrev === row)?.abbrev,
-      data: segments.map((row1) => {
+      label: ((locale==="fr")? featureList?.find((row1) => row1.abbrev === row)?.abbrev_fr : featureList?.find((row1) => row1.abbrev === row)?.abbrev),
+      data: segments?.map((row1) => {
         let c = w_utils[row1.name][id];
         let t = w_utils[row1.name].reduce((a: number, b: number) => a + b, 0);
         return c / t;
-      }),
+      }) || [],
       borderWidth: 1,
       backgroundColor:featureColors[id],
       borderColor:featureColors[id],
@@ -125,15 +121,15 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
   };
 
   let chart2Data: { [key: string]: any } = {};
-  segments.map((row) => {
+  segments?.map((row) => {
     chart2Data[row.name] = {
     labels:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,],    
     datasets:features.map((row1, id1) => {
       let dl: number[] = [];
-      let temp = levels.filter(
+      let temp = levels?.filter(
         (row2) => row2.segment_name === row.name && row2.feature_name === row1
       );
-      if (temp.length > 0)
+      if (temp && temp.length > 0)
         dl = [temp[0].l_1, temp[0].l_2, temp[0].l_3, temp[0].l_4];
 
        let datalabels = [
@@ -149,7 +145,7 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
             .map((v) => null),
           ...m_utils[row.name][id1],
         ],
-        label:  (locale==="fr")? featureList.find((row) => row.abbrev === row1)?.abbrev_fr:featureList.find((row) => row.abbrev === row1)?.abbrev,
+        label:  (locale==="fr")? featureList?.find((row) => row.abbrev === row1)?.abbrev_fr:featureList?.find((row) => row.abbrev === row1)?.abbrev,
         lineTension: 0.1,
         pointRadius: 3,
         pointStyle: "circle",
@@ -170,8 +166,8 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
  
   let legend = "";
   features.map((row) => {
-    let temp = featureList.filter((row1) => row1.abbrev === row);
-    if (temp.length > 0)
+    let temp = featureList?.filter((row1) => row1.abbrev === row);
+    if (temp && temp.length > 0)
       legend = legend.concat(`${temp[0].abbrev}: ${temp[0].unit},`);
   });
 
@@ -193,7 +189,7 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
 
       <div className="grid grid-cols-1 mb-4 h-80">
           <GraphContainer>
-          {uloading ? <Loading />:  
+          {loading ? <Loading />:  
            <VerticalBar data={chart1Data} title="" inPercent={true} legend={true} />
         }
           </GraphContainer>
@@ -201,7 +197,7 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
 
       <ParagraphContainer title= {t("UTILITY_CHARTS")} content={t("THE_CHARTS_BELOW_SHOW_THE_UTILITIES_ATTACHED_TO_FOUR_ARBITRARY_LE")}   />
  
-      {lloading ? <Loading />:  
+      {loading ? <Loading />:  
       <div className="grid grid-cols-1">
         {segments?.map((segment,index) => (
           <div className="col h-72 p-4" key={index}>

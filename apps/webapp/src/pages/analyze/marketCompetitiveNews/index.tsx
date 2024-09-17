@@ -1,11 +1,10 @@
 import { Layout } from "@/components/Layout";
 import { Section } from "@/components/Section";
 import usePaths from "@/lib/paths";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useRouter } from "next/router";
 import { ReactElement } from "react";
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -19,8 +18,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function MarketCompetitveNewsPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const router = useRouter()
-  const {selectedPeriod} = useAuth();
+  const { data: session } = useSession()
+  const selectedPeriod = session?.selectedPeriod || 0
+
 
     const paths = usePaths();
     const { t } = useTranslation('common')

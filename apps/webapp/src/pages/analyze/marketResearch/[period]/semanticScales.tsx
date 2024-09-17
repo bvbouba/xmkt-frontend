@@ -1,19 +1,16 @@
 
-import { getFeaturesData, getSegmentsData, getSemanticIdealsData, getSemanticScalesData } from "features/analyzeSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import {  getMapData, getValueByBrandFeature, getValueBySegmentFeature } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { TableSimple } from "@/components/Table/Table";
-import { useRouter } from "next/router";
-import { fetchMarketResearchChoices } from "features/decideSlices";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { HeaderContainer, ParagraphContainer } from "@/components/container";
-import { featureProps } from "types";
-import { useAuth } from "@/lib/providers/AuthProvider";
+import { featureProps, marketResearchProps, segmentProps, SemanticIdealsProps, SemanticScalesProps } from "types";
 import ScatterChart from "@/components/charts/ScatterChart";
+import { useSession } from "next-auth/react";
+import { fetchMarketResearchChoices, getFeaturesData, getSegmentsData, getSemanticIdealsData, getSemanticScalesData } from "features/data";
 
 
 
@@ -36,52 +33,46 @@ interface columnProps {
   };
 
 function SemanticScales({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-    const [selectedFeature,setSelectedFeature] = useState<featureProps|undefined>(undefined)
-  const dispatch = useAppDispatch();
+  const { data: session, status } = useSession();
+  const { t } = useTranslation('common');
 
-    const { t } = useTranslation('common')
+  const industryID = session?.industryID;
+  const firmID = session?.firmID;
+  const selectedPeriod = session?.selectedPeriod || 0;
 
-    const router = useRouter()
+  const [selectedFeature, setSelectedFeature] = useState<featureProps | undefined>(undefined);
+  const [semantics, setSemantics] = useState<SemanticScalesProps[]>([]);
+  const [ideals, setIdeals] = useState<SemanticIdealsProps[]>([]);
+  const [featuresData, setFeaturesData] = useState<featureProps[]>([]);
+  const [segments, setSegments] = useState<segmentProps[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    const { period } = router.query as { period: string};
-    const selectedPeriod = parseInt(period)
-    const {participant} = useAuth()
-  const { industryID, firmID } =participant || {};
-     
-  
-    useEffect(()=>{
-      if (firmID && industryID ) {
-      dispatch(fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod }));
-      }
-    },[dispatch,firmID,industryID,selectedPeriod])
-  
-    const { data: marketResearchChoices } = useAppSelector((state) => state.decide.marketResearchChoices);
-  
-  
   useEffect(() => {
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (firmID && industryID) {
-      dispatch(getSemanticScalesData({ industryID, period:selectedPeriod }));
-      dispatch(getSemanticIdealsData({ industryID, period:selectedPeriod }));
+    if (status === 'authenticated' && firmID && industryID) {
+      const loadData = async () => {
+        setLoading(true);
+        try {
+
+          const response2 = await getSemanticScalesData({ industryID, period: selectedPeriod, token: session.accessToken });
+          setSemantics(response2);
+
+          const response3 = await getSemanticIdealsData({ industryID, period: selectedPeriod, token: session.accessToken });
+          setIdeals(response3);
+
+          const response4 = await getFeaturesData();
+          setFeaturesData(response4);
+
+          const response5 = await getSegmentsData();
+          setSegments(response5);
+        } catch (error) {
+          console.error('Error getting data:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadData();
     }
-    dispatch(getFeaturesData())
-    dispatch(getSegmentsData())
-  }, [dispatch,selectedPeriod,industryID]);
-
- 
-  const {data:semantics,loading:sloading} = useAppSelector(
-    (state) => state.analyze.semanticScales
-  );
-  const {data:ideals,loading:iloading} = useAppSelector(
-    (state) => state.analyze.semanticIdeals
-  );
-  const {data:featuresData} = useAppSelector(
-    (state) => state.analyze.features
-  );
-
-  const {data:segments} = useAppSelector(
-    (state) => state.analyze.segments
-  );
+  }, [status, firmID, industryID, selectedPeriod, session?.accessToken]);
   
 const features = featuresData.filter(item=>item.surname !== "feature_7")
 
@@ -177,7 +168,7 @@ const rows1 = segments.map(row =>{
       <ParagraphContainer title={t("BRAND_PERCEPTIONS")} content={t("RESPONDENTS_ARE_ASKED_TO_RATE_EACH_BRAND_ACCORDING_TO_THE_WAY_THE")}   />
 
           <div className="col p-4">
-          {sloading ? <Loading />:  
+          {loading ? <Loading />:  
           <TableSimple columns={columns} rows={rows}/>
     }
           </div>
@@ -187,7 +178,7 @@ const rows1 = segments.map(row =>{
         <ParagraphContainer title={t("IDEAL_VALUES")} content={t("RESPONDENTS_ARE_ASKED_TO_RATE_EACH_BRAND_ACCORDING_TO_THE_WAY_THE2")}   />
 
           <div className="col p-4">
-          {iloading ? <Loading />:  
+          {loading ? <Loading />:  
           <TableSimple columns={columns1} rows={rows1}/>
   }
           </div>
@@ -196,7 +187,7 @@ const rows1 = segments.map(row =>{
       <ParagraphContainer title={t("BRAND_MAPS")} content={t("MAPS_REPRESENTING_CONSUMERS_PERCEPTIONS_BASED_ON_THE_SEMANTIC_SCALES")}   />
 
 
-      {(iloading && sloading) ? <Loading />:  
+      {(loading) ? <Loading />:  
 
       <div className="row align-items-center p-4">
         <div className="col inline-flex">

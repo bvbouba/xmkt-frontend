@@ -1,19 +1,17 @@
 
-import { getChannelsData, getSegmentsData } from "features/analyzeSlices";
-import { fetchMarketResearchChoices, getMarketingMixData } from "features/decideSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { getValueByBrand } from "@/lib/utils";
-import {  useEffect } from "react";
+import {  useEffect, useState } from "react";
 import { TableSimple, } from "@/components/Table/Table";
-import { useRouter } from "next/router";
 import { Loading } from "@/components/Loading";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
-import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
-import { useAuth } from "@/lib/providers/AuthProvider";
+import { GraphContainer, HeaderContainer } from "@/components/container";
 import VerticalBar from "@/components/charts/VerticalBar";
 import { channelColors, colorGrades, segmentColors } from "@/lib/constants/colors";
+import { useSession } from "next-auth/react";
+import { fetchMarketResearchChoices, getChannelsData, getMarketingMixData, getSegmentsData } from "features/data";
+import { channelProps, markertingMixProps, marketResearchProps, segmentProps } from "types";
 
 
 
@@ -28,51 +26,54 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function CompetitiveAds({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const router = useRouter()
+  const { data: session, status } = useSession()
+  const {  industryID, firmID } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0
+  const [marketResearchChoices,setMarketResearchChoices] = useState<marketResearchProps[]>([])
+  const [m2Data,setM2Data] = useState<markertingMixProps[]>([])
+  const [channels,setChannels] = useState<channelProps[]>([])
+  const [segments,setSegments] = useState<segmentProps[]>([])
+  const [loading,setLoading] = useState(false)
   
 
-  const dispatch = useAppDispatch();
   const { t } = useTranslation('common')
 
-  const { period } = router.query as { period: string};
-  const selectedPeriod = parseInt(period)
-  const {participant} = useAuth()
-  const { industryID, firmID } = participant || {};
+
 
   
   useEffect(()=>{
-    if (firmID && industryID ) {
-    dispatch(fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod }));
+  
+    if (status === "authenticated" && firmID && industryID) {
+     
+      const loadData = async () => {
+        setLoading(true)
+        try {
+          const response1 = await fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod,token: session.accessToken });
+          const response2 = await getMarketingMixData({ industryID,firmID:0, period:selectedPeriod,token: session.accessToken,
+              fields:"brand_name,period_id,team_name,firm_id,advertising,channel_1,channel_2,channel_3,ads_share_1,ads_share_2,ads_share_3,ads_share_4,ads_share_5"
+           });
+          const response3 = await getChannelsData();
+          const response4 = await getSegmentsData();
+          setMarketResearchChoices(response1)
+          setM2Data(response2)
+          setChannels(response3)
+          setSegments(response4)
+          
+        } catch (error) {
+          console.error('Error getting course:', error);
+        } finally{
+          setLoading(false)
+        }
+      }
+      loadData()
+
     }
-  },[dispatch,firmID,industryID,selectedPeriod])
-
-  const { data: marketResearchChoices } = useAppSelector((state) => state.decide.marketResearchChoices);
-
-
-  useEffect(() => {
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (firmID && industryID) {
-      dispatch(getMarketingMixData({ industryID,firmID:0, period:selectedPeriod }));
-      dispatch(getChannelsData());
-      dispatch(getSegmentsData());
-    }
-  }, [dispatch,selectedPeriod,industryID]);
-
-  const {data:m2Data, loading:mloading} = useAppSelector(
-    (state) => state.decide.marketingMix
-  );
-  const {data:channels} = useAppSelector(
-    (state) => state.analyze.channels
-  );
-
-  const {data:segments} = useAppSelector(
-    (state) => state.analyze.segments
-  );
+  },[status])
 
 
 
   let firmIds : { [key: string]: any } = {};
-  const teams = Array.from(new Set(m2Data.map(row => {
+  const teams = Array.from(new Set(m2Data?.map(row => {
                       firmIds[row.team_name] = row.firm_id
                        return row.team_name
                      })))
@@ -82,21 +83,21 @@ function CompetitiveAds({ locale }: InferGetStaticPropsType<typeof getStaticProp
             {
             label:row,
             firmID:firmIds[row],
-            value_ads:m2Data.filter(row1 => row1.firm_id === firmIds[row]).reduce((a,c)=>
+            value_ads:m2Data?.filter(row1 => row1.firm_id === firmIds[row]).reduce((a,c)=>
                     a + c.advertising
                      ,0),
-             value_com:m2Data.filter(row1 => row1.firm_id === firmIds[row]).reduce((a,c)=>
+             value_com:m2Data?.filter(row1 => row1.firm_id === firmIds[row]).reduce((a,c)=>
                      a + c.channel_1 + c.channel_2 + c.channel_3
                       ,0)
             })
          )
 
 let dataArray2:{label:string,id:number,value:number}[]=[]
-segments.map(row => dataArray2.push(
+segments?.map(row => dataArray2.push(
                    {
                    label:(locale==="fr")?row.name_fr:row.name,
                    id:row.id,
-                   value:m2Data.reduce((a,c)=>
+                   value:m2Data?.reduce((a,c)=>
                            a + c.advertising*c[`ads_share_${row.id}`]
                             ,0)
                    })
@@ -140,11 +141,11 @@ segments.map(row => dataArray2.push(
   }
 
     let dataArray4:{label:string,id:number,value:number}[]=[]
-    channels.map(row => dataArray4.push(
+    channels?.map(row => dataArray4.push(
               {
               label:(locale==="fr")?row.name_fr:row.name,
               id:row.id,
-              value:m2Data.reduce((a,c)=>
+              value:m2Data?.reduce((a,c)=>
                       a + c[`channel_${row.id}`]
                        ,0)
               })
@@ -160,19 +161,19 @@ segments.map(row => dataArray2.push(
                     }]}
   
 
-  const brands = Array.from(new Set(m2Data.map(row => row.brand_name
+  const brands = Array.from(new Set(m2Data?.map(row => row.brand_name
                      )))
   
   let columns = []
   columns.push({id:'name' , numeric: false, label:'Brand'})
-  segments.map(row => columns.push({id:row.name , numeric: true, label:(locale==="fr")?row.name_fr:row.name }))
+  segments?.map(row => columns.push({id:row.name , numeric: true, label:(locale==="fr")?row.name_fr:row.name }))
   columns.push({id:'total' , numeric: true, label:'TOTAL'})
   
   const rows = brands.map(row =>{
                let temp: { [key: string]: any } = {};
                temp['name'] = row
                let total = 0
-               segments.map(
+               segments?.map(
                  s => {
                    let share  = getValueByBrand(m2Data,row,selectedPeriod,`ads_share_${s.id}`)
                    let ads = getValueByBrand(m2Data,row,selectedPeriod,`advertising`)
@@ -185,14 +186,14 @@ segments.map(row => dataArray2.push(
   
   let columns1 = []
   columns1.push({id:'name' , numeric: false, label:'Brand'})
-  channels.map(row => columns1.push({id:row.name , numeric: true, label:(locale==="fr")?row.name_fr:row.name }))
+  channels?.map(row => columns1.push({id:row.name , numeric: true, label:(locale==="fr")?row.name_fr:row.name }))
   columns1.push({id:'total' , numeric: true, label:'TOTAL'})
   
   const rows1 = brands.map(row =>{
                let temp: { [key: string]: any } = {};
                temp['name'] = row
                let total = 0
-               channels.map(
+               channels?.map(
                  s => {
                    let qty = getValueByBrand(m2Data,row,selectedPeriod,`channel_${s.id}`)
                    temp[s.name]= qty
@@ -205,8 +206,8 @@ segments.map(row => dataArray2.push(
     const title1 = t("COMPETITIVE_ADVERTISING_ESTIMATES_-_PERIOD",{selectedPeriod})   
     const title2 = t("ESTIMATED_COMMERCIAL_TEAM_SIZE_ESTIMATES_-_PERIOD",{selectedPeriod})
     
-    const choice1 = marketResearchChoices.some((choice => choice.study === 2 && choice.choice === true))
-    const choice2 = marketResearchChoices.some((choice => choice.study === 3 && choice.choice === true))
+    const choice1 = marketResearchChoices?.some((choice => choice.study === 2 && choice.choice === true))
+    const choice2 = marketResearchChoices?.some((choice => choice.study === 3 && choice.choice === true))
 
     
     // if(!choice1 && !choice2){
@@ -235,19 +236,19 @@ segments.map(row => dataArray2.push(
 
         <div className="grid grid-cols-2 gap-4 h-80 p-4">
           <GraphContainer>
-          {mloading ? <Loading />:  
+          {loading ? <Loading />:  
             <VerticalBar data={chart1Data} title={t("ESTIMATE_TOTAL_EXPENDITURE_(IN_MILLION_$)_-_BY_FIRM")} />
     }
           </GraphContainer>
           <GraphContainer>
-          {mloading ? <Loading />:  
+          {loading ? <Loading />:  
           <VerticalBar data={chart2Data} title={t("ESTIMATE_TOTAL_EXPENDITURE_(IN_MILLION_$)_-_BY_SEGMENT")} />
   }
           </GraphContainer>
         </div>
 
           <div className="col p-8">
-          {mloading ? <Loading />:  
+          {loading ? <Loading />:  
           <TableSimple columns={columns} rows={rows}/>
           }
       </div></>}
@@ -263,12 +264,12 @@ segments.map(row => dataArray2.push(
 
         <div className="grid grid-cols-2 gap-4 h-80 p-4">
           <GraphContainer>
-          {mloading ? <Loading />:  
+          {loading ? <Loading />:  
           <VerticalBar data={chart3Data} title= {t("ESTIMATED_COMMERCIAL_TEAM_SIZE_(IN_FULL-TIME_EQUIVALENT)_-_BY_FIRM")} />
 }
           </GraphContainer>
           <GraphContainer>
-          {mloading ? <Loading />:  
+          {loading ? <Loading />:  
           <VerticalBar data={chart4Data} title={t("ESTIMATED_COMMERCIAL_TEAM_SIZE_(IN_FULL-TIME_EQUIVALENT)_-_BY_SEGMENT")} />
 }
           </GraphContainer>
@@ -276,7 +277,7 @@ segments.map(row => dataArray2.push(
 
 
           <div className="col p-8">
-          {mloading ? <Loading />:  
+          {loading ? <Loading />:  
           <TableSimple columns={columns1} rows={rows1}/>
 }
       </div>

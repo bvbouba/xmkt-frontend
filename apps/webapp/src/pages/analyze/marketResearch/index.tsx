@@ -1,13 +1,13 @@
 import { Layout } from "@/components/Layout";
 import { Section } from "@/components/Section";
-import { fetchMarketResearchChoices } from "features/decideSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { marketResearchProps } from "types";
+import { fetchMarketResearchChoices } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'en';
@@ -20,19 +20,35 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function MarketResearchPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-    const paths = usePaths();
-    const dispatch = useAppDispatch();
-    const {participant,selectedPeriod} = useAuth();
-    const { industryID, firmID } = participant || {};
+  const { data: session, status } = useSession()
+  const {  industryID, firmID } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0
+  const [marketResearchChoices,setMarketResearchChoices] = useState<marketResearchProps[]>()
+
+  const paths = usePaths();
+
     const { t } = useTranslation('common')
 
     useEffect(()=>{
-      if (firmID && industryID ) {
-      dispatch(fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod }));
-      }
-    },[dispatch,firmID,industryID,selectedPeriod])
+  
+      if (status === "authenticated" && firmID && industryID) {
+       
+        const loadData = async () => {
+          try {
+            const response1 = await fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod,token: session.accessToken });
 
-    const { data: marketResearchChoices } = useAppSelector((state) => state.decide.marketResearchChoices);
+            setMarketResearchChoices(response1)
+
+            
+          } catch (error) {
+            console.error('Error getting data:', error);
+          } 
+        }
+        loadData()
+  
+      }
+    },[])
+
 
     const benchmarkingItems = [
         { url: paths.analyze.marketResearch._period(selectedPeriod).industryBenchmarking.$url(), image: '/images/industry-benchmarking-logo.png', alt: 'industry_benchmarking', title: "INDUSTRY_BENCHMARKING", study:1 },
@@ -44,14 +60,13 @@ function MarketResearchPage({ locale }: InferGetStaticPropsType<typeof getStatic
         { url: paths.analyze.marketResearch._period(selectedPeriod).competitiveAds.$url(), image: '/images/competitive-ads-logo.png', alt: 'competitive_ads', title: "COMPETITIVE_ADVERSTISING_AND_COMMERCIAL_TEAM_ESTIMATES" , study:2,substudy:3},
         { url: paths.analyze.marketResearch._period(selectedPeriod).marketForecast.$url(), image: '/images/market-forecast-logo.png', alt: 'market_forecast', title: "MARKET_FORECAST",study:8 },
         { url: paths.analyze.marketResearch._period(selectedPeriod).conjointAnalysis.$url(), image: '/images/conjoint-analysis-logo.png', alt: 'conjoint_analysis', title: "CONJOINT_ANALYSIS",study:4 },
-        // Add more items as needed
       ];
     
 
    
       const filteredBenchmarkingItems = benchmarkingItems
     .filter((item) => {
-      return marketResearchChoices.some((choice) => {
+      return marketResearchChoices?.some((choice) => {
         return (choice.study === item.study || choice.study === item.substudy) && choice.choice === true;
       });
     })

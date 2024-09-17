@@ -1,8 +1,6 @@
 
 import { brandFinancialChartItems, firmFinancialChartItems, transformConstants } from "@/lib/constants";
-import { getBrandData, getFirmData } from "features/analyzeSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { unit } from "@/lib/constants";
 import { Table } from "@/components/Table";
 import { Loading } from "@/components/Loading";
@@ -13,12 +11,14 @@ import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/component
 import { categoryColors, colorGrades } from "@/lib/constants/colors";
 import { getValueByPeriod } from "@/lib/utils";
 import { useRouter } from "next/router";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import MultiAxisLine from "@/components/charts/MultiAxisLine";
 import LineChart from "@/components/charts/LineChart";
 import DoughnutChart from "@/components/charts/DoughnutChart";
 import { Bar } from "react-chartjs-2";
 import { options } from "@/components/charts/VerticalBar";
+import { useSession } from "next-auth/react";
+import { brandProps, firmProps } from "@/lib/type";
+import { getBrandData, getFirmData } from "features/data";
 
 
 
@@ -33,26 +33,39 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const { data: session, status } = useSession()
+  const { teamName, industryID, firmID,  } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0
+  const [firmData,setFirmData] = useState<firmProps[]>([])
+  const [brandData,setBrandData] = useState<brandProps[]>([])
+  const [loading,setLoading] = useState(false)
+
   const router = useRouter()
-  const { period } = router.query as { period: string};
-  const selectedPeriod = parseInt(period)
-  const {participant} = useAuth();
-  const dispatch = useAppDispatch();
-  const { teamName, industryID, firmID } = participant || {};
   
     const { t } = useTranslation('common')
 
     useEffect(() => {
         // Dispatch actions to get firm and brand data when the component mounts
-        if (firmID && industryID) {
-          dispatch(getFirmData({ industryID, firmID }));
-          dispatch(getBrandData({ industryID, firmID }));
+        if (status === "authenticated" && firmID && industryID) {
+
+          const loadData = async () => {
+            setLoading(true)
+          try {
+            const response1 = await getFirmData({ industryID, firmID, token: session.accessToken });
+            const response2 = await getBrandData({ industryID, firmID,token: session.accessToken });
+            setFirmData(response1)
+            setBrandData(response2)
+          } catch (error) {
+            console.error('Error getting data:', error);
+          }finally{
+            setLoading(false)
+          }
+          }
+          loadData()
         }
-      }, [dispatch,firmID,industryID]);
+      }, [status]);
     
-      const {data:firmData,loading:floading} = useAppSelector((state) => state.analyze.firm);
-      const {data:brandData,loading:bloading} = useAppSelector((state) => state.analyze.brand);
-      
+
       let firmColors:string[] = []; // Default color array
       if (typeof firmID === 'number') {
         const colorIndex = firmID - 1; // Assuming firmID starts from 1
@@ -142,7 +155,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
     
       <div className="p-5">
       {
-      floading ? <Loading />:
+      loading ? <Loading />:
       <Table data={filteredFirmData} items={transformConstants(locale).firmFinancialItems} lookup="period_id" heads={[...new Set(filteredFirmData.map((entry) => entry.period_id))]}/>
        }
       </div>
@@ -150,7 +163,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
         <div className="grid grid-cols-2 gap-4 h-80">
           
         {
-      floading ? <Loading />:
+      loading ? <Loading />:
           <GraphContainer>
            {(selectedPeriod !== 0) ? <MultiAxisLine data={profitData} title={t("REVENUE_EBT_EVOLUTION")} max={Math.max(...profitData.datasets[0].data) * 1.2} />
           :
@@ -159,7 +172,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
           </GraphContainer>}
 
           {
-          floading ? <Loading />:
+          loading ? <Loading />:
           <GraphContainer>
           {(selectedPeriod !== 0) ? <LineChart data={costData} title={t("COST_EVOLUTION_BY_CATEGORY_(%_Revenue)")} inPercent={true} />
           :
@@ -173,7 +186,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
 
       <div className="p-5">
       {
-      bloading ? <Loading />:
+      loading ? <Loading />:
       <Table data={filteredBrandData} items={transformConstants(locale).brandFinancialItems} lookup="brand_name" heads={[...new Set(filteredBrandData.map((entry) => entry["brand_name"]))]}/>
       }
       </div>
@@ -182,13 +195,13 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
           {
-      bloading ? <Loading />:
+      loading ? <Loading />:
            <DoughnutChart data={revenueData}  title={t("REVENUES")} inPercent={true}/>
           }
           </GraphContainer>
           <GraphContainer>
           {
-      bloading ? <Loading />:
+      loading ? <Loading />:
           <DoughnutChart data={contributionData} title={t("CONTRIBUTION_AFTER_MARKETING")} inPercent={true} />
          }
           </GraphContainer>

@@ -1,9 +1,7 @@
 
 import {  productionItems, transformConstants } from "@/lib/constants";
-import { getBrandData } from "features/analyzeSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { getValueByBrand } from "@/lib/utils";
-import {  useEffect } from "react";
+import {  useEffect, useState } from "react";
 
 import { Table } from "@/components/Table";
 import { Loading } from "@/components/Loading";
@@ -12,9 +10,10 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
 import { categoryColors } from "@/lib/constants/colors";
-import { useRouter } from "next/router";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import GroupedBar from "@/components/charts/GroupedBar";
+import { useSession } from "next-auth/react";
+import { getBrandData } from "features/data";
+import { brandProps } from "types";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -28,24 +27,33 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const router = useRouter()
-  const { period } = router.query as { period: string};
-  const selectedPeriod = parseInt(period)
-  const {participant} = useAuth();
-  const dispatch = useAppDispatch();
-  const { teamName, industryID, firmID, } = participant || {};
+  const { data: session, status } = useSession()
+  const { teamName, industryID, firmID,  } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0
+  const [brandData,setBrandData] = useState<brandProps[]>([])
+  const [loading,setLoading] = useState(false)
 
     const { t } = useTranslation('common')
 
 
     useEffect(() => {
-        // Dispatch actions to get firm and brand data when the component mounts
-        if (firmID && industryID) {
-          dispatch(getBrandData({ industryID, firmID }));
-        }
-      }, [dispatch,industryID,firmID]);
 
-      const {data:brandData,loading:bloading} = useAppSelector((state) => state.analyze.brand);
+      if (status === "authenticated"  && firmID && industryID) {
+        const loadData = async () => {
+          setLoading(true)
+        try {
+          const response = await getBrandData({ industryID, firmID,token: session.accessToken });
+           setBrandData(response)
+        } catch (error) {
+          console.error('Error getting data:', error);
+        } finally{
+          setLoading(false)
+        }
+        }
+        loadData()
+        }
+      }, [status]);
+
 
 
         const productionData = {
@@ -81,7 +89,7 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
       <div className='grid grid-cols-1 gap-4 h-80'>
         <GraphContainer>
         {
-      bloading ? <Loading />:
+      loading ? <Loading />:
           <GroupedBar data={productionData} title="" />
         }
               </GraphContainer>
@@ -91,7 +99,7 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
 
       <div className="p-5">
       {
-      bloading ? <Loading />:
+      loading ? <Loading />:
       <Table data={filteredBrandData} items={transformConstants(locale).inventoryItems} lookup="brand_name" heads={[...new Set(brandData.map((entry) => entry.brand_name))]}/>
       }
       </div>
@@ -101,7 +109,7 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
 
       <div className="p-5">
       {
-      bloading ? <Loading />:
+      loading ? <Loading />:
       <Table data={filteredBrandData} items={transformConstants(locale).costItems} lookup="brand_name" heads={[...new Set(brandData.map((entry) => entry.brand_name))]}/>
        } 
       </div>

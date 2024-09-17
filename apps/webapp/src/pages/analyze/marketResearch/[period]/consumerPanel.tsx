@@ -1,21 +1,19 @@
 
-import { getSalesData, getSegmentsData } from "features/analyzeSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import {  useEffect } from "react";
+import {  useEffect, useState } from "react";
 
 
-import { useRouter } from "next/router";
-import { fetchMarketResearchChoices } from "features/decideSlices";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
 import { segmentColors } from "@/lib/constants/colors";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import VerticalBar from "@/components/charts/VerticalBar";
 import HorizontalBar from "@/components/charts/HorizontalBar";
 import DoughnutChart from "@/components/charts/DoughnutChart";
+import { useSession } from "next-auth/react";
+import { fetchMarketResearchChoices, getSalesData, getSegmentsData } from "features/data";
+import { marketResearchProps, salesProps, segmentProps } from "types";
 
 
 interface columnProps {
@@ -37,44 +35,49 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const dispatch = useAppDispatch();
-
-  const { t } = useTranslation('common')
-
-  const router = useRouter()
-
-  const { period } = router.query as { period: string};
-  const selectedPeriod = parseInt(period)
-  const {participant} = useAuth()
-  const { industryID, firmID } =participant || {};
-
-
-  useEffect(()=>{
-    if (firmID && industryID ) {
-    dispatch(fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod }));
-    }
-  },[dispatch,firmID,industryID,selectedPeriod])
-
-  const { data: marketResearchChoices } = useAppSelector((state) => state.decide.marketResearchChoices);
-
-
+  const { data: session, status } = useSession();
+  const { industryID, firmID } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0;
+  
+  const [sales, setSales] = useState<salesProps[]>([]);
+  const [segments, setSegments] = useState<segmentProps[]>([]);
+  const [loading, setLoading] = useState(false);
+  
+  const { t } = useTranslation('common');
+  
   useEffect(() => {
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (firmID && industryID) {
-      dispatch(getSalesData({ industryID, period: selectedPeriod }));
+    if (status === "authenticated" && firmID && industryID) {
+      const loadData = async () => {
+        setLoading(true);
+        try {
+          
+          const response2 = await getSalesData({
+            industryID,
+            period: selectedPeriod,
+            token: session.accessToken, 
+          });
+  
+          const response3 = await getSegmentsData();
+  
+          setSales(response2);
+          setSegments(response3);
+  
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      loadData();
     }
-    dispatch(getSegmentsData());
-  }, [dispatch, industryID,selectedPeriod]);
-
-  const { data: sales, loading } = useAppSelector((state) => state.analyze.sales);
-  const { data: segments, loading:sloading } = useAppSelector((state) => state.analyze.segments);
-
-  const totalSize = sales.reduce((a, c) => a + c.volume, 0);
+  }, [status]);
+  const totalSize = sales?.reduce((a, c) => a + c.volume, 0);
   let teamJson: { [key: string]: any } = {};
   let firmIdJson: { [key: string]: any } = {};
   const brands = Array.from(
     new Set(
-      sales.map((row) => {
+      sales?.map((row) => {
         teamJson[row.brand_name] = row.team_name;
         firmIdJson[row.brand_name] = row.firm_id;
         return row.brand_name;
@@ -88,8 +91,7 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
     dataArray.push({
       label: row,
       value:
-        sales
-          .filter((row1) => row1.brand_name === row)
+        sales.filter((row1) => row1.brand_name === row)
           .reduce((a, c) => a + c.volume, 0) / totalSize,
     })
   );

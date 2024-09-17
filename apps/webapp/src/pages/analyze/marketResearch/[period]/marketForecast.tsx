@@ -1,14 +1,8 @@
-import {useEffect } from "react";
-import { Bar, Doughnut } from "react-chartjs-2";
+import {useEffect, useState } from "react";
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { getForecastsData, getSegmentsData } from "features/analyzeSlices";
 import { periods, periods1, transformConstants } from "@/lib/constants";
-import { useRouter } from "next/router";
-import { fetchMarketResearchChoices } from "features/decideSlices";
-import usePaths from "@/lib/paths";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -19,6 +13,9 @@ import { useAuth } from "@/lib/providers/AuthProvider";
 import HorizontalBar from "@/components/charts/HorizontalBar";
 import VerticalBar from "@/components/charts/VerticalBar";
 import DoughnutChart from "@/components/charts/DoughnutChart";
+import { useSession } from "next-auth/react";
+import { forecastProps, marketResearchProps, segmentProps } from "types";
+import { fetchMarketResearchChoices, getForecastsData, getSegmentsData } from "features/data";
 
 Chart.register(CategoryScale);
 // Register the plugin to all charts:
@@ -36,38 +33,43 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 
 function MarketForecast({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const dispatch = useAppDispatch();
-  const { t } = useTranslation('common')
-  const router = useRouter()
+  const { data: session, status } = useSession();
+const { industryID, firmID } = session || {};
+const selectedPeriod = session?.selectedPeriod || 0;
 
-  const { period } = router.query as { period: string};
-    const selectedPeriod = parseInt(period)
-  const {participant} = useAuth()
-  const { industryID, firmID } =participant || {};
-  
+const [forecasts, setForecasts] = useState<forecastProps[]>([]);
+const [segments, setSegments] = useState<segmentProps[]>([]);
+const [loading, setLoading] = useState(false);
 
+const { t } = useTranslation('common');
 
-  useEffect(()=>{
-    if (firmID && industryID) {
-    dispatch(fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod }));
-    }
-  },[dispatch,firmID,industryID,selectedPeriod])
+// Fetch market research choices and forecasts data when authenticated
+useEffect(() => {
+  if (status === 'authenticated' && firmID && industryID) {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+    
+        const response2 = await getForecastsData({
+          industryID,
+          period: selectedPeriod,
+          token: session.accessToken,
+        });
 
-  const { data: marketResearchChoices } = useAppSelector((state) => state.decide.marketResearchChoices);
+        const response3 = await getSegmentsData();
 
-  useEffect(() => {
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (firmID && industryID) {
-      dispatch(getForecastsData({ industryID, period:selectedPeriod }));
-    }
-    dispatch(getSegmentsData());
-  }, [dispatch,selectedPeriod,firmID,industryID]);
+        setForecasts(response2);
+        setSegments(response3);
+      } catch (error) {
+        console.error('Error getting data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const {data:forecasts,loading:floading} = useAppSelector((state) => state.analyze.forecats);
-
-  const {data:segments} = useAppSelector(
-    (state) => state.analyze.segments
-  );
+    loadData();
+  }
+}, [status]);
 
   const chart1Data = {
     labels: transformConstants(locale).periods.map((row) => row.label),
@@ -183,12 +185,12 @@ function MarketForecast({ locale }: InferGetStaticPropsType<typeof getStaticProp
       <div className="p-4">
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {(floading )? <Loading />: 
+          {(loading )? <Loading />: 
            <HorizontalBar data={chart1Data} title={t("MARKET_SIZE_BROKEN_DOWN_BY_CONSUMER_SEGMENT_(IN_THOUSANDS_OF_UNIT")} legendDisplay={false} />
   }
            </GraphContainer>
           <GraphContainer>
-          {(floading )? <Loading />: 
+          {(loading )? <Loading />: 
           <HorizontalBar data={chart2Data} title={t("CONSUMER_SEGMENT_GROWTH_RATE_(IN_%_UNITS)")} inPercent={true} legendDisplay={false} />
            }
           </GraphContainer>
@@ -200,12 +202,12 @@ function MarketForecast({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
       <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {(floading )? <Loading />: 
+          {(loading )? <Loading />: 
           <VerticalBar data={chart3Data} title={t("MARKET_SIZE_(IN_THOUSANDS_OF_UNITS)")} legend={true}/>
           }
           </GraphContainer>
           <GraphContainer>
-          {(floading )? <Loading />: 
+          {(loading )? <Loading />: 
           <VerticalBar data={chart4Data} title={t("MARKET_GROWTH_RATE_(%UNIT)")} inPercent={true} legend={true}/>
         }
         </GraphContainer>
@@ -216,12 +218,12 @@ function MarketForecast({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {(floading )? <Loading />: 
+          {(loading )? <Loading />: 
             <DoughnutChart data={chart5Data} title={""} inPercent={true} legendDisplay={true} />
           }
           </GraphContainer>
           <GraphContainer>
-          {(floading )? <Loading />: 
+          {(loading )? <Loading />: 
           <DoughnutChart data={chart6Data} title={""} inPercent={true}  />
            }
           </GraphContainer>

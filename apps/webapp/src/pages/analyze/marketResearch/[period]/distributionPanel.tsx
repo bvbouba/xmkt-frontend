@@ -1,20 +1,18 @@
 
-import { getChannelsData, getDistributionCoverageData, getSalesData } from "features/analyzeSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import {  getValueByBrandChannel } from "@/lib/utils";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { TableSimple, columnProps } from "@/components/Table/Table";
-import { useRouter } from "next/router";
-import { fetchMarketResearchChoices } from "features/decideSlices";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
 import { channelColors } from "@/lib/constants/colors";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import HorizontalBar from "@/components/charts/HorizontalBar";
 import DoughnutChart from "@/components/charts/DoughnutChart";
+import { useSession } from "next-auth/react";
+import { channelProps, distributionCoverageProps, marketResearchProps, salesProps } from "types";
+import { fetchMarketResearchChoices, getChannelsData, getDistributionCoverageData, getSalesData } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'en';
@@ -28,47 +26,43 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 function DistributionPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
 
-  const dispatch = useAppDispatch();
-
-    const { t } = useTranslation('common')
-    
-    const router = useRouter()
-
-    const { period } = router.query as { period: string};
-    const selectedPeriod = parseInt(period)
-    const {participant} = useAuth()
-    const { industryID, firmID } =participant || {};
+  const { data: session, status } = useSession();
+  const { industryID, firmID } = session || {};
+  const selectedPeriod = session?.selectedPeriod || 0;
   
-
-    useEffect(()=>{
-    if (firmID && industryID) {
-    dispatch(fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod }));
-    }
-  },[dispatch,firmID,industryID,selectedPeriod])
-
-  const { data: marketResearchChoices } = useAppSelector((state) => state.decide.marketResearchChoices);
-
+  const [sales, setSales] = useState<salesProps[]>([]);
+  const [distributionCoverage, setDistributionCoverage] = useState<distributionCoverageProps[]>([]);
+  const [channels, setChannels] = useState<channelProps[]>([]);
+  const [loading, setLoading] = useState(false);
   
-
+  const { t } = useTranslation('common');
+  
   useEffect(() => {
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (industryID) {
-      dispatch(getSalesData({ industryID, period:selectedPeriod }));
-      dispatch(getDistributionCoverageData({ industryID, period:selectedPeriod }));
-      dispatch(getChannelsData());
-
-    }
-  }, [dispatch,selectedPeriod,industryID]);
+    if (status === "authenticated" && firmID && industryID) {
+      const loadData = async () => {
+        setLoading(true);
+        try {
+          // Fetch data concurrently
+          const [ salesResponse, distributionCoverageResponse, channelsResponse] = await Promise.all([
+            getSalesData({ industryID, period: selectedPeriod, token: session.accessToken }),
+            getDistributionCoverageData({ industryID, period: selectedPeriod, token: session.accessToken }),
+            getChannelsData()
+          ]);
   
-  const {data:sales, loading:sloading} = useAppSelector(
-    (state) => state.analyze.sales
-  );
-  const {data:distributionCoverage, loading:dloading} = useAppSelector(
-    (state) => state.analyze.distributionCoverage
-  );
-  const {data:channels} = useAppSelector(
-    (state) => state.analyze.channels
-  );
+          // Set the data in the state
+          setSales(salesResponse);
+          setDistributionCoverage(distributionCoverageResponse);
+          setChannels(channelsResponse);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      loadData();
+    }
+  }, [status]);
 
   let teamJson: { [key: string]: any } = {};
   let firmIdJson: { [key: string]: any } = {};
@@ -171,7 +165,7 @@ const chart4Data = {
       <div className="row align-items-center p-4">
         <div className="col">
         <h4 className="pb-4">{t("MARKET_SHARE_BY_CHANNEL_(%_UNIT)")}</h4>
-        {sloading ? <Loading />:  
+        {loading ? <Loading />:  
         <TableSimple columns={columns} rows={rows}/>
     }
         </div>
@@ -179,13 +173,13 @@ const chart4Data = {
 
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {sloading ? <Loading />:  
+          {loading ? <Loading />:  
             <HorizontalBar data={chart1Data} title={t("UNIT_SALES_BY_CHANNEL_IN_THOUSANDS_OF_UNITS")} legendDisplay={false} />
   }
             </GraphContainer>
   
           <GraphContainer>
-          {sloading ? <Loading />:  
+          {loading ? <Loading />:  
             <DoughnutChart data={chart2Data} title={t("RELATIVE_CHANNEL_SIZE_(%_UNITS)")} inPercent={true} legendDisplay={true} />
 }
           </GraphContainer>
@@ -196,7 +190,7 @@ const chart4Data = {
       <div className="row align-items-start p-4">
         <h4 className="pb-4">{t("DISTRIBUTION_COVERAGE_BY_CHANNEL_(%_STORES)")}</h4>
         <div className="col">
-        {dloading ? <Loading />:  
+        {loading ? <Loading />:  
         <TableSimple columns={columns} rows={rows1}/>
 }
         </div>
@@ -205,12 +199,12 @@ const chart4Data = {
 
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {dloading ? <Loading />:  
+          {loading ? <Loading />:  
             <HorizontalBar data={chart3Data} title={t("NUMBER_OF_OUTLETS_IN_EACH_CHANNEL")} legendDisplay={false} />
 }
           </GraphContainer>
           <GraphContainer>
-          {dloading ? <Loading />:  
+          {loading ? <Loading />:  
             <DoughnutChart data={chart4Data} title={t("RELATIVE_CHANNEL_SIZE_(%_OUTLET)")} inPercent={true} />
 }
           </GraphContainer>

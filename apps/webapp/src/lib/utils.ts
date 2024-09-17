@@ -60,28 +60,29 @@ export const getValueByPeriod = (
   return null;
 };
 export const getValueByBrand = (
-  data: brandProps[] | markertingMixProps[],
+  data: brandProps[] | markertingMixProps[] | undefined,
   brand: string,
   period: number,
   field: string
 ) => {
-  let temp = data.filter(
+  let temp = data?.filter(
     (row) => row.brand_name === brand && row.period_id === period
   );
-  if (temp.length > 0) return temp[0][field];
+  if (temp && temp.length > 0) return temp[0][field];
   return null;
 };
 
 export const getValueByPeriodMarket = (
-  data: firmProps[],
+  data: firmProps[] | undefined,
   period: number,
   market: number,
   field: string
 ) => {
-  let temp = data.filter(
+  let temp = data?.filter(
     (row) => row.period_id === period && row.market_id === market
   );
-  if (temp.length > 0) return temp[0][field];
+
+  if (temp && temp.length > 0) return temp[0][field];
   return null;
 };
 
@@ -301,7 +302,7 @@ export const translateFeatures = (
   data: featureProps[],
   locale: string
 ): featureProps[] => {
-  return data.map((item) => {
+  return data?.map((item) => {
     if (locale === 'fr') {
       return {
         ...item,
@@ -315,10 +316,10 @@ export const translateFeatures = (
 };
 
 export const translateGenericFunction = (
-  data: segmentProps[] | channelProps[],
+  data: segmentProps[] | channelProps[] | undefined,
   locale: string
-): segmentProps[] | channelProps[] => {
-  return data.map((item) => {
+): segmentProps[] | channelProps[] | undefined => {
+  return data?.map((item) => {
     if (locale === 'fr') {
       return {
         ...item,

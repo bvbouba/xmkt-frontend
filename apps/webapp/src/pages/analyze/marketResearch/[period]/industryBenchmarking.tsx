@@ -5,21 +5,18 @@ import {
   firmFinancialItems,
   unit,
 } from "@/lib/constants";
-import { getFirmData } from "features/analyzeSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import {  formatPrice, getValueByTeam } from "@/lib/utils";
-import {  useEffect } from "react";
-import { useRouter } from "next/router";
-import { fetchMarketResearchChoices } from "features/decideSlices";
-import usePaths from "@/lib/paths";
+import {  useEffect, useState } from "react";
 import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
 import { categoryColors,  functionColors } from "@/lib/constants/colors";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import GroupedBar from "@/components/charts/GroupedBar";
+import { useSession } from "next-auth/react";
+import { firmProps, marketResearchProps } from "types";
+import { fetchMarketResearchChoices, getFirmData } from "features/data";
 
 
 interface props {
@@ -40,37 +37,40 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const dispatch = useAppDispatch();
-  const { t } = useTranslation('common')
+  const { data: session, status } = useSession();  // Get session data
+  const { industryID, firmID } = session || {};    // Extract from session
+  const selectedPeriod = session?.selectedPeriod || 0;  // Extract selectedPeriod from session or default to 0
 
-  const router = useRouter()
+  const [firmsData, setFirmsData] = useState<firmProps[]>([]);  // Use state for firms data
+  const [loading, setLoading] = useState(false);
 
-  const { period } = router.query as { period: string};
-    const selectedPeriod = parseInt(period)
-  const {participant} = useAuth()
-    const { industryID, firmID } =participant || {};
-
-
-  const paths = usePaths()
-  useEffect(()=>{
-    if (firmID && industryID ) {
-    dispatch(fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod }));
-    }
-  },[dispatch,firmID,industryID,selectedPeriod])
-
-  const { data: marketResearchChoices } = useAppSelector((state) => state.decide.marketResearchChoices);
-
-  
+  const { t } = useTranslation('common');
 
 
   useEffect(() => {
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (firmID && industryID) {
-      dispatch(getFirmData({ industryID, firmID: 0 }));
-    }
-  }, [dispatch,industryID]);
+    if (status === 'authenticated' && firmID && industryID) {
+      const loadData = async () => {
+        setLoading(true);
+        try {
+     
+          // Fetch Firm Data
+          const response2 = await getFirmData({
+            industryID,
+            firmID: 0,  // Replace firmID if needed
+            token: session.accessToken,
+          });
+          setFirmsData(response2);
 
-  const {data:firmsData,loading} = useAppSelector((state) => state.analyze.firm);
+        } catch (error) {
+          console.error('Error loading data:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadData();
+    }
+  }, [status]);
 
   const labels = firmsData
   .filter((row) => row.period_id === selectedPeriod)

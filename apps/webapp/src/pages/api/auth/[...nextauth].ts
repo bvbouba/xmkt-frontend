@@ -157,6 +157,7 @@ const handler = NextAuth({
                         ...session,
                         industryName:participant?.industry_name,
                         courseCode:participant?.courseid,
+                        courseID:participant.course,
                         teamName:participant?.team_name,
                         activePeriod:participant?.active_period,
                         teamID:participant?.team[0],
