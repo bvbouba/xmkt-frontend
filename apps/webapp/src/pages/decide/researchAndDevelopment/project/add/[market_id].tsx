@@ -6,13 +6,13 @@ import {
   Description,
   FormData,
 } from "@/components/wizard/project";
-import { fetchDecisionStatus } from "features/decideSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ReactElement, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { decideStatusProps } from "@/lib/type";
+import { fetchDecisionStatus } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'en';
@@ -25,30 +25,42 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function AddProject({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const dispatch = useAppDispatch();
-  const {participant} = useAuth()
-  const {industryID  } = participant || {};
-  const [step, setStep] = useState<number>(1);
-  const [formData, setFormData] = useState<Partial<FormData>>({});
-  const { t } = useTranslation('common')
-  
-  const handleNextStep = (data: Partial<FormData>) => {
-    setFormData({ ...formData, ...data });
-    setStep(step + 1);
-  };
+  const { data: session, status } = useSession();
+const { industryID } = session || {};
+const [step, setStep] = useState<number>(1);
+const [formData, setFormData] = useState<Partial<FormData>>({});
+const { t } = useTranslation('common');
+const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
+const [loading, setLoading] = useState(false);
 
-  const handlePreviousStep = () => {
-    setStep(step - 1);
-  };
+// Function to handle the next step
+const handleNextStep = (data: Partial<FormData>) => {
+  setFormData({ ...formData, ...data });
+  setStep(step + 1);
+};
 
-  useEffect(() => {
-    if(industryID){
-    dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
-    }
-  }, [dispatch,industryID]);
-  
-  const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
-  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
+// Function to handle the previous step
+const handlePreviousStep = () => {
+  setStep(step - 1);
+};
+
+// Fetch decision status based on industryID when the session is authenticated
+useEffect(() => {
+  if (status === 'authenticated' && industryID) {
+    const fetchDecisionStatusData = async () => {
+      try {
+        const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
+        setDecisionStatus(data);
+      } catch (error) {
+        console.error('Error fetching decision status:', error);
+      }
+    };
+    fetchDecisionStatusData();
+  }
+}, [status, industryID]);
+
+// Check if a decision is in progress
+const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
   // if(isDecisionInProgress) return<> Decision is in Progress</>
 
   

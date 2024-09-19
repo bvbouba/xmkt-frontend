@@ -7,7 +7,7 @@ import {
 } from "@/lib/constants";
 import {  formatPrice, getValueByTeam } from "@/lib/utils";
 import {  useEffect, useState } from "react";
-import { Loading } from "@/components/Loading";
+
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
@@ -15,8 +15,8 @@ import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/component
 import { categoryColors,  functionColors } from "@/lib/constants/colors";
 import GroupedBar from "@/components/charts/GroupedBar";
 import { useSession } from "next-auth/react";
-import { firmProps, marketResearchProps } from "types";
-import { fetchMarketResearchChoices, getFirmData } from "features/data";
+import { firmProps } from "types";
+import {  getFirmData } from "features/data";
 
 
 interface props {
@@ -71,6 +71,10 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
       loadData();
     }
   }, [status]);
+
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
 
   const labels = firmsData
   .filter((row) => row.period_id === selectedPeriod)
@@ -171,14 +175,14 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
     
         <div className="grid grid-cols-2 gap-4 m-4 h-80">
           <GraphContainer>
-          {loading ? <Loading />:  
+
            <GroupedBar data={financialChartData1} title="" />
-                  }
+                  
           </GraphContainer>
           <GraphContainer>
-          {loading ? <Loading />:  
+
           <GroupedBar data={financialChartData2} title="" stacked={true} inPercent={true} />
-                }
+                
           </GraphContainer>
         </div>
       </div>
@@ -189,7 +193,7 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
         <div className="flex items-center">
           <div className="w-full">
           <div className="p-4">
-          {loading ? <Loading />:  
+
       <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -214,7 +218,7 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
           ))}
         </tbody>
       </table>
-      }
+      
     </div>
           </div>
         </div>

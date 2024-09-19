@@ -3,19 +3,17 @@ import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { periods, periods1, transformConstants } from "@/lib/constants";
-import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
 import { segmentColors } from "@/lib/constants/colors";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import HorizontalBar from "@/components/charts/HorizontalBar";
 import VerticalBar from "@/components/charts/VerticalBar";
 import DoughnutChart from "@/components/charts/DoughnutChart";
 import { useSession } from "next-auth/react";
-import { forecastProps, marketResearchProps, segmentProps } from "types";
-import { fetchMarketResearchChoices, getForecastsData, getSegmentsData } from "features/data";
+import { forecastProps, segmentProps } from "types";
+import {  getForecastsData, getSegmentsData } from "features/data";
 
 Chart.register(CategoryScale);
 // Register the plugin to all charts:
@@ -70,6 +68,10 @@ useEffect(() => {
     loadData();
   }
 }, [status]);
+
+if (status === "loading" || loading) {
+  return <p>Loading...</p>;
+}
 
   const chart1Data = {
     labels: transformConstants(locale).periods.map((row) => row.label),
@@ -185,14 +187,14 @@ useEffect(() => {
       <div className="p-4">
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {(loading )? <Loading />: 
+
            <HorizontalBar data={chart1Data} title={t("MARKET_SIZE_BROKEN_DOWN_BY_CONSUMER_SEGMENT_(IN_THOUSANDS_OF_UNIT")} legendDisplay={false} />
-  }
+  
            </GraphContainer>
           <GraphContainer>
-          {(loading )? <Loading />: 
+
           <HorizontalBar data={chart2Data} title={t("CONSUMER_SEGMENT_GROWTH_RATE_(IN_%_UNITS)")} inPercent={true} legendDisplay={false} />
-           }
+           
           </GraphContainer>
         </div>
       </div>
@@ -202,14 +204,14 @@ useEffect(() => {
 
       <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {(loading )? <Loading />: 
+
           <VerticalBar data={chart3Data} title={t("MARKET_SIZE_(IN_THOUSANDS_OF_UNITS)")} legend={true}/>
-          }
+          
           </GraphContainer>
           <GraphContainer>
-          {(loading )? <Loading />: 
+
           <VerticalBar data={chart4Data} title={t("MARKET_GROWTH_RATE_(%UNIT)")} inPercent={true} legend={true}/>
-        }
+        
         </GraphContainer>
       </div>
 
@@ -218,14 +220,14 @@ useEffect(() => {
 
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {(loading )? <Loading />: 
+
             <DoughnutChart data={chart5Data} title={""} inPercent={true} legendDisplay={true} />
-          }
+          
           </GraphContainer>
           <GraphContainer>
-          {(loading )? <Loading />: 
+
           <DoughnutChart data={chart6Data} title={""} inPercent={true}  />
-           }
+           
           </GraphContainer>
         </div>
         <div className="grid grid-cols-2">

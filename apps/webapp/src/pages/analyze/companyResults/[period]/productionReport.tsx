@@ -4,7 +4,6 @@ import { getValueByBrand } from "@/lib/utils";
 import {  useEffect, useState } from "react";
 
 import { Table } from "@/components/Table";
-import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
@@ -54,6 +53,10 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
         }
       }, [status]);
 
+      if (status === "loading" || loading) {
+        return <p>Loading...</p>;
+      }
+
 
 
         const productionData = {
@@ -88,30 +91,27 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
 
       <div className='grid grid-cols-1 gap-4 h-80'>
         <GraphContainer>
-        {
-      loading ? <Loading />:
+
           <GroupedBar data={productionData} title="" />
-        }
+      
               </GraphContainer>
         </div>
 
         <div className="pl-5">  <ParagraphContainer content={t("THE_TABLE_BELOW_PROVIDES_YOU_WITH_ADDITIONAL_DETAILS", {selectedPeriod})}/></div>
 
       <div className="p-5">
-      {
-      loading ? <Loading />:
+
       <Table data={filteredBrandData} items={transformConstants(locale).inventoryItems} lookup="brand_name" heads={[...new Set(brandData.map((entry) => entry.brand_name))]}/>
-      }
+      
       </div>
         <ParagraphContainer title={t("_UNIT_COST,_COGS_AND_INVENTORY_HOLDING_COST")} 
         content={t("THE_TABLE_BELOW_SHOWS_THE_TRANSFER_COST_FOR_EACH_OF_YOUR_MARKETED")}/>
        <div className="pl-5"> <ParagraphContainer content= {t("COGS_IS_EQUAL_TO_UNIT_SOLD_X_UNIT_TRANSFER")}/></div>
 
       <div className="p-5">
-      {
-      loading ? <Loading />:
+
       <Table data={filteredBrandData} items={transformConstants(locale).costItems} lookup="brand_name" heads={[...new Set(brandData.map((entry) => entry.brand_name))]}/>
-       } 
+       
       </div>
     </div>
     </div>

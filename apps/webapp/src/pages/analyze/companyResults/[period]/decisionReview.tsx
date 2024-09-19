@@ -4,7 +4,6 @@ import {marketingItems, perceptualItems, transformConstants } from "@/lib/consta
 import {  useEffect, useState } from "react";
 
 import { OnlineQueryTable, ProjectTableBasic, Table } from "@/components/Table";
-import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
@@ -82,8 +81,11 @@ function DecisionReviewPage({ locale }: InferGetStaticPropsType<typeof getStatic
     }
     
 
-  }, [selectedPeriod,industryID,firmID]);
+  }, [status]);
 
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
   
  const channels = translateGenericFunction(channelsData,locale)
  const segments = translateGenericFunction(segmentsData,locale)
@@ -230,22 +232,16 @@ if (typeof firmID === 'number') {
 
       <div className="grid grid-cols-2 gap-4 h-80">
       <GraphContainer>
-      {loading ? <Loading />:
           <DoughnutChart data={byMarketData} title={t("RESOURCE_ALLOCATED_BY_MARKET")} />
-      }
         </GraphContainer>
         <GraphContainer>
-        {loading ? <Loading />:
           <DoughnutChart data={byFirmData} title={t("RESOURCE_ALLOCATION_BY_FUNCTION_")}/>
-         }
         </GraphContainer>
       </div>
 
       <div className="grid grid-cols-1 h-80">
         <GraphContainer>
-        {loading ? <Loading />:
         <GroupedBar data={byBrandData} title={t("RESOURCE_ALLOCATION_BY_BRAND")} stacked = {true} />
-        }
         </GraphContainer>
       </div>
       
@@ -253,18 +249,14 @@ if (typeof firmID === 'number') {
       <ParagraphContainer  title={t("R_&_D_PROJECTS")} content={`${t("THE_TABLE_BELOW_LISTS_THE_PROJECTS_WHICH_THE_R&D_DEPARTMENT_WILL_")} ${selectedPeriod}`}/>
 
        <div>
-       {loading ? <Loading />:
       <ProjectTableBasic projects={selectedProjects} features={translateFeatures(selectedFeatures,locale)} />
-        }
       </div>
       </div> 
 
       <div>
       <ParagraphContainer  title={t("ONLINE_QUERY")} content={`${t("THE_TABLE_BELOW_LISTS_THE_ONLINE_QUERIES_MADE_BY_R&D_DEPARTEMENT_")} ${selectedPeriod} decisions.`}/>
        <div>
-       {loading ? <Loading />:
       <OnlineQueryTable onlineQueryData={selectedOnlineQueries} features={translateFeatures(selectedFeatures,locale)} />
-        }
       </div>
       </div>
 
@@ -272,10 +264,8 @@ if (typeof firmID === 'number') {
       <ParagraphContainer  title={t("MARKETING_MIX")}/>
  
        <div>
-       {loading ? <Loading />:
        <div className="p-4"><Table data={selectedMarketingMix} items={transformConstants(locale).prodAdsItems} lookup="brand_name" heads={[...new Set(selectedMarketingMix.map((entry) => entry.brand_name))]}/>
        </div>
-      }
        </div>
       </div>
 
@@ -284,10 +274,8 @@ if (typeof firmID === 'number') {
       <ParagraphContainer  title={t("SEGMENTATION_STRATEGY")}/>
 
        <div>
-       {loading ? <Loading />:
        <div className="p-4"><Table data={selectedMarketingMix} percent={true} items={positioningItems} lookup="brand_name" heads={[...new Set(selectedMarketingMix.map((entry) => entry.brand_name))]}/>
        </div>
-       }
        </div>
       </div>
 
@@ -295,10 +283,8 @@ if (typeof firmID === 'number') {
       <ParagraphContainer  title={t("PERCEPTUAL_OBJECTIVES")}/>
    
        <div>
-       {loading ? <Loading />:
        <div className="p-4"><Table data={selectedMarketingMix}  items={perceptualItems} lookup="brand_name" heads={[...new Set(selectedMarketingMix.map((entry) => entry.brand_name))]}/>
       </div>
-      }
        </div>
       </div>
 
@@ -306,10 +292,8 @@ if (typeof firmID === 'number') {
       <ParagraphContainer  title={t("COMMERCIAL_TEAM_SIZE")} content={`${t("THE_TABLE_BELOW_SHOWS_THE_NUMBER_OF_COMMERCIAL_PERSONS_ALLOCATED_")} ${selectedPeriod}`} />
   
        <div>
-       {loading ? <Loading />:
        <div className="p-4"><Table data={selectedMarketingMix}  items={commercialItems} lookup="brand_name" heads={[...new Set(selectedMarketingMix.map((entry) => entry.brand_name))]}/>
        </div>
-        }
        </div>
       </div>
 
@@ -319,14 +303,11 @@ if (typeof firmID === 'number') {
    
       <div className="grid grid-cols-2 gap-4 h-80">
       <GraphContainer>
-      {loading ? <Loading />:
           <DoughnutChart data={commercialbyChannelData} title={""}/>
-      }
+    
         </GraphContainer>
         <GraphContainer>
-        {loading ? <Loading />:
           <HorizontalBar data={commercialByBrandData} title=""/>
-      }
         </GraphContainer>
       </div>
       </div>

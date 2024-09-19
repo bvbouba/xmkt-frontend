@@ -8,9 +8,7 @@ export function Layout({ children }: { children?: React.ReactNode }) {
   const { status } = useSession();
   const router = useRouter();
   const paths = usePaths()
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
+  
 
   if (status === "unauthenticated") {
     router.push(paths.auth.login.$url()); 

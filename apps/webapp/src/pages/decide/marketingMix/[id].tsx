@@ -1,15 +1,7 @@
 import { Layout } from "@/components/Layout";
 import { SuccessMessage } from "@/components/ToastMessages";
-import { fetchDimensions, getFeaturesData, getSegmentsData } from "features/analyzeSlices";
-import {
-  fetchBudgetDetails,
-  fetchDecisionStatus,
-  fetchMarketingMixById,
-  partialUpdateMarketingMix,
-} from "features/decideSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
+
 import usePaths from "@/lib/paths";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -17,6 +9,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useSession } from "next-auth/react";
+import {  decideStatusProps, markertingMixProps } from "types";
+import { fetchDecisionStatus, fetchDimensions, fetchMarketingMixById, getFeaturesData, getSegmentsData, partialUpdateMarketingMix } from "features/data";
 
 interface FormData {
   brand_name: string;
@@ -96,14 +91,12 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
   const { id } = router.query;
   const ID = typeof id === "string" ? parseInt(id, 10) : null;
   const paths = usePaths();
-  const {participant,setRefresh} = useAuth()
-  const dispatch = useAppDispatch();
-  const { industryID, activePeriod, teamID } = participant || {};
-  // Watch for changes in ads_share_* inputs
+  const { data: session, status } = useSession();
+  const { industryID, activePeriod, teamID } = session || {};
   const selectedChoice: string = (watch("perceptual_obj") || "").toString();
-  const dimension1 = watch("dimension_1")
-  const objective1 = watch("objective_1")
-  const dimension2 = watch("dimension_2")
+  const dimension1 = watch("dimension_1");
+  const objective1 = watch("objective_1");
+  const dimension2 = watch("dimension_2");
   const watchAdsShares = watch([
     "ads_share_1",
     "ads_share_2",
@@ -112,93 +105,75 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
     "ads_share_5",
   ]);
   const total = watchAdsShares.reduce((acc, value) => acc + Number(value), 0);
-  const { t } = useTranslation('common')
-  
+  const { t } = useTranslation('common');
+  const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
+  const [brand, setBrand] = useState<markertingMixProps>();
+  const [features, setFeatures] = useState<any[]>([]);
+  const [dimensions, setDimensions] = useState<any[]>([]);
+  const [segments, setSegments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string>("");
+
+  // Fetch decision status when industryID is available
   useEffect(() => {
-    if(industryID){
-    dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
+    if (status === "authenticated" && industryID) {
+      const fetchDecisionStatusData = async () => {
+        try {
+          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
+          setDecisionStatus(data);
+        } catch (error) {
+          console.error('Error fetching decision status:', error);
+        }
+      };
+      fetchDecisionStatusData();
     }
-  }, [dispatch,industryID]);
-  
-  const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
+  }, [status, industryID, session]);
+
   const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 1);
-  
+
+  // Fetch marketing mix, features, dimensions, and segments data
   useEffect(() => {
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (ID) {
-      dispatch(fetchMarketingMixById({ id: ID }));
-    }
-    dispatch(getFeaturesData());
-    dispatch(fetchDimensions());
-    dispatch(getSegmentsData());
-  }, [dispatch, ID]);
+    const fetchData = async () => {
+      if (status === "authenticated" && ID) {
+        try {
+          const marketingMixData = await fetchMarketingMixById({ id: ID, token: session.accessToken });
+          setBrand(marketingMixData);
 
-  const { data: brand } = useAppSelector(
-    (state) => state.decide.marketingMixById
-  );
+          const featuresData = await getFeaturesData();
+          setFeatures(featuresData);
 
-  const { data: features } = useAppSelector(
-    (state) => state.analyze.features
-  );
+          const dimensionsData = await fetchDimensions();
+          setDimensions(dimensionsData);
 
-  const { data: dimensions } = useAppSelector(
-    (state) => state.analyze.dimensions
-  );
+          const segmentsData = await getSegmentsData();
+          setSegments(segmentsData);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } 
+      }
+    };
+    fetchData();
+  }, [ID, status, session]);
 
-  const { data: segments } = useAppSelector((state) => state.analyze.segments);
+  // Update form values based on fetched brand data
   useEffect(() => {
-    setValue("total", total);
-  }, [total]);
+    if (brand) {
+      setValue("production", brand.production);
+      setValue("price", brand.price);
+      setValue("advertising", brand.advertising);
+      setValue("ads_share_1", Math.round(brand.ads_share_1 * 100));
+      setValue("ads_share_2", Math.round(brand.ads_share_2 * 100));
+      setValue("ads_share_3", Math.round(brand.ads_share_3 * 100));
+      setValue("ads_share_4", Math.round(brand.ads_share_4 * 100));
+      setValue("ads_share_5", Math.round(brand.ads_share_5 * 100));
+      setValue("dimension_1", brand.dimension_1);
+      setValue("dimension_2", brand.dimension_2);
+      setValue("objective_1", brand.objective_1);
+      setValue("perceptual_obj", brand.perceptual_obj?.toString());
+    }
+  }, [brand, setValue]);
 
-  const { success: msuccess,loading:mloading } = useAppSelector((state) => state.decide.marketingMixById);
-
-
-  useEffect(() => {
-    if (brand?.production !== undefined) {
-      setValue("production", brand?.production);
-    }
-    if (brand?.price !== undefined) {
-      setValue("price", brand?.price);
-    }
-    if (brand?.advertising !== undefined) {
-      setValue("advertising", brand?.advertising);
-    }
-    if (brand?.ads_share_1 !== undefined) {
-      setValue("ads_share_1", Math.round(brand?.ads_share_1 * 100));
-    }
-    if (brand?.ads_share_2 !== undefined) {
-      setValue("ads_share_2", Math.round(brand?.ads_share_2 * 100));
-    }
-    if (brand?.ads_share_3 !== undefined) {
-      setValue("ads_share_3", Math.round(brand?.ads_share_3 * 100));
-    }
-    if (brand?.ads_share_4 !== undefined) {
-      setValue("ads_share_4", Math.round(brand?.ads_share_4 * 100));
-    }
-    if (brand?.ads_share_5 !== undefined) {
-      setValue("ads_share_5", Math.round(brand?.ads_share_5 * 100));
-    }
-
-    if (brand?.dimension_1 !== undefined) {
-      setValue("dimension_1", brand?.dimension_1);
-    }
-
-    if (brand?.dimension_2 !== undefined) {
-      setValue("dimension_2", brand?.dimension_2);
-    }
-
-    
-    if (brand?.objective_1 !== undefined) {
-      setValue("objective_1", brand?.objective_1);
-    }
-
-    if (brand?.perceptual_obj !== undefined) {
-      setValue("perceptual_obj", brand?.perceptual_obj.toString());
-    }
-
-  }, [setValue,brand]);
-
-
+  // Clear objectives and dimensions if certain conditions are not met
   useEffect(() => {
     if (!dimension1) {
       setValue("objective_1", "");
@@ -214,15 +189,17 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
     if (!dimension2) {
       setValue("objective_2", "");
     }
-    if(selectedChoice === "0"){
+
+    if (selectedChoice === "0") {
       setValue("dimension_1", "");
       setValue("objective_1", "");
       setValue("dimension_2", "");
       setValue("objective_2", "");
     }
-  }, [objective1,dimension1,dimension2,selectedChoice]);
+  }, [dimension1, objective1, dimension2, selectedChoice, setValue]);
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+  // Handle form submission
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     const {
       production,
       price,
@@ -236,12 +213,13 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
       dimension_1,
       dimension_2,
       objective_1,
-      objective_2
+      objective_2,
     } = data;
-    // Handle final form submission
-    if (ID && teamID) {
-      dispatch(
-        partialUpdateMarketingMix({
+
+    if (ID && teamID && status === "authenticated") {
+      setLoading(true);
+      try {
+        await partialUpdateMarketingMix({
           id: ID,
           production,
           price,
@@ -257,17 +235,24 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
           objective_1:parseFloat(objective_1) || null,
           dimension_2:objective_2 ? parseInt(dimension_2): null,
           objective_2:parseFloat(objective_2) || null,
-        })
-      ).then(() => {
-        // After successful submission, trigger a refresh
-        setRefresh((prevKey) => prevKey + 1);
-      });;
+          token: session.accessToken,
+        });
+        setMessage(t("UPDATED_SUCCESSFULLY"));
+      } catch (error) {
+        console.error('Error updating marketing mix:', error);
+      }finally{
+        setLoading(false);
+      }
     }
   };
 
+  useEffect(() => {
+    setValue("total", total);
+  }, [total]);
+
   const validateTotal = (value: number) => {
     if (value !== 100) {
-      return `total does not add up`;
+      return t(`TOTAL_DO_NOT_ADD_UP`);
     }
   };
 
@@ -282,11 +267,12 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
                           {(locale==="fr")?option.name_fr:option.name}
                         </option>))
   
+
   // if(isDecisionInProgress) return<> Decision is in Progress</>
   return (
     <>
       
-      {msuccess && <SuccessMessage message={t("UPDATED_SUCCESSFULLY")} />}
+      {message && <SuccessMessage message={message} setMessage={setMessage} />}
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">
           {t("MARKETING_MIX_DECISION")} - {brand?.brand_name}
@@ -299,20 +285,7 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
         <hr className="my-4" />
 
         <form onSubmit={handleSubmit(onSubmit)} className="mb-8">
-          <input
-            type="hidden"
-            id="firm_id"
-            name="firm_id"
-            value="{{firm_id}}"
-          />
-          <input
-            type="hidden"
-            id="market_id"
-            name="market_id"
-            value="{{market_id}}"
-          />
-
-          <div id="msg"></div>
+      
 
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div>
@@ -685,7 +658,7 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
                 className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-600"
                 type="submit"
               >
-                {mloading ? t("...SAVING") : t("SAVE")}
+                {loading ? t("...SAVING") : t("SAVE")}
               </button>
             </div>
             <div>

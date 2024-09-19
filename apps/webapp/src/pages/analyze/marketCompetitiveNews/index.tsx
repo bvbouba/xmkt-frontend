@@ -18,12 +18,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function MarketCompetitveNewsPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const { data: session } = useSession()
+  const { data: session,status } = useSession()
   const selectedPeriod = session?.selectedPeriod || 0
 
 
     const paths = usePaths();
     const { t } = useTranslation('common')
+
+    if (status === "loading") {
+      return <p>Loading...</p>;
+    }
   
     const industryItems = [
         { url: paths.analyze.marketCompetitiveNews._period(selectedPeriod).industryDashboard.$url(), image: '/images/company-dashboard-logo.png', alt: 'industry_dashboard', title: t("INDUSTRY_DASHBOARD") },

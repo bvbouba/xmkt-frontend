@@ -88,7 +88,7 @@
   "VALUE_MUST_BE_GREATER_THAN": "Value must be greater than {{range_inf}}",
   "START_A_NEW_PROJECT": "Start a new {{name}} project",
   "TEAM_NAME_MUST_START_WITH": "Team name must start with {{firstLetter}}",
-  "CHOOSE_A_NAME_FOR_YOUR_TEAM_THAT_REFLECTS_YOUR_TEAM_SPIRIT": "Choose a name for your Team that reflects your team spirit. It should start with the letter <span className='font-bold'> {{firstLetter}} </span> and may be up to 8 characters long.",
+  "CHOOSE_A_NAME_FOR_YOUR_TEAM_THAT_REFLECTS_YOUR_TEAM_SPIRIT": "Choose a name for your Team that reflects your team spirit. It should start with the letter {{firstLetter}} and may be up to 8 characters long.",
   "PERIOD": "Period",
   "PER": "Per",
   "STOCK_PRICE": "Stock price",
@@ -395,5 +395,8 @@
 "CONFIRM":"Confirm",
 "ALL_YOUR_PAST_INVESTMENT_WILL_BE_LOST":"All your past investment for this project will be lost",
 "CONFIRMATION":"Confirmation",
-"CONFIRM_WITHDRAWAL_BRAND":"Confirm the withdrawal of the brand {{ name }}"
+"CONFIRM_WITHDRAWAL_BRAND":"Confirm the withdrawal of the brand {{ name }}",
+"ARE_YOU_SURE_YOU_WANT_MODIFY_THIS_PRODUCT":"Are you sure you want to modify this product?",
+"TOTAL_DO_NOT_ADD_UP":"Total do not add up to 100",
+"ARE_YOU_SURE_YOU_WANT_TO_CHANGE":"Are you sure you want to change ?"
 }

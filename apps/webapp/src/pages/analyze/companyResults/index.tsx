@@ -21,8 +21,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 function CompanyResultsPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
   const paths = usePaths();
   const { t } = useTranslation('common')
-  const { data: session } = useSession()
+  const { data: session,status } = useSession()
   const selectedPeriod = session?.selectedPeriod || 0
+
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
   const companyItems = [
     {
       url: paths.analyze.companyResults._period(selectedPeriod).companyDashboard.$url(),

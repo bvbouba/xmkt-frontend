@@ -2,7 +2,6 @@
 import { getValueByBrand } from "@/lib/utils";
 import {  useEffect, useState } from "react";
 import { TableSimple, } from "@/components/Table/Table";
-import { Loading } from "@/components/Loading";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
@@ -50,7 +49,7 @@ function CompetitiveAds({ locale }: InferGetStaticPropsType<typeof getStaticProp
         try {
           const response1 = await fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod,token: session.accessToken });
           const response2 = await getMarketingMixData({ industryID,firmID:0, period:selectedPeriod,token: session.accessToken,
-              fields:"brand_name,period_id,team_name,firm_id,advertising,channel_1,channel_2,channel_3,ads_share_1,ads_share_2,ads_share_3,ads_share_4,ads_share_5"
+              fields:"brand_id,period_id,team_name,firm_id,advertising,channel_1,channel_2,channel_3,ads_share_1,ads_share_2,ads_share_3,ads_share_4,ads_share_5"
            });
           const response3 = await getChannelsData();
           const response4 = await getSegmentsData();
@@ -69,6 +68,10 @@ function CompetitiveAds({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
     }
   },[status])
+
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
 
 
 
@@ -236,21 +239,21 @@ segments?.map(row => dataArray2.push(
 
         <div className="grid grid-cols-2 gap-4 h-80 p-4">
           <GraphContainer>
-          {loading ? <Loading />:  
+
             <VerticalBar data={chart1Data} title={t("ESTIMATE_TOTAL_EXPENDITURE_(IN_MILLION_$)_-_BY_FIRM")} />
-    }
+    
           </GraphContainer>
           <GraphContainer>
-          {loading ? <Loading />:  
+
           <VerticalBar data={chart2Data} title={t("ESTIMATE_TOTAL_EXPENDITURE_(IN_MILLION_$)_-_BY_SEGMENT")} />
-  }
+  
           </GraphContainer>
         </div>
 
           <div className="col p-8">
-          {loading ? <Loading />:  
+
           <TableSimple columns={columns} rows={rows}/>
-          }
+          
       </div></>}
 
       {choice2 && <><div className="mt-6">
@@ -264,22 +267,22 @@ segments?.map(row => dataArray2.push(
 
         <div className="grid grid-cols-2 gap-4 h-80 p-4">
           <GraphContainer>
-          {loading ? <Loading />:  
+
           <VerticalBar data={chart3Data} title= {t("ESTIMATED_COMMERCIAL_TEAM_SIZE_(IN_FULL-TIME_EQUIVALENT)_-_BY_FIRM")} />
-}
+
           </GraphContainer>
           <GraphContainer>
-          {loading ? <Loading />:  
+
           <VerticalBar data={chart4Data} title={t("ESTIMATED_COMMERCIAL_TEAM_SIZE_(IN_FULL-TIME_EQUIVALENT)_-_BY_SEGMENT")} />
-}
+
           </GraphContainer>
         </div>
 
 
           <div className="col p-8">
-          {loading ? <Loading />:  
+
           <TableSimple columns={columns1} rows={rows1}/>
-}
+
       </div>
       </>}
 

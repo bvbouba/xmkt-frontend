@@ -2,15 +2,14 @@
 import {  getMapData, getValueByBrandFeature, getValueBySegmentFeature } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { TableSimple } from "@/components/Table/Table";
-import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { HeaderContainer, ParagraphContainer } from "@/components/container";
-import { featureProps, marketResearchProps, segmentProps, SemanticIdealsProps, SemanticScalesProps } from "types";
+import { featureProps, segmentProps, SemanticIdealsProps, SemanticScalesProps } from "types";
 import ScatterChart from "@/components/charts/ScatterChart";
 import { useSession } from "next-auth/react";
-import { fetchMarketResearchChoices, getFeaturesData, getSegmentsData, getSemanticIdealsData, getSemanticScalesData } from "features/data";
+import {  getFeaturesData, getSegmentsData, getSemanticIdealsData, getSemanticScalesData } from "features/data";
 
 
 
@@ -72,7 +71,11 @@ function SemanticScales({ locale }: InferGetStaticPropsType<typeof getStaticProp
       };
       loadData();
     }
-  }, [status, firmID, industryID, selectedPeriod, session?.accessToken]);
+  }, [status]);
+
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
   
 const features = featuresData.filter(item=>item.surname !== "feature_7")
 
@@ -168,9 +171,9 @@ const rows1 = segments.map(row =>{
       <ParagraphContainer title={t("BRAND_PERCEPTIONS")} content={t("RESPONDENTS_ARE_ASKED_TO_RATE_EACH_BRAND_ACCORDING_TO_THE_WAY_THE")}   />
 
           <div className="col p-4">
-          {loading ? <Loading />:  
+
           <TableSimple columns={columns} rows={rows}/>
-    }
+    
           </div>
       </>
 
@@ -178,16 +181,15 @@ const rows1 = segments.map(row =>{
         <ParagraphContainer title={t("IDEAL_VALUES")} content={t("RESPONDENTS_ARE_ASKED_TO_RATE_EACH_BRAND_ACCORDING_TO_THE_WAY_THE2")}   />
 
           <div className="col p-4">
-          {loading ? <Loading />:  
+
           <TableSimple columns={columns1} rows={rows1}/>
-  }
+  
           </div>
       </>
 
       <ParagraphContainer title={t("BRAND_MAPS")} content={t("MAPS_REPRESENTING_CONSUMERS_PERCEPTIONS_BASED_ON_THE_SEMANTIC_SCALES")}   />
 
 
-      {(loading) ? <Loading />:  
 
       <div className="row align-items-center p-4">
         <div className="col inline-flex">
@@ -209,7 +211,7 @@ const rows1 = segments.map(row =>{
        {chartData && <ScatterChart data={chartData.data} min={min} max={max} ticks={ticks} xTitle={xTitle} yTitle={yTitle} labelColors={chartData.labelColors} closePairs={chartData.closePairs} />}
       </div>
       </div>
-}
+
     </div>
     </div>
     </>);

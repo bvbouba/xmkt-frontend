@@ -1,14 +1,14 @@
 import { useForm } from "react-hook-form";
 import { FormData } from ".";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useRouter } from "next/router";
-import usePaths from "@/lib/paths";
 import Link from "next/link";
 import { ButtonNext, ButtonPrev } from "@/components/button";
-import { useEffect } from "react";
-import { getMarketsData } from "features/analyzeSlices";
-import { fetchDecisionStatus } from "features/decideSlices";
+import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useSession } from "next-auth/react";
+import { decideStatusProps, marketProps } from "types";
+import { fetchDecisionStatus, getMarketsData } from "features/data";
+import usePaths from "@/lib/paths";
 
 
 type props = {
@@ -17,53 +17,76 @@ type props = {
   };
   
   export const Description: React.FC<props> = ({ onNext,formData }) => {
-    const dispatch = useAppDispatch()
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-      } = useForm<FormData>();
-    const paths = usePaths() 
-    const router = useRouter()
-    const {market_id} = router.query
-    const marketID = typeof market_id === 'string' ? parseInt(market_id, 10) : null;
-    const participant = useAppSelector((state) => state.participant);
-    const { teamName,industryID } = participant;
-    const { t } = useTranslation('common')
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const router = useRouter();
+  const { market_id } = router.query;
+  const marketID = typeof market_id === 'string' ? parseInt(market_id, 10) : null;
+  const { data: session, status } = useSession();
+  const { t } = useTranslation('common');
+  const paths = usePaths()
 
-    useEffect(() => {
-      if(industryID){
-      dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
-      }
-    }, [dispatch,industryID]);
-    
-    const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
-    const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-   
+  const [markets, setMarkets] = useState<marketProps[]>([]);
+  const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
+  const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        // Dispatch actions to get firm and brand data when the component mounts
-          dispatch(getMarketsData());
+  const { industryID, teamName } = session || {}; // Assuming participant data is stored in the session
+  const market = markets.find(m => m.id === marketID)
+  const firstLetter = teamName?.[0];
+  const [secondLetter, setSecondLetter] = useState<string | undefined>(undefined);
 
-      }, [dispatch,marketID]);
-      
-    const {data:markets} = useAppSelector((state) => state.analyze.markets);
-    
-    const market = markets.find(m => m.id === marketID)
-    const firstLetter = teamName?.[0]
-    const secondLetter = market?.name[1]
-
-    const validateName = (value: string) => {
-        const alphanumericRegex = /^[a-zA-Z0-9]*$/;
-        if (!alphanumericRegex.test(value)) { 
-            return t("NAME_MUST_CONTAIN_ALPHANUMERIC_ONLY");
-        }
-        if ((value[0] !== firstLetter) || (value[1] !== secondLetter)) { 
-            return t("PROJECT_NAME_MUST_START", {firstLetter,secondLetter})
+  // Fetch decision status when industryID is available
+  useEffect(() => {
+    if (status === "authenticated" && industryID) {
+      const fetchDecisionStatusData = async () => {
+        try {
+          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
+          setDecisionStatus(data);
+        } catch (error) {
+          console.error('Error fetching decision status:', error);
         }
       };
-    
-      if(isDecisionInProgress) return<> {t("DECISION_IS_IN_PROGRESS")}</>
+      fetchDecisionStatusData();
+    }
+  }, [industryID, status]);
+
+  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
+
+  // Fetch markets data on mount
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      if (status === "authenticated") {
+        try {
+          setLoading(true);
+          const marketData = await getMarketsData();
+          setMarkets(marketData);
+          const selectedMarket = marketData.find(m => m.id === marketID);
+          if (selectedMarket) {
+            setSecondLetter(selectedMarket.name[1]);
+          }
+        } catch (error) {
+          console.error('Error fetching markets:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchMarketData();
+  }, [marketID, status]);
+
+  // Validation for the name field
+  const validateName = (value: string) => {
+    const alphanumericRegex = /^[a-zA-Z0-9]*$/;
+    if (!alphanumericRegex.test(value)) {
+      return t("NAME_MUST_CONTAIN_ALPHANUMERIC_ONLY");
+    }
+    if ((value[0] !== firstLetter) || (value[1] !== secondLetter)) {
+      return t("PROJECT_NAME_MUST_START", { firstLetter, secondLetter });
+    }
+  };
+
+  if (isDecisionInProgress) {
+    return <>{t("DECISION_IS_IN_PROGRESS")}</>;
+  }
 
     return (
 

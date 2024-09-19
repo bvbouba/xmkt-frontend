@@ -1,11 +1,11 @@
 import { ButtonNext, ButtonPrev } from "@/components/button";
 import {  useForm } from "react-hook-form";
 import { FormData } from ".";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { useEffect } from "react";
-import { getFeaturesData } from "features/analyzeSlices";
-import { fetchDecisionStatus } from "features/decideSlices";
+import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { useSession } from "next-auth/react";
+import { decideStatusProps, featureProps } from "@/lib/type";
+import { fetchDecisionStatus, getFeaturesData } from "features/data";
 
 type props = {
     onNext: (data: FormData) => void;
@@ -15,39 +15,54 @@ type props = {
   };
 
   export const Characteristics: React.FC<props> = ({ onNext,onPrevious,formData,locale}) => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        watch
-      } = useForm<FormData>();
-      const dispatch = useAppDispatch();
-    const selectedChoice = watch("choice");
-    const participant = useAppSelector((state) => state.participant);
-    const { industryID} = participant;
-    const { t } = useTranslation('common')
-    
-    useEffect(() => {
-      if(industryID){
-      dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
+    const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>();
+const { data: session, status } = useSession();
+const selectedChoice = watch("choice");
+const { t } = useTranslation('common');
+
+const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
+const [features, setFeatures] = useState<featureProps[]>([]);
+const [loading, setLoading] = useState(false);
+
+// Fetch decision status when industryID is available
+useEffect(() => {
+  if (status === "authenticated" && session?.industryID) {
+    const fetchDecisionStatusData = async () => {
+      try {
+        const data = await fetchDecisionStatus({ industryID: session.industryID, token: session.accessToken });
+        setDecisionStatus(data);
+      } catch (error) {
+        console.error('Error fetching decision status:', error);
       }
-    }, [dispatch,industryID]);
-    
-    const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
-    const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-    
+    };
+    fetchDecisionStatusData();
+  }
+}, [status, session?.industryID]);
 
-        useEffect(() => {
-            // Dispatch actions to get firm and brand data when the component mounts
-              dispatch(getFeaturesData());
-          }, [dispatch]);
-        
-    
-          const {data:features} = useAppSelector((state) => state.analyze.features);
-          const selectedFeatures = features.filter(feature=>['feature_1','feature_2',
-          'feature_3','feature_4','feature_5'].includes(feature.surname))
+const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
 
-          if(isDecisionInProgress) return<> {t("DECISION_IS_IN_PROGRESS")}</>
+// Fetch feature data when the component mounts
+useEffect(() => {
+  const fetchFeatures = async () => {
+    if (status === "authenticated") {
+      try {
+        const featureData = await getFeaturesData();
+        setFeatures(featureData);
+      } catch (error) {
+        console.error('Error fetching features:', error);
+      }
+    }
+  };
+  fetchFeatures();
+}, [status]);
+
+const selectedFeatures = features.filter(feature =>
+  ['feature_1', 'feature_2', 'feature_3', 'feature_4', 'feature_5'].includes(feature.surname)
+);
+
+if (isDecisionInProgress) {
+  return <>{t("DECISION_IS_IN_PROGRESS")}</>;
+}
     return (
         <>
         

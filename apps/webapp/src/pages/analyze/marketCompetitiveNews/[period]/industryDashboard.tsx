@@ -4,7 +4,6 @@ import {  industryFinancialItems,industryMarketShareItems, unit } from "@/lib/co
 import { brandProps, firmProps, industryDataProps, marketProps } from "types";
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
@@ -63,6 +62,10 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
     }
  
   }, [status]);
+
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
 
  const periods = Array.from(Array(selectedPeriod+1).keys())
 
@@ -194,7 +197,7 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
           <div className="pl-4"><ParagraphContainer title={t("SHARE_PRICE_INDEX_EVOLUTION")} /></div>
         </div>
         <div className="grid grid-cols-2 gap-4 h-80">
-        {loading ? <Loading />:
+
           <div className="col pt-4 pr-4">
             {industryData && (
                <Table data={industryData}  headerless={true} items={industryFinancialItems} lookup="team_name" heads={[...new Set(industryData.map((entry) => entry.team_name))]}/>
@@ -204,16 +207,15 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
               {t("CUM_NC_CUMULATIVE_NC_MILLION")}
             </span>
           </div>
-          }
+        
 
-       {loading ? <Loading />:  
           <GraphContainer>
           {(selectedPeriod !== 0) ? <LineChart data={industryChartData} title="" yGrid={true}  />
           :
           <Bar data={industryChartData} options={options({title:"",legend:true})}/> 
           }
           </GraphContainer>
-       }
+       
         </div>
       </div>
 
@@ -223,22 +225,21 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
         <div className="pl-4"><ParagraphContainer title={t("INDUSTRY_RETAIL_SALES_-_BY_FIRM")} /></div>
         </div>
         <div className="grid grid-cols-2 gap-4 h-80">
-        {loading ? <Loading />:
+
           <GraphContainer>
           {(selectedPeriod !== 0) ? <LineChart data={byMarketChartData} title="" yGrid={true} inThousand={true} stacked={true}/>
           :
           <Bar data={byMarketChartData} options={options({title:"",legend:true,inThousand:true})}/> 
           }
           </GraphContainer>
-}
-{loading ? <Loading />:
+
           <GraphContainer>
           {(selectedPeriod !== 0) ? <LineChart data={byFirmChartData} title="" yGrid={true} inThousand={true} stacked={true} />
           :
           <Bar data={byFirmChartData} options={options({title:"",legend:true, inThousand:true})}/> 
           }
           </GraphContainer>
-}
+
         </div>
         <div className="grid grid-cols-2 ">
           <div className="col pl-4">
@@ -254,11 +255,11 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
         <div className="pl-4"><ParagraphContainer title={t("UNIT_AND_VALUE_MARKET_SHARES_-_TOTAL")} /></div>
         <div className="col">
         </div>
-        {loading ? <Loading />:
+
           <GraphContainer>
            <HorizontalBar data={marketShareChartData} title="" inPercent={true} stacked={true} />
           </GraphContainer>
-         }
+         
          <div className="col"></div>
         </div>
 
@@ -269,14 +270,14 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
         </div>
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {loading ? <Loading />:
+
           <VerticalBar data={topSellingVolumeChartData} title=""/>
-        }
+        
           </GraphContainer>
           <GraphContainer>
-          {loading ? <Loading />:
+
           <VerticalBar data={topSellingRevenueChartData} title=""/>
-          }
+          
           </GraphContainer>
         </div>
         <div className="grid grid-cols-2">

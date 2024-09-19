@@ -39,8 +39,6 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
   const [firmData,setFirmData] = useState<firmProps[]>([])
   const [brandData,setBrandData] = useState<brandProps[]>([])
   const [loading,setLoading] = useState(false)
-
-  const router = useRouter()
   
     const { t } = useTranslation('common')
 
@@ -65,6 +63,9 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
         }
       }, [status]);
     
+      if (status === "loading" || loading) {
+        return <p>Loading...</p>;
+      }
 
       let firmColors:string[] = []; // Default color array
       if (typeof firmID === 'number') {
@@ -154,56 +155,49 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
      <ParagraphContainer title={t("COMPANY_PROFIT_&_LOSS_STATEMENT")} content={t("THE_TABLE_BELOW_SHOWS_THE_EVOLUTION_OF_FIRM", {teamName,selectedPeriod})} />
     
       <div className="p-5">
-      {
-      loading ? <Loading />:
+      
       <Table data={filteredFirmData} items={transformConstants(locale).firmFinancialItems} lookup="period_id" heads={[...new Set(filteredFirmData.map((entry) => entry.period_id))]}/>
-       }
+       
       </div>
       <div className="p-1">
         <div className="grid grid-cols-2 gap-4 h-80">
           
-        {
-      loading ? <Loading />:
+ 
           <GraphContainer>
            {(selectedPeriod !== 0) ? <MultiAxisLine data={profitData} title={t("REVENUE_EBT_EVOLUTION")} max={Math.max(...profitData.datasets[0].data) * 1.2} />
           :
            <Bar data={profitData} options={options({title:t("REVENUE_EBT_EVOLUTION"),legend:true,percent:true,yAxisDisplay:false,y1AxisDisplay:false, })}/> 
           }
-          </GraphContainer>}
+          </GraphContainer>
 
-          {
-          loading ? <Loading />:
           <GraphContainer>
           {(selectedPeriod !== 0) ? <LineChart data={costData} title={t("COST_EVOLUTION_BY_CATEGORY_(%_Revenue)")} inPercent={true} />
           :
           <Bar data={costData} options={options({title:t("COST_EVOLUTION_BY_CATEGORY"),legend:true,percent:true,yAxisDisplay:false})}/> 
           }
-          </GraphContainer>}
+          </GraphContainer>
         </div>
       </div>
      
       <ParagraphContainer title={t("BRAND_CONTRIBUTION")} content={t("THE_TABLE_BELOW_SHOWS_A_COMPARISON_OF_THE_NET_CONTRIBUTION_GENERATED_BY_THE_BRANDS_MARKETED_BY_FIRM",{teamName,selectedPeriod})} />
 
       <div className="p-5">
-      {
-      loading ? <Loading />:
+
       <Table data={filteredBrandData} items={transformConstants(locale).brandFinancialItems} lookup="brand_name" heads={[...new Set(filteredBrandData.map((entry) => entry["brand_name"]))]}/>
-      }
+    
       </div>
 
       <div className="p-1">
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {
-      loading ? <Loading />:
+  
            <DoughnutChart data={revenueData}  title={t("REVENUES")} inPercent={true}/>
-          }
+          
           </GraphContainer>
           <GraphContainer>
-          {
-      loading ? <Loading />:
+    
           <DoughnutChart data={contributionData} title={t("CONTRIBUTION_AFTER_MARKETING")} inPercent={true} />
-         }
+         
           </GraphContainer>
         </div>
       </div>

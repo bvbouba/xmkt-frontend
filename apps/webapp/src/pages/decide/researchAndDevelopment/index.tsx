@@ -1,16 +1,15 @@
 import { Layout } from "@/components/Layout";
-import { SuccessMessage } from "@/components/ToastMessages";
 import { ButtonNext } from "@/components/button";
-import { getMarketsData, getProjectData } from "features/analyzeSlices";
-import { fetchDecisionStatus } from "features/decideSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
-import { useAuth } from "@/lib/providers/AuthProvider";
+import { decideStatusProps } from "@/lib/type";
+import { fetchDecisionStatus, getMarketsData, getProjectData } from "features/data";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
+import { marketProps, rndProjectProps } from "types";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'en';
@@ -23,44 +22,63 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function ResearchAndDevelopment({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-   const paths = usePaths()
-  const dispatch = useAppDispatch();
-  const {participant} = useAuth()
-  const {industryID, firmID,activePeriod } =
-    participant || {};
-    const { t } = useTranslation('common')
-    
-    useEffect(() => {
-      if(industryID){
-      dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
-      }
-    }, [dispatch,industryID]);
-    
-    const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
-    const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-    
+  const paths = usePaths();
+  const { data: session, status } = useSession();
+  const { industryID, firmID, activePeriod } = session || {};
+  const { t } = useTranslation('common');
   
-    useEffect(() => {
-        // Dispatch actions to get firm and brand data when the component mounts
-        if (firmID && industryID && activePeriod) {
-          dispatch(getProjectData({ industryID, firmID, period:activePeriod }));
-          dispatch(getMarketsData());
+  const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
+  const [projects, setProjects] = useState<rndProjectProps>();
+  const [markets, setMarkets] = useState<marketProps[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Fetch decision status when industryID is available
+  useEffect(() => {
+    if (status === 'authenticated' && industryID) {
+      const fetchDecisionStatusData = async () => {
+        try {
+          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
+          setDecisionStatus(data);
+        } catch (error) {
+          console.error('Error fetching decision status:', error);
         }
-      }, [dispatch,firmID, industryID, activePeriod]);
-    
+      };
+      fetchDecisionStatusData();
+    }
+  }, [status, industryID]);
+  
+  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
+  
+  // Fetch project and market data when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      if (status === 'authenticated' && firmID && industryID && activePeriod) {
+        setLoading(true);
+        try {
+          const projectData = await getProjectData({ industryID, firmID, period: activePeriod, token: session.accessToken });
+          setProjects(projectData);
+          const marketsData = await getMarketsData();
+          setMarkets(marketsData);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchData();
+  }, [status]);
 
-      const {data:projects} = useAppSelector((state) => state.analyze.projects);
-      const {data:markets} = useAppSelector((state) => state.analyze.markets);
-      const {success:rsuccess} = useAppSelector((state) => state.decide.queryResult);
+  if (status==="loading" && loading) {
+    return <p>Loading...</p>;
+  }
 
-      // if(isDecisionInProgress) return<> Decision is in Progress</>
 return ( <>
          
-         {rsuccess && <SuccessMessage message={t("ADDED_SUCCESSFULLY")} />}
          <div className="container mx-auto">
       <h1 className="text-3xl font-semibold mb-4">{t("RESEARCH_&_DEVELOPMENT_-_OVERVIEW")}</h1>
       <div className="mb-8">
-        {(projects.going?.length) ? (
+        {(projects?.going?.length) ? (
           <>
             <p className="mb-4">
              {t("_YOUR_CURRENT_R&D_DECISIONS_ARE_SUMMARIZED_BELOW._CLICK_ON_A_NAME")}

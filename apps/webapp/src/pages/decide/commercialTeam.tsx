@@ -1,16 +1,15 @@
 import { Layout } from "@/components/Layout";
 import { SuccessMessage } from "@/components/ToastMessages";
-import { getChannelsData } from "features/analyzeSlices";
-import { fetchBudgetDetails, fetchDecisionStatus, getMarketingMixData, partialUpdateMarketingMix } from "features/decideSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSession } from "next-auth/react";
+import { channelProps, decideStatusProps, markertingMixProps } from "types";
+import { fetchDecisionStatus, getChannelsData, getMarketingMixData, partialUpdateMarketingMix } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'en';
@@ -23,62 +22,107 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-    } = useForm();
-    const { t } = useTranslation('common')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const { t } = useTranslation('common');
+  const paths = usePaths();
   
-    const paths = usePaths();
-    const dispatch = useAppDispatch();
-    const {participant,setRefresh} = useAuth()
-    const { industryID, firmID, activePeriod,teamID } = participant || {};
+  const { data: session, status,update } = useSession();
+  const { industryID, firmID, activePeriod, teamID } = session || {};
+  
+  const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
+  const [brands, setBrands] = useState<markertingMixProps[]>([]);
+  const [channels, setChannels] = useState<channelProps[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(true);
 
-    useEffect(() => {
-      if(industryID){
-      dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
-      }
-    }, [dispatch,industryID]);
-    
-    const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
-    const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-    
+  const [message, setMessage] = useState<string>("");
   
-    useEffect(() => {
-      if (firmID && industryID && activePeriod) {
-        dispatch(getMarketingMixData({ industryID, firmID, period: activePeriod }));
-        dispatch(getChannelsData());
-      }
-    }, [dispatch, firmID, industryID, activePeriod]);
+  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
   
-    const { data: brands } = useAppSelector((state) => state.decide.marketingMix);
-    const { data: channels } = useAppSelector((state) => state.analyze.channels);
-    const { success: msuccess,loading:mloading } = useAppSelector((state) => state.decide.marketingMixById);
-    const selectedBrands = brands.filter((entry) => entry.is_active === true);
-    
-  
-    const onSubmit = (data: any) => {
-      // Handle form submission
-      brands.map(entry =>{
-        const channel_1 = data['channel_1'][entry.id]
-        const channel_2 = data['channel_2'][entry.id]
-        const channel_3 = data['channel_3'][entry.id]
-        if(teamID){
-        dispatch(partialUpdateMarketingMix({id:entry.id,team_id:teamID,channel_1,channel_2,channel_3}))
-        .then(() => {
-          // After successful submission, trigger a refresh
-          setRefresh((prevKey) => prevKey + 1);
-        });
+  // Fetch decision status when industryID is available
+  useEffect(() => {
+    if (status === "authenticated" && industryID) {
+      const fetchDecisionStatusData = async () => {
+        try {
+          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
+          setDecisionStatus(data);
+        } catch (error) {
+          console.error('Error fetching decision status:', error);
         }
-      })
-    };
+      };
+      fetchDecisionStatusData();
+    }
+  }, [status, industryID]);
 
+  // Fetch marketing mix and channels data when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      if (status === "authenticated" && firmID && industryID && activePeriod) {
+        setLoading1(true)
+        try {
+          const marketingMixData = await getMarketingMixData({ industryID, firmID, period: activePeriod, token: session.accessToken });
+          setBrands(marketingMixData);
+          const channelsData = await getChannelsData();
+          setChannels(channelsData);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }finally{
+          setLoading1(false)
+        } 
+      }
+    };
+    fetchData();
+  }, [status]);
+  
+  const selectedBrands = brands.filter((entry) => entry.is_active === true);
+  
+  if (status==="loading" && loading1) {
+    return <p>Loading...</p>;
+  }
+
+  const onSubmit = async (data: any) => {
+    // Handle form submission
+    if (teamID && status === 'authenticated') {
+      setLoading(true)
+      try {
+        await Promise.all(
+          brands.map(async (entry) => {
+            const channel_1 = data['channel_1'][entry.id];
+            const channel_2 = data['channel_2'][entry.id];
+            const channel_3 = data['channel_3'][entry.id];
+  
+            await partialUpdateMarketingMix({
+              id: entry.id,
+              team_id: teamID,
+              channel_1,
+              channel_2,
+              channel_3,
+              token: session.accessToken
+            });
+          })
+        );
+        const newSession = await update({
+          ...session,
+          refresh:session.refresh+1
+        })
+        // Trigger a refresh after successful submission
+        setMessage(t('UPDATED_SUCCESSFULLY'));
+      } catch (error) {
+        console.error('Error updating marketing mix:', error);
+      }finally{
+        setLoading(false)
+      }
+    }
+  };
     // if(isDecisionInProgress) return<> Decision is in Progress</>
   
     return (
       <>
-        {msuccess && <SuccessMessage message="Updated successfully" />}
+        {message && <SuccessMessage message={message} setMessage={setMessage}/>}
         <div className="container mx-auto mt-10">
           <h1 className="text-xl font-bold mb-4">{t("COMMERCIAL_TEAM_DECISION")}</h1>
           <p className="mb-4">
@@ -148,7 +192,7 @@ function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProp
                   className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-600"
                   type="submit"
                 >
-                 {mloading ? t("...SAVING") : t("SAVE")}
+                 {loading ? t("...SAVING") : t("SAVE")}
                 </button>
               </div>
               <div>

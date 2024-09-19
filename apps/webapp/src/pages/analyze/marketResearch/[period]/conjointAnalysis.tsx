@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
@@ -9,8 +7,8 @@ import { featureColors } from "@/lib/constants/colors";
 import VerticalBar from "@/components/charts/VerticalBar";
 import LineChart from "@/components/charts/LineChart";
 import { useSession } from "next-auth/react";
-import { fetchMarketResearchChoices, getFeaturesData, getLevelsData, getSegmentsData, getUtilitiesData } from "features/data";
-import { featureProps, levelProps, marketResearchProps, segmentProps, utilitiesProps } from "types";
+import {  getFeaturesData, getLevelsData, getSegmentsData, getUtilitiesData } from "features/data";
+import { featureProps, levelProps, segmentProps, utilitiesProps } from "types";
 
 
 
@@ -65,7 +63,9 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
     }
   }, [status]);
 
-
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
 
   let features: string[] = [];
 
@@ -189,15 +189,14 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
 
       <div className="grid grid-cols-1 mb-4 h-80">
           <GraphContainer>
-          {loading ? <Loading />:  
+
            <VerticalBar data={chart1Data} title="" inPercent={true} legend={true} />
-        }
+        
           </GraphContainer>
       </div>
 
       <ParagraphContainer title= {t("UTILITY_CHARTS")} content={t("THE_CHARTS_BELOW_SHOW_THE_UTILITIES_ATTACHED_TO_FOUR_ARBITRARY_LE")}   />
  
-      {loading ? <Loading />:  
       <div className="grid grid-cols-1">
         {segments?.map((segment,index) => (
           <div className="col h-72 p-4" key={index}>
@@ -205,7 +204,7 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
           </div>
         ))} 
       </div>
-}
+
     </div>
     </div>
     </>

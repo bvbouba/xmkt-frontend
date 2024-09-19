@@ -1,10 +1,7 @@
 import { Layout } from "@/components/Layout";
-import { deleteProject, fetchDecisionStatus, fetchProjectById, partialUpdateProject } from "features/decideSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { getFeaturesData } from "features/analyzeSlices";
 import { BlockHeader } from "@/components/blockHeader";
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,7 +12,9 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { CustomModal as Modal } from "@/components/Modal";
-import { useAuth } from "@/lib/providers/AuthProvider";
+import { useSession } from "next-auth/react";
+import { decideStatusProps, featureProps, projectProps } from "types";
+import { deleteProject, fetchDecisionStatus, fetchProjectById, getFeaturesData, partialUpdateProject } from "features/data";
 
 
 export type FormData = {
@@ -36,85 +35,112 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 
 function ProjectPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const router = useRouter()
-  const {project_id} = router.query
-  const projectID = typeof project_id === 'string' ? parseInt(project_id, 10) : null;
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<FormData>();
-  const {participant,setRefresh} = useAuth()
-  const {activePeriod,teamID,industryID} = participant || {};
-  const dispatch = useAppDispatch();
-  const paths = usePaths()
-  const { t } = useTranslation('common')
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  
-  useEffect(() => {
-    if(industryID){
-    dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
-    }
-  }, [dispatch,industryID]);
-  
-  const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
-  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-  
-  
-  useEffect(() => {
-    // Dispatch actions to get firm and brand data when the component mounts
-    if (projectID && activePeriod) {
-      dispatch(fetchProjectById({ id:projectID,period:activePeriod }));
-      dispatch(getFeaturesData());
-    }
-  }, [dispatch,projectID,activePeriod]);
+  const router = useRouter();
+const { project_id } = router.query;
+const projectID = typeof project_id === 'string' ? parseInt(project_id, 10) : null;
 
+const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>();
 
-  const {data:project,loading:ploading,success:psuccess} = useAppSelector((state) => state.decide.project);
-  const {data:features,loading:floading} = useAppSelector((state) => state.analyze.features);
-  
-  const selectedFeatures = features.filter(feature=>['feature_1','feature_2',
-          'feature_3','feature_4','feature_5'].includes(feature.surname))
-  
-  useEffect(() => {
-            if (project?.allocated_budget_for_current_period !== undefined) {
-                setValue('budget', project.allocated_budget_for_current_period);
-            }
+const { data: session, status } = useSession();
+const { activePeriod, teamID, industryID } = session || {};  // Assuming session participant data structure
 
-              setValue('objective', project?.objective);
-
-          }, [project?.allocated_budget_for_current_period,project?.objective]);
-          
-
-    const onSubmit: SubmitHandler<FormData> = (data) => {
-      if(projectID && activePeriod){
-      const objective = data.objective || project?.objective || ""
-      dispatch(partialUpdateProject({projectID,objective,allocatedBudget:data.budget,period:activePeriod}))
-      .then(() => {
-        // After successful submission, trigger a refresh
-        setRefresh((prevKey) => prevKey + 1);
-      });
-      }
-    }
-
-    const onDelete = () => {
-      if (projectID) {
-        setShowConfirmation(false);
-          dispatch(deleteProject({ projectID })).then(() => {
-            // After successful submission, trigger a refresh
-            setRefresh((prevKey) => prevKey + 1);
-          });;
-    
-          router.push(paths.decide.researchAndDevelopment.$url());
+const paths = usePaths();
+const { t } = useTranslation('common');
+const [showConfirmation, setShowConfirmation] = useState(false);
+const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
+const [project, setProject] = useState<projectProps>();
+const [features, setFeatures] = useState<featureProps[]>([]);
+const [loading, setLoading] = useState(false);
+const [message, setMessage] = useState<string>("")
+// Fetch decision status when industryID is available
+useEffect(() => {
+  if (status === "authenticated" && industryID) {
+    const fetchDecisionStatusData = async () => {
+      try {
+        const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
+        setDecisionStatus(data);
+      } catch (error) {
+        console.error('Error fetching decision status:', error);
       }
     };
+    fetchDecisionStatusData();
+  }
+}, [status]);
 
+const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
+
+// Fetch project and features data
+useEffect(() => {
+  const fetchData = async () => {
+    if (status === "authenticated" && projectID && activePeriod) {
+      try {
+        const projectData = await fetchProjectById({ id: projectID, period: activePeriod, token: session.accessToken });
+        setProject(projectData);
+        
+        const featuresData = await getFeaturesData();
+        setFeatures(featuresData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+  };
+  fetchData();
+}, [status, projectID, activePeriod]);
+
+// Populate form fields with project data
+useEffect(() => {
+  if (project?.allocated_budget_for_current_period !== undefined) {
+    setValue('budget', project.allocated_budget_for_current_period);
+  }
+  setValue('objective', project?.objective);
+}, [project]);
+
+// Filter selected features
+const selectedFeatures = features.filter(feature => 
+  ['feature_1', 'feature_2', 'feature_3', 'feature_4', 'feature_5'].includes(feature.surname)
+);
+
+// Handle form submission
+const onSubmit: SubmitHandler<FormData> = async (data) => {
+  if (projectID && activePeriod && status === "authenticated") {
+    const objective = data.objective || project?.objective || "";
+    setLoading(true)
+    try {
+      await partialUpdateProject({
+        projectID,
+        objective,
+        allocatedBudget: data.budget,
+        period: activePeriod,
+        token: session.accessToken
+      });
+      setMessage(t("UPDATED_SUCCESSFULLY"))
+    } catch (error) {
+      console.error('Error updating project:', error);
+    }finally{
+      setLoading(false)
+    }
+  }
+};
+
+// Handle project deletion
+const onDelete = async () => {
+  if (window.confirm(t("ALL_YOUR_PAST_INVESTMENT_WILL_BE_LOST"))){
+  if (projectID && status === "authenticated") {
+    setShowConfirmation(false);
+    try {
+      await deleteProject({ projectID, token: session.accessToken });
+      router.push(paths.decide.researchAndDevelopment.$url());
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
+  }
+}
+};
     // if(isDecisionInProgress) return<> Decision is in Progress</>
     return (
       <>
       
-      {psuccess && <SuccessMessage message={t("UPDATED_SUCCESSFULLY")} />}
+      {message && <SuccessMessage message={message} setMessage={setMessage}/>}
       <div className="container mx-auto">
       <BlockHeader title={t("R&D_DECISION_-_PROJECT_OVERVIEW")} />
 
@@ -304,20 +330,10 @@ function ProjectPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>)
           <div>
               {(project?.status == false) && <button type="button" data-modal-target="popup-modal" data-modal-toggle="popup-modal"
               className="text-white bg-red-500 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-gray-400 dark:hover:bg-gray-500 dark:focus:ring-gray-600"
-              onClick={() => setShowConfirmation(true)}>
+              onClick={() => onDelete()}>
               {t("DELETE")} {project?.name}
               </button>}
-              {showConfirmation && (
-                <Modal
-                 isOpen={showConfirmation}
-                  onConfirm={()=>onDelete()}
-                  closeModal={()=>setShowConfirmation(false)}
-                  title=""
-                >
-                 <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400"> {t("ARE_YOU_SURE_YOU_WANT_TO_DELETE_THE_PROJECT", {name:project?.name})}</h3>
-                 <p>{t("ALL_YOUR_PAST_INVESTMENT_WILL_BE_LOST")}</p>
-                  </Modal>
-      )}
+           
           </div>
   <div>
    <Link href={paths.decide.$url()}> <button 
@@ -335,7 +351,7 @@ function ProjectPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>)
                 className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-600"
                 type="submit"
               >
-                {ploading ? t("...SAVING") : t("SAVE")}
+                {loading ? t("...SAVING") : t("SAVE")}
               </button>
 }
           </div>

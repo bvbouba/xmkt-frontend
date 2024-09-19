@@ -2,7 +2,6 @@
 import {  useEffect, useState } from "react";
 
 
-import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
@@ -12,8 +11,8 @@ import VerticalBar from "@/components/charts/VerticalBar";
 import HorizontalBar from "@/components/charts/HorizontalBar";
 import DoughnutChart from "@/components/charts/DoughnutChart";
 import { useSession } from "next-auth/react";
-import { fetchMarketResearchChoices, getSalesData, getSegmentsData } from "features/data";
-import { marketResearchProps, salesProps, segmentProps } from "types";
+import {  getSalesData, getSegmentsData } from "features/data";
+import {  salesProps, segmentProps } from "types";
 
 
 interface columnProps {
@@ -72,6 +71,11 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
       loadData();
     }
   }, [status]);
+
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
+
   const totalSize = sales?.reduce((a, c) => a + c.volume, 0);
   let teamJson: { [key: string]: any } = {};
   let firmIdJson: { [key: string]: any } = {};
@@ -193,13 +197,13 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
 
         <div className="grid grid-cols-1 gap-4 m-4 h-80">
           <GraphContainer>
-          {loading ? <Loading />:  
+
             <VerticalBar
               data={msChartData}
                 title={t("TOTAL_MARKET_SHARES_(%UNIT)")}
                 inPercent={true}   
             />
-}
+
           </GraphContainer>
         </div>
 
@@ -210,7 +214,7 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
             {t("MARKET_SHARE_BY_CONSUMER_SEGMENT")}
           </h4>
           <div className="col">
-          {loading ? <Loading />:  
+
             <table className="w-full text-xs border text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -247,7 +251,7 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
                 ))}
               </tbody>
             </table>
-}
+
           </div>
         </div>
 
@@ -257,24 +261,24 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
 
         <div className="grid grid-cols-2 gap-4 m-4 h-80">
           <GraphContainer>
-          {loading ? <Loading />:  
+
             <HorizontalBar
               data={salesChart}
                 title={t("UNIT_SALES_BY_CONSUMER_SEGMENT_IN_THOUSAND_OF_UNITS")}
                 legendDisplay={false}
                 legendPos="right"
             />
-}
+
           </GraphContainer>
           
           <GraphContainer>
-          {loading ? <Loading />:  
+
             <DoughnutChart
               data={relativeSalesChart}
               title={t("RELATIVE_CONSUMER_SEGMENT_SIZES") }
               inPercent={true}
             />
-}
+
           </GraphContainer>
           
         </div>

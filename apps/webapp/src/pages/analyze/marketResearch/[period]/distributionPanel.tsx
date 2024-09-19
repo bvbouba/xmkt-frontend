@@ -2,7 +2,6 @@
 import {  getValueByBrandChannel } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { TableSimple, columnProps } from "@/components/Table/Table";
-import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
@@ -63,6 +62,9 @@ function DistributionPanel({ locale }: InferGetStaticPropsType<typeof getStaticP
       loadData();
     }
   }, [status]);
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
 
   let teamJson: { [key: string]: any } = {};
   let firmIdJson: { [key: string]: any } = {};
@@ -165,23 +167,23 @@ const chart4Data = {
       <div className="row align-items-center p-4">
         <div className="col">
         <h4 className="pb-4">{t("MARKET_SHARE_BY_CHANNEL_(%_UNIT)")}</h4>
-        {loading ? <Loading />:  
+
         <TableSimple columns={columns} rows={rows}/>
-    }
+    
         </div>
       </div>
 
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {loading ? <Loading />:  
+
             <HorizontalBar data={chart1Data} title={t("UNIT_SALES_BY_CHANNEL_IN_THOUSANDS_OF_UNITS")} legendDisplay={false} />
-  }
+  
             </GraphContainer>
   
           <GraphContainer>
-          {loading ? <Loading />:  
+
             <DoughnutChart data={chart2Data} title={t("RELATIVE_CHANNEL_SIZE_(%_UNITS)")} inPercent={true} legendDisplay={true} />
-}
+
           </GraphContainer>
         </div>
 
@@ -190,23 +192,23 @@ const chart4Data = {
       <div className="row align-items-start p-4">
         <h4 className="pb-4">{t("DISTRIBUTION_COVERAGE_BY_CHANNEL_(%_STORES)")}</h4>
         <div className="col">
-        {loading ? <Loading />:  
+
         <TableSimple columns={columns} rows={rows1}/>
-}
+
         </div>
       </div>
       
 
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
-          {loading ? <Loading />:  
+
             <HorizontalBar data={chart3Data} title={t("NUMBER_OF_OUTLETS_IN_EACH_CHANNEL")} legendDisplay={false} />
-}
+
           </GraphContainer>
           <GraphContainer>
-          {loading ? <Loading />:  
+
             <DoughnutChart data={chart4Data} title={t("RELATIVE_CHANNEL_SIZE_(%_OUTLET)")} inPercent={true} />
-}
+
           </GraphContainer>
         </div>
     </div>

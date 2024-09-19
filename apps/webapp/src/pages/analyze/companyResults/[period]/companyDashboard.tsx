@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 
 import { barThickness, unit } from "@/lib/constants";
 import { BlockHeader } from "@/components/blockHeader";
-import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
@@ -60,6 +59,9 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
 
   }, [status]);
 
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
   
   let firmColors: string[] = []; // Default color array
 
@@ -173,43 +175,31 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
           <BlockHeader title={title} />
           <div className="grid grid-cols-3 gap-4">
             <GraphContainer>
-              {loading ? <Loading /> :
-                <VerticalBar data={stockPriceData} title={t("SPI")} />}
+                <VerticalBar data={stockPriceData} title={t("SPI")} />
             </GraphContainer>
             <GraphContainer>
-              {loading ? <Loading /> :
                 <VerticalBar data={revenueData} title={t("REVENUE_(M$)")} />
-              }
             </GraphContainer>
             <GraphContainer>
-              {loading ? <Loading /> :
                 <VerticalBar data={netContributionData} title={t("NET_CONTRIBUTION_(M$)")} />
-              }
+            
             </GraphContainer>
           </div>
           <div className="grid grid-cols-3 gap-4">
             <GraphContainer>
-              {loading ? <Loading /> :
                 <VerticalBar data={marketShareData} title={t("MARKET_SHARE_(%$)")} inPercent={true} />
-              }
             </GraphContainer>
             <GraphContainer>
-              {loading ? <Loading /> :
                 <VerticalBar data={unitMarketShare} title={t("UNIT_MARKET_SHARE_(%U)")} inPercent={true} />
-              }
             </GraphContainer>
             <div></div>
           </div>
           <div className="grid grid-cols-3 gap-4 h-80">
             <GraphContainer>
-              {loading ? <Loading /> :
                 <DoughnutChart data={brandRevenueChartData} title={t("REVENUE_(M$)")} />
-              }
             </GraphContainer>
             <GraphContainer>
-              {loading ? <Loading /> :
                 <DoughnutChart data={brandContributionChartData} title={t("CONTRIBUTION_(M$)")} />
-              }
             </GraphContainer>
             <div></div>
           </div>

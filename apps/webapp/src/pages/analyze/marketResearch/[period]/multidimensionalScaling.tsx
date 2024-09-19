@@ -3,15 +3,14 @@ import {  getMapData, getValueByBrandDimension, getValueBySegmentDimension } fro
 import {  useEffect, useState } from "react";
 
 import { TableSimple } from "@/components/Table/Table";
-import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { HeaderContainer, ParagraphContainer } from "@/components/container";
 import ScatterChart from "@/components/charts/ScatterChart";
 import { useSession } from "next-auth/react";
-import { DimensionIdealsProps, dimensionProps, DimensionScalesProps, marketResearchProps, segmentProps } from "types";
-import { fetchDimensions, fetchMarketResearchChoices, getDimensionalIdealsData, getDimensionalScalesData, getSegmentsData } from "features/data";
+import { DimensionIdealsProps, dimensionProps, DimensionScalesProps, segmentProps } from "types";
+import { fetchDimensions, getDimensionalIdealsData, getDimensionalScalesData, getSegmentsData } from "features/data";
 
 
 
@@ -36,7 +35,7 @@ const [dimensional, setDimensional] = useState<DimensionScalesProps[]>([]);
 const [ideals, setIdeals] = useState<DimensionIdealsProps[]>([]);
 const [segments, setSegments] = useState<segmentProps[]>([]);
 const [dimensions, setDimensions] = useState<dimensionProps[]>([]);
-const [loading, setLoading] = useState(false); // Loading state
+const [loading, setLoading] = useState(false); 
 
 const { t } = useTranslation('common'); // For translation
 
@@ -75,14 +74,17 @@ useEffect(() => {
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
-        setLoading(false); // Make sure to stop the loading spinner
+        setLoading(false); 
       }
     };
 
-    // Trigger data loading
     loadData();
   }
 }, [status]);
+
+if (status === "loading" || loading) {
+  return <p>Loading...</p>;
+}
   
 let firmIds : { [key: string]: any } = {};
 let teamLabels : { [key: string]: any } = {};
@@ -167,7 +169,7 @@ const rows1 = segments.map(row =>{
       <div className="p-1">
         <div className="row align-items-center  pt-4">
           <div className="col col-map" id='brandmap'>
-          {(loading )? <Loading />:  
+          { 
           chart1Data && <ScatterChart data={chart1Data.data} min={min} max={max} ticks={ticks} xTitle={xTitle1} yTitle={yTitle1} labelColors={chart1Data.labelColors} closePairs={chart1Data.closePairs} />
           }
           </div>
@@ -181,7 +183,7 @@ const rows1 = segments.map(row =>{
       <div className="p-1">
         <div className="row align-items-center  pt-4">
           <div className="col col-map" id='brandmap'>
-          {(loading)? <Loading />: 
+          {
            chart2Data && <ScatterChart data={chart2Data.data} min={min} max={max} ticks={ticks} xTitle={xTitle2} yTitle={yTitle2} labelColors={chart2Data.labelColors} closePairs={chart2Data.closePairs} />
         }
           </div>
@@ -193,9 +195,8 @@ const rows1 = segments.map(row =>{
       <ParagraphContainer title={t("BRAND_PERCEPTIONS")} content={t("THE_TABLE_BELOW_GIVES_THE_COORDINATES_OF_THE_BRAND_POSITION_ON_TH")} />
 
         <div className="col p-4">
-        {(loading )? <Loading />: 
         <TableSimple columns={columns} rows={rows}/>
-      }
+      
         </div>
 
 
@@ -203,9 +204,8 @@ const rows1 = segments.map(row =>{
 
 
         <div className="col p-4">
-        {(loading )? <Loading />: 
         <TableSimple columns={columns1} rows={rows1}/>
-    }
+    
         </div>
 {/* 
       <div className="p-4">

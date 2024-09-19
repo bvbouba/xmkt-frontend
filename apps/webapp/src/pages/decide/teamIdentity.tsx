@@ -1,17 +1,16 @@
 import { Layout } from "@/components/Layout";
 import { SuccessMessage } from "@/components/ToastMessages";
-import { fetchDecisionStatus, updateTeamName } from "features/decideSlices";
-import { loadInfo } from "features/participantSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { uppercase } from "@/lib/utils";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSession } from "next-auth/react";
+import { decideStatusProps } from "types";
+import { fetchDecisionStatus, updateTeamName } from "features/data";
 
 interface FormValues {
     teamName: string;
@@ -30,48 +29,64 @@ interface FormValues {
   
 function TeamIdentity({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
 
-  const dispatch = useAppDispatch();
-  const {participant} = useAuth()
-  const { teamName,teamID,industryID,activePeriod} =
-    participant || {};
-    const paths = usePaths()
-   const firstLetter = teamName?.[0]
-    const {
-        handleSubmit,
-        register,
-        formState: { errors: errorsForm },
-      } = useForm<FormValues>();
-    
-      useEffect(() => {
-        if(industryID){
-        dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
-        }
-      }, [dispatch,industryID]);
-      
-      const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
-      const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-      const {loading,success} = useAppSelector((state) => state.decide);
-      const { t } = useTranslation('common')
-      
-      const onSubmit = (data: FormValues) => {
-        const { teamName } = data;
-        // Validate and handle form submission
-        if (teamID) {
-            dispatch(updateTeamName({ teamID, newName:uppercase(teamName) }));
-            const pak = localStorage.getItem("pak");
-            if(pak) dispatch(loadInfo({pak}))
-        } 
-      };
+  const { data: session, status,update } = useSession();
+const { teamName, teamID, industryID, activePeriod } = session || {};
+const paths = usePaths();
+const firstLetter = teamName?.[0];
+const { handleSubmit, register, formState: { errors: errorsForm } } = useForm<FormValues>();
+const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
+const [loading, setLoading] = useState(false);
+const { t } = useTranslation('common');
+const [message, setMessage] = useState<string>("")
 
-      const validateName = (value: string) => {
-        const alphabeticRegex = /^[A-Za-z]+$/;
-            if (!alphabeticRegex.test(value)) { 
-              return t("NAME_MUST_CONTAIN_ONLY_ALPHABETIC_LETTERS");
-            }
-        if (value[0] !== firstLetter) { 
-            return t("TEAM_NAME_MUST_START_WITH",{firstLetter})
-        }
-      };
+// Fetch decision status when industryID is available
+useEffect(() => {
+  if (status === "authenticated" && industryID) {
+    const fetchDecisionStatusData = async () => {
+      try {
+        const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
+        setDecisionStatus(data);
+      } catch (error) {
+        console.error('Error fetching decision status:', error);
+      }
+    };
+    fetchDecisionStatusData();
+  }
+}, [status, industryID]);
+
+const isDecisionInProgress = decisionStatus?.status === 2 || decisionStatus?.status === 0;
+
+// Handle form submission
+const onSubmit = async (data: FormValues) => {
+  const { teamName } = data;
+
+  // Validate and handle form submission
+  if (teamID && status === 'authenticated') {
+    setLoading(true)
+    try {
+      await updateTeamName({ teamID, newName: uppercase(teamName), token: session.accessToken });
+      update({...session,
+            teamName:uppercase(teamName)
+      })
+      setMessage(t("UPDATED_SUCCESSFULLY"))
+    } catch (error) {
+      console.error('Error updating team name:', error);
+    }finally{
+      setLoading(false)
+    }
+  }
+};
+
+// Validate the team name
+const validateName = (value: string) => {
+  const alphabeticRegex = /^[A-Za-z]+$/;
+  if (!alphabeticRegex.test(value)) {
+    return t("NAME_MUST_CONTAIN_ONLY_ALPHABETIC_LETTERS");
+  }
+  if (value[0] !== firstLetter) {
+    return t("TEAM_NAME_MUST_START_WITH", { firstLetter });
+  }
+};
 
 
       // if(isDecisionInProgress) return<> Decision is in Progress</>
@@ -80,7 +95,7 @@ function TeamIdentity({ locale }: InferGetStaticPropsType<typeof getStaticProps>
     return (
         <>
         
-        {success && <SuccessMessage message={t("UPDATED_SUCCESSFULLY")} />}
+        {message && <SuccessMessage message={message} setMessage={setMessage}/>}
         <div className="container mx-auto mt-4">
       <h1 className="text-2xl font-bold mb-4">{t("TEAM_IDENTITY")}</h1>
       <div className="grid grid-cols-1">

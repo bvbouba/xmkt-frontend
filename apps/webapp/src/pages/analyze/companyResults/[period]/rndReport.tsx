@@ -1,15 +1,13 @@
-import { Loading } from "@/components/Loading";
 import { ProjectTable } from "@/components/Table";
 import { HeaderContainer } from "@/components/container";
 import { translateFeatures } from "@/lib/utils";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useRouter } from "next/router";
 import {  useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { getFeaturesData, getProjectData } from "features/data";
-import { featureProps, projectProps, rndProjectProps } from "types";
+import { featureProps, rndProjectProps } from "types";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'en';
@@ -52,6 +50,9 @@ function RndReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps
         }
       }, [status,]);
     
+      if (status === "loading" || loading) {
+        return <p>Loading...</p>;
+      }
 
   const selectedFeatures = featureData?.filter(feature=>['feature_1','feature_2',
   'feature_3','feature_4','feature_5'].includes(feature.surname))
@@ -65,8 +66,7 @@ function RndReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps
     <div className="container mx-auto">
 
       <HeaderContainer title={title} content={`${t("THIS_REPORT_PROVIDES_INFORMATION_ON_THE_ACTIVITIES_CONDUCTED_FOR_")} ${selectedPeriod}`}/>
-      {
-      loading ? <Loading />:
+  
       <>
       <ProjectTable
         projects={projectData.now}
@@ -95,7 +95,7 @@ function RndReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps
         features={translateFeatures(selectedFeatures,locale)}
         subtitle={t("THE_PROJECTS_LISTED_BELOW_HAVE_BEEN_SHELVED.")}
       /></>
-     }
+     
     </div>
     </div>
 

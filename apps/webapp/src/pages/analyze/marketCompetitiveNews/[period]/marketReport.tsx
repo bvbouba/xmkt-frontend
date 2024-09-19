@@ -1,4 +1,3 @@
-import { Loading } from "@/components/Loading";
 import { HeaderContainer, ParagraphContainer } from "@/components/container";
 import { unitMsItems, valueMsItems } from "@/lib/constants";
 
@@ -26,7 +25,7 @@ function MarketReport({ locale }: InferGetStaticPropsType<typeof getStaticProps>
   const {  industryID, firmID,  } = session || {};
   const selectedPeriod = session?.selectedPeriod || 0
   const [brandData,setBrandData] = useState<brandProps[]>()
-  const [featuresData,setGetfeaturesData] = useState<featureProps[]>()
+  const [featuresData,setGetfeaturesData] = useState<featureProps[]>([])
   const [m2Data,setM2Data] = useState<markertingMixProps[]>([])
 
   const [loading,setLoading] = useState(false)
@@ -56,7 +55,9 @@ function MarketReport({ locale }: InferGetStaticPropsType<typeof getStaticProps>
   },[status])
 
 
-
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
 
   const features = translateFeatures(featuresData,locale)
 
@@ -115,7 +116,7 @@ const selectedUnitMsData = brandData?.filter(row => row.period_id === selectedPe
         
         <div className="grid grid-cols-2 gap-4 m-4">
           <div className="col">
-          {loading ? <Loading />:  
+          
           <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -143,11 +144,11 @@ const selectedUnitMsData = brandData?.filter(row => row.period_id === selectedPe
                   </tr>
                 ))}
               </tbody>
-            </table>}
+            </table>
           </div>
 
            <div className="col">
-           {loading ? <Loading />:  
+
            <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -175,7 +176,7 @@ const selectedUnitMsData = brandData?.filter(row => row.period_id === selectedPe
                   </tr>
                 ))}
               </tbody>
-            </table> }
+            </table> 
           </div>
         </div>
       </div>
@@ -185,7 +186,6 @@ const selectedUnitMsData = brandData?.filter(row => row.period_id === selectedPe
 
         <div className="row align-items-center p-4">
 
-        {loading ? <Loading />:  
            <div className="col">
             {features && (
               <>
@@ -229,7 +229,7 @@ const selectedUnitMsData = brandData?.filter(row => row.period_id === selectedPe
             </>
             )}
           </div> 
-         }
+         
         </div>
       </div>
     </div>

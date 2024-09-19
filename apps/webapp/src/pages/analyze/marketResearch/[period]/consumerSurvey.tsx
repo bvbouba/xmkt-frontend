@@ -3,7 +3,6 @@ import {  getValueByBrandSegment, getValueByChannelSegment } from "@/lib/utils";
 import {  useEffect, useState } from "react";
 
 
-import { Loading } from "@/components/Loading";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
@@ -12,8 +11,8 @@ import { channelColors } from "@/lib/constants/colors";
 import VerticalBar from "@/components/charts/VerticalBar";
 import HorizontalBar from "@/components/charts/HorizontalBar";
 import { useSession } from "next-auth/react";
-import { fetchMarketResearchChoices, getBrandAwarenessData, getChannelsData, getMarketDemandData, getPurchaseIntentData, getSegmentsData, getShoppingHabitData } from "features/data";
-import { brandAwarenessProps, channelProps, demandProps, marketProps, marketResearchProps, segmentProps, shoppingHabitProps } from "types";
+import {  getBrandAwarenessData, getChannelsData, getMarketDemandData, getPurchaseIntentData, getSegmentsData, getShoppingHabitData } from "features/data";
+import { brandAwarenessProps, channelProps, demandProps, segmentProps, shoppingHabitProps } from "types";
 
 
 interface columnProps {
@@ -92,9 +91,11 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
       };
       loadData();
     }
-  }, [status, firmID, industryID, selectedPeriod, session?.accessToken]);
+  }, [status]);
 
-
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
 
   const total_size = marketDemand.reduce((a, c) => a + c.size, 0);
   let teamJson: { [key: string]: any } = {};
@@ -221,9 +222,9 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
         <div className="grid grid-cols-1 gap-4 m-4 h-80">
           <GraphContainer>
-          {loading ? <Loading />:  
+
             <VerticalBar data={chart1Data} title={t("AVERAGE_BRAND_AWARENESS")} inPercent={true} />
-  }
+  
           </GraphContainer>
         </div>
 
@@ -231,7 +232,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
           <div className="col p-7">
           <h4 className="pb-4">{t("BRAND_AWARENESS_BY_CONSUMER_SEGMENT")}</h4>
-          {loading ? <Loading />:  
+
             <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -268,7 +269,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
                 ))}
               </tbody>
             </table>
-}
+
           </div>
 
         <ParagraphContainer   title={t("PURCHASE_INTENTIONS")} content={t("THE_PURCHASE_INTENTIONS_FIGURES_IN_THE_CHART_AND_TABLE_REPRESENT_")} />
@@ -276,9 +277,9 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
         <div className="grid grid-cols-1 gap-4 m-4 h-80">
           <GraphContainer>
-          {loading ? <Loading />:  
+
             <VerticalBar data={chart2Data} title={t("AVERAGE_PURCHASE_INTENT")} inPercent={true} />
-}
+
           </GraphContainer>
         </div>
 
@@ -286,7 +287,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
           <div className="col p-7">
           <h4 className="pb-4"> {t("PURCHASE_INTENTION_BY_CONSUMER_SEGMENT")} </h4>
-          {loading ? <Loading />:  
+
             <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -323,16 +324,16 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
                 ))}
               </tbody>
             </table>
-}        </div>
+        </div>
          
         <ParagraphContainer   title={t("SHOPPING_HABITS")} content={t("THE_SHOPPING_HABITS_DATA_IN_THE_CHART_REPRESENTS_FOR_EACH_CHANNEL")} />
 
     
         <div className="grid grid-cols-1 gap-4 m-4 h-80">
           <GraphContainer>
-          {loading ? <Loading />:  
+
             <HorizontalBar data={chart3Data}  title="" inPercent={true} legendPos="right" />
-}
+
           </GraphContainer>
         </div>
       </div>

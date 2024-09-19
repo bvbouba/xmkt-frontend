@@ -1,5 +1,4 @@
 
-import { Loading } from "@/components/Loading";
 import { HeaderContainer, ParagraphContainer } from "@/components/container";
 import { getEconomicData } from "@/lib/utils";
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
@@ -51,6 +50,10 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
 
   }, [status]);
 
+  if (status === "loading" || loading) {
+    return <p>Loading...</p>;
+  }
+
 
   const selectedIndustryInfo = industryInfo?.filter(row => row.period_id===selectedPeriod).map(
                     row1 => ({
@@ -74,7 +77,7 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
       <ParagraphContainer title={t("ECONOMIC_VARIABLES")} />
 
         <div className="col pt-4">
-        {loading ? <Loading />: 
+
         <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -103,7 +106,7 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
                 ))}
               </tbody>
             </table>
-          }
+          
         </div>
       </div>
     </> );

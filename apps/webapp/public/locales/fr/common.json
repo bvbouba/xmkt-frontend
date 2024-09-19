@@ -400,5 +400,8 @@
 "CONFIRM": "Confirmer",
 "ALL_YOUR_PAST_INVESTMENT_WILL_BE_LOST": "Tous vos investissements passés sur ce project seront perdus",
 "CONFIRMATION": "Confirmation",
-"CONFIRM_WITHDRAWAL_BRAND": "Confirmez le retrait de la marque {{ name }}"
+"CONFIRM_WITHDRAWAL_BRAND": "Confirmez le retrait de la marque {{ name }}",
+"ARE_YOU_SURE_YOU_WANT_MODIFY_THIS_PRODUCT":"Êtes-vous sûr de vouloir modifier ce produit?",
+"TOTAL_DO_NOT_ADD_UP": "Le total ne s'élève pas à 100",
+"ARE_YOU_SURE_YOU_WANT_TO_CHANGE": "Êtes-vous sûr de vouloir changer ?"
 }

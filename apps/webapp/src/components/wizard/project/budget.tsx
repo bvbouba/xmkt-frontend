@@ -1,15 +1,14 @@
 import {  ButtonPrev } from "@/components/button";
 import {  SubmitHandler, useForm } from "react-hook-form";
 import { FormData } from ".";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import { useEffect } from "react";
-import { getFeaturesData, getOnlineQueryInfoData } from "features/analyzeSlices";
-import { checkCostReduction, createProject, fetchBudgetDetails, fetchDecisionStatus, fetchNumberOfQueries, runOnlineQueries } from "features/decideSlices";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import usePaths from "@/lib/paths";
 import { useTranslation } from "next-i18next";
 import { uppercase } from "@/lib/utils";
-import { useAuth } from "@/lib/providers/AuthProvider";
+import { useSession } from "next-auth/react";
+import { featureProps, projectCostEstimateProps } from "types";
+import { createProject, fetchNumberOfQueries, getFeaturesData, runOnlineQueries } from "features/data";
+import usePaths from "@/lib/paths";
 
 
 type props = {
@@ -19,118 +18,100 @@ type props = {
   };
   
   export const Budget: React.FC<props> = ({ onPrevious,formData,locale }) => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-      } = useForm<FormData>();
-      const dispatch = useAppDispatch();
-      const router = useRouter()
-      const paths = usePaths()
-      const {participant,setRefresh} = useAuth()
-      const { industryID, firmID,activePeriod } = participant || {};
-      const {market_id} = router.query
-      const marketID = typeof market_id === 'string' ? parseInt(market_id, 10) : null;
-      const { t } = useTranslation('common')
-      
-    //  useEffect(()=>{
-    //   if(formData?.feature_1 && formData?.feature_2 && formData?.feature_3 && formData?.feature_4 && formData?.feature_5){
-    //   const projectData = {
-    //     feature_1: formData?.feature_1.toString(),
-    //     feature_2: formData?.feature_2.toString(),
-    //     feature_3:formData?.feature_3.toString(),
-    //     feature_4: formData?.feature_4.toString(),
-    //     feature_5: formData?.feature_5.toString(),
-    //   };
-    //   dispatch(checkCostReduction(projectData));
-    // }
-    //  },[formData])
-     
-    //  const {data:costReduction} = useAppSelector((state) => state.decide.costReduction);
+    const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const { market_id } = router.query;
+  const marketID = typeof market_id === 'string' ? parseInt(market_id, 10) : null;
+  const { t } = useTranslation('common');
+  const paths = usePaths()
+  
+  const { industryID, firmID, activePeriod } = session || {}; // Adjust as per your session object
+  const [features, setFeatures] = useState<featureProps[]>([]);
+  const [queryCount, setQueryCount] = useState<{count:number}>();
+  const [queryResult, setQueryResult] = useState<projectCostEstimateProps>(); // Adjust the type as per the result
+  const [loading, setLoading] = useState<boolean>(false);
 
-      
-      useEffect(() => {
-        if(industryID){
-        dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
+  const selectedFeatures = features.filter(feature => ['feature_1', 'feature_2', 'feature_3', 'feature_4', 'feature_5'].includes(feature.surname));
+
+  const fetchData = async () => {
+    if (status === "authenticated") {
+      try {
+        setLoading(true);
+        const featuresData = await getFeaturesData();
+        setFeatures(featuresData);
+        if (firmID && industryID && activePeriod && marketID) {
+          const countData = await fetchNumberOfQueries({ firmID, industryID, period: activePeriod, marketID,token:session.accessToken });
+          setQueryCount(countData);
         }
-      }, [dispatch,industryID]);
-      
-      const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
-      const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-      
-      
-        useEffect(() => {
-            // Dispatch actions to get firm and brand data when the component mounts
-              dispatch(getFeaturesData());
-              if(firmID && industryID && activePeriod && marketID){
-              dispatch(fetchNumberOfQueries({firmID,industryID,period:activePeriod,marketID}))
-              }
-          }, [dispatch,marketID,firmID,industryID,activePeriod]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
-         
-        
-          const {data:features} = useAppSelector((state) => state.analyze.features);
-          const selectedFeatures = features.filter(feature=>['feature_1','feature_2',
-          'feature_3','feature_4','feature_5'].includes(feature.surname))
+  useEffect(() => {
+    fetchData();
+  }, [status, firmID, industryID, activePeriod, marketID]);
 
-          const {data:count,loading} = useAppSelector((state) => state.decide.queryCount);
-          const {data:result,loading:rloading,success:rsuccess} = useAppSelector((state) => state.decide.queryResult);
-          
+  const runQueries = async () => {
+    if (status === "authenticated" && firmID && industryID && activePeriod && marketID && formData?.choice && formData.feature_1
+      && formData.feature_2 && formData.feature_3 && formData.feature_4 && formData.feature_5) {
+      try {
+        const choice = parseInt(formData?.choice);
+        const response = await runOnlineQueries({
+          industryID,
+          firmID,
+          period: activePeriod,
+          marketID,
+          choice,
+          feature1: formData?.feature_1,
+          feature2: formData?.feature_2,
+          feature3: formData?.feature_3,
+          feature4: formData?.feature_4,
+          feature5: formData?.feature_5,
+          baseCost: formData?.baseCost,
+          token:session.accessToken
+        });
+        setQueryResult(response)
+      } catch (error) {
+        console.error('Error running queries:', error);
+      }
+    }
+  };
 
-          const runQueries=()=>{
-            if(firmID && industryID && activePeriod && marketID && formData?.choice && formData.feature_1
-                && formData.feature_2 && formData.feature_3 && formData.feature_4 && formData.feature_5
-                ){
-                const choice = parseInt(formData?.choice)
-                dispatch(runOnlineQueries({
-                    industryID,
-                    firmID,
-                    period:activePeriod,
-                    marketID,
-                    choice,
-                    feature1:formData?.feature_1,
-                    feature2:formData?.feature_2,
-                    feature3:formData?.feature_3,
-                    feature4:formData?.feature_4,
-                    feature5:formData?.feature_5,
-                    baseCost:formData?.baseCost
-                }))
-            }
-          }
-     
-          const onSubmit: SubmitHandler<FormData> = (data) => {
-            // Handle final form submission
-            const d = { ...formData, ...data };
-            if(industryID && firmID && activePeriod && marketID){
-            dispatch(createProject({
-                name:uppercase(d.name),
-                objective:d.objective,
-                industryID,
-                firmID,
-                period: activePeriod,
-                marketID,
-                choice: d.choice,
-                feature1: d.feature_1,
-                feature2: d.feature_2,
-                feature3:  d.feature_3,
-                feature4:  d.feature_4,
-                feature5:  d.feature_5,
-                baseCost:d.baseCost,
-                allocatedBudget:d.budget
-            })).then(() => {
-              // After successful submission, trigger a refresh
-              setRefresh((prevKey) => prevKey + 1);
-            });;
-           }
-     
-          };
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    const d = { ...formData, ...data };
+    if (status === "authenticated" && industryID && firmID && activePeriod && marketID) {
+      try {
+        await createProject({
+          name: uppercase(d.name),
+          objective: d.objective,
+          industryID,
+          firmID,
+          period: activePeriod,
+          marketID,
+          choice: d.choice,
+          feature1: d.feature_1,
+          feature2: d.feature_2,
+          feature3: d.feature_3,
+          feature4: d.feature_4,
+          feature5: d.feature_5,
+          baseCost: d.baseCost,
+          allocatedBudget: d.budget,
+          token:session.accessToken
+        });
+        router.push(paths.decide.researchAndDevelopment.$url()) 
+      } catch (error) {
+        console.error('Error creating project:', error);
+      }
+    }
+  };
 
-          if (rsuccess){
-          router.push(paths.decide.researchAndDevelopment.$url()); 
-          }
-          const queryDisabled = (count > 5)
+  const queryDisabled = (queryCount?.count || 0 )> 5;
 
-          if(isDecisionInProgress) return<> Decision is in Progress</>
     return (
         <>
         
@@ -232,7 +213,7 @@ type props = {
             {t("NUMBER_OF_QUERIES_ALREADY_RUN")}
           </div>
           <div className="">
-            <input  className="border border-gray-300 px-3 py-2 w-full rounded-md focus:outline-none focus:border-blue-500" type="text" value={count || ""} disabled />
+            <input  className="border border-gray-300 px-3 py-2 w-full rounded-md focus:outline-none focus:border-blue-500" type="text" value={queryCount?.count || 0} disabled />
           </div>
           <div className="">
             <button type="button" 
@@ -245,7 +226,7 @@ type props = {
           <div className="">
             <input name="budget-min_cost" 
             className="border border-gray-300 px-3 py-2 w-full rounded-md focus:outline-none focus:border-blue-500"
-            type="text" value={result?.minCost || ""} disabled />
+            type="text" value={queryResult?.minCost || ""} disabled />
           </div>
           <div className=""></div>
           <div className="col-span-4">
@@ -254,7 +235,7 @@ type props = {
           <div className="col-2">
             <input name="budget-required_budget" 
             className="border border-gray-300 px-3 py-2 w-full rounded-md focus:outline-none focus:border-blue-500"
-            type="text" value={result?.projectCost || ""} disabled />
+            type="text" value={queryResult?.projectCost || ""} disabled />
           </div>
           <div className="col-6"></div>
         
@@ -303,7 +284,7 @@ type props = {
                 className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-600"
                 type="submit"
               >
-                {rloading ? t("...SUBMITTING") : t("SUBMIT")}
+                {loading ? t("...SUBMITTING") : t("SUBMIT")}
               </button>
 
           </div>

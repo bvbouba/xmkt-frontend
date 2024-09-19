@@ -1,15 +1,14 @@
 import { Layout } from "@/components/Layout";
 import { ButtonNext } from "@/components/button";
-import { getMarketsData } from "features/analyzeSlices";
-import { fetchBrands, fetchDecisionStatus } from "features/decideSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { brandPortofolioProps, decideStatusProps, marketProps } from "types";
+import { fetchBrands, fetchDecisionStatus, getMarketsData } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'en';
@@ -22,32 +21,60 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 function BrandPortofolio({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const paths = usePaths()
-  const {participant} = useAuth()
-  const dispatch = useAppDispatch();
-  const {industryID, firmID,activePeriod } =
-    participant || {};
-    const { t } = useTranslation('common')
-    
-    useEffect(() => {
-      if(industryID){
-      dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
-      }
-    }, [dispatch,industryID]);
-    
-    const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
-    const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-    
+  const paths = usePaths(); // Assuming `usePaths` is a custom hook
+const { t } = useTranslation('common');
+const { data: session, status } = useSession(); // Getting session data from next-auth
 
-    useEffect(() => {
-      // Dispatch actions to get firm and brand data when the component mounts
-      if (firmID && industryID ) {
-        dispatch(fetchBrands({ industryID, firmID }));
-        dispatch(getMarketsData());
+const industryID = session?.industryID;
+const firmID = session?.firmID;
+const activePeriod = session?.activePeriod;
+
+const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
+const [brands, setBrands] = useState<brandPortofolioProps[]>([]);
+const [markets, setMarkets] = useState<marketProps[]>([]);
+const [loading, setLoading] = useState(true);
+
+// Fetch Decision Status
+useEffect(() => {
+  if (status === "authenticated" && industryID) {
+    const fetchDecisionStatusData = async () => {
+      try {
+        const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
+        setDecisionStatus(data);
+      } catch (error) {
+        console.error('Error fetching decision status:', error);
       }
-    }, [dispatch,firmID, industryID, activePeriod]);
-    const {data:brands} = useAppSelector((state) => state.decide.brands);
-      const {data:markets} = useAppSelector((state) => state.analyze.markets);
+    };
+    fetchDecisionStatusData();
+  }
+}, [status]);
+
+const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
+
+// Fetch Brands and Markets
+useEffect(() => {
+  if (status === "authenticated" && firmID && industryID) {
+    const fetchBrandAndMarketData = async () => {
+      setLoading(true);
+      try {
+        const response1 = await fetchBrands({ industryID, firmID, token: session.accessToken });
+        const response2 = await getMarketsData();
+        
+        setBrands(response1);
+        setMarkets(response2);
+      } catch (error) {
+        console.error("Error fetching brands and markets:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBrandAndMarketData();
+  }
+}, [status]);
+
+if (status==="loading" && loading) {
+  return <p>Loading...</p>;
+}
 
       // if(isDecisionInProgress) return<> Decision is in Progress</>
     return ( 

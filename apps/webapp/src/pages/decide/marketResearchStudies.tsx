@@ -1,17 +1,16 @@
 import { Layout } from "@/components/Layout";
 import { SuccessMessage } from "@/components/ToastMessages";
-import { getMarketsData } from "features/analyzeSlices";
-import { fetchBudgetDetails, fetchDecisionStatus, fetchMarketResearchChoices, resetState, updateMarketResearchChoice } from "features/decideSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { formatPrice } from "@/lib/utils";
+import { fetchDecisionStatus, fetchMarketResearchChoices, getMarketsData, updateMarketResearchChoice } from "features/data";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { decideStatusProps, marketProps, marketResearchProps } from "types";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'en';
@@ -41,63 +40,90 @@ const checkChoice = (choice: boolean | any[]): boolean => {
   };
 
 function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        setValue,
-      } = useForm();
-    const paths = usePaths();
-    const dispatch = useAppDispatch();
-    const {participant,setRefresh} = useAuth()
-    const { industryID, firmID, activePeriod,teamID } = participant || {};
-    const { t } = useTranslation('common')
-    
-    useEffect(() => {
-      if(industryID){
-      dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
-      }
-    }, [dispatch,industryID]);
-    
-    const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
-    const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-    
-    
-    useEffect(() => {
-      if (firmID && industryID && activePeriod) {
-        dispatch(fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: activePeriod }));
-        dispatch(getMarketsData());
-      }
-    }, [dispatch, firmID, industryID, activePeriod]);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm();
+  const paths = usePaths();
+  const { data: session, status } = useSession();
+  const { industryID, firmID, activePeriod, teamID } = session || {};
+  const { t } = useTranslation('common');
   
-    const { data: marketResearchChoices } = useAppSelector((state) => state.decide.marketResearchChoices);
-    const { data: markets } = useAppSelector((state) => state.analyze.markets);
-    const { success: msuccess,loading:mloading } = useAppSelector((state) => state.decide.marketResearchChoice);
-    
-    useEffect(()=>{
-        marketResearchChoices.map(m=>{setValue(`${m.id}`,m.choice)})
-    },[marketResearchChoices])
-
-    
-    const benchmark =  marketResearchChoices.find(m => m.study == 1)
-    
-    const onSubmit = (data: any) => {
-        // Handle form submission
-        marketResearchChoices.map(entry =>{
-            const choice = checkChoice(data[entry.id])
-          dispatch(updateMarketResearchChoice({id:entry.id,choice})).then(() => {
-            // After successful submission, trigger a refresh
-            setRefresh((prevKey) => prevKey + 1);
-          });
-        })
+  const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
+  const [marketResearchChoices, setMarketResearchChoices] = useState<marketResearchProps[]>([]);
+  const [markets, setMarkets] = useState<marketProps[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState<string>("");
+  
+  // Fetch decision status when industryID is available
+  useEffect(() => {
+    if (status === "authenticated" && industryID) {
+      const fetchDecisionStatusData = async () => {
+        try {
+          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
+          setDecisionStatus(data);
+        } catch (error) {
+          console.error('Error fetching decision status:', error);
+        }
       };
+      fetchDecisionStatusData();
+    }
+  }, [status, industryID]);
+  
+  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
+  
+  // Fetch market research choices and markets data when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      if (status === "authenticated" && firmID && industryID && activePeriod) {
+        setLoading(true);
+        try {
+          const researchChoicesData = await fetchMarketResearchChoices({ industry: industryID, firm: firmID, period: activePeriod, token: session.accessToken });
+          setMarketResearchChoices(researchChoicesData);
+          const marketsData = await getMarketsData();
+          setMarkets(marketsData);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchData();
+  }, [status, firmID, industryID, activePeriod]);
+  
+  useEffect(()=>{
+    marketResearchChoices.map(m=>{setValue(`${m.id}`,m.choice)})
+},[marketResearchChoices])
+  
+  const benchmark = marketResearchChoices.find(m => m.study === 1);
+  
+  const onSubmit = async (data: any) => {
+    if (window.confirm(t("ARE_YOU_SURE_YOU_WANT_TO_CHANGE"))) {
+      if(status ==="authenticated"){try {
+        await Promise.all(marketResearchChoices.map(async (entry) => {
+          const choice = checkChoice(data[entry.id]);
+          await updateMarketResearchChoice({ id: entry.id, choice, token: session.accessToken });
+        }));
+        setMessage(t("UPDATED_SUCCESSFULLY"));
+      } catch (error) {
+        console.error('Error updating market research choices:', error);
+      }}
+    }
+  };
+
+  if (status==="loading" && loading) {
+    return <p>Loading...</p>;
+  }
 
       // if(isDecisionInProgress) return<> Decision is in Progress</>
 
     return ( 
         <>
             
-       {msuccess && <SuccessMessage message={t("UPDATED_SUCCESSFULLY")} />}
+       {message && <SuccessMessage message={message} setMessage={setMessage} />}
             <div className="container mx-auto mt-10">
       <h1 className="text-xl font-bold mb-4">{t("MARKET_RESEARCH_DECISIONS")}</h1>
       <p className="mb-4">
@@ -166,7 +192,7 @@ function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getSta
                   className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-600"
                   type="submit"
                 >
-                  {mloading ? t("...SAVING") : t("SAVE")}
+                  {loading ? t("...SAVING") : t("SAVE")}
                 </button>
               </div>
               <div>

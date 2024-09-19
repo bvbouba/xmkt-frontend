@@ -1,6 +1,7 @@
 import { useAppSelector } from '@/lib/hooks/redux';
 import { brandProps, firmProps, industryDataProps, markertingMixProps, unitMsProps, valueMsProps } from '@/lib/type';
 import { formatPrice } from '@/lib/utils';
+import { useSession } from 'next-auth/react';
 import React from 'react';
 
 interface itemProps{
@@ -17,8 +18,8 @@ interface props {
 }
 
 export const Table = ({ data, items,heads,lookup,percent,headerless }:props) => {
-  const participant = useAppSelector((state) => state.participant);
-  const { selectedPeriod } = participant;
+  const { data: session } = useSession()
+  const selectedPeriod = session?.selectedPeriod || 0
   return (
     <div className="relative overflow-x-auto">
     <table className="w-full border text-xs text-right rtl:text-right text-gray-500 dark:text-gray-400">

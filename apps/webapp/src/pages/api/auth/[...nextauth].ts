@@ -29,6 +29,10 @@ declare module "next-auth" {
         industryName: string;
         courseCode: string;
         selectedPeriod: number;
+        refresh:number;
+        selectedMarketID?:number;
+        selectedBrandID?:number;
+        selectedProjectID?:number;
     }
 
     interface User {
@@ -122,6 +126,18 @@ const handler = NextAuth({
                 if (session?.firmID) {
                     token.firmID = session.firmID;
                 }
+                if (session?.refresh) {
+                    token.refresh = session.refresh;
+                }
+                if (session?.selectedBrandID) {
+                    token.selectedBrandID = session.selectedBrandID;
+                }
+                if (session?.selectedMarketID) {
+                    token.selectedMarketID = session.selectedMarketID;
+                }
+                if (session?.selectedProjectID) {
+                    token.selectedProjectID = session.selectedProjectID;
+                }
             }
             if (user?.token) {
                 token.accessToken = user.token as string;
@@ -144,6 +160,11 @@ const handler = NextAuth({
             session.selectedPeriod = token.selectedPeriod as number;
             session.firmID = token.firmID as number;
             session.pak = token.pak as string;
+            session.refresh = token.refresh as number;
+            session.selectedBrandID = token.selectedBrandID as number;
+            session.selectedMarketID = token.selectedMarketID as number;
+            session.selectedProjectID = token.selectedProjectID as number;
+
 
             if (session.accessToken) {
                 try {

@@ -1,13 +1,13 @@
 import { Layout } from "@/components/Layout";
-import { fetchDecisionStatus, getMarketingMixData } from "features/decideSlices";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import usePaths from "@/lib/paths";
-import { useAuth } from "@/lib/providers/AuthProvider";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
-import { ReactElement, useEffect } from "react";
+import { ReactElement, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { decideStatusProps, markertingMixProps } from "types";
+import { fetchDecisionStatus, getMarketingMixData } from "features/data";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -22,32 +22,58 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 
 function MarketingMix({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
-    const paths = usePaths()
-  const dispatch = useAppDispatch();
-  const {participant} = useAuth()
-  const {industryID, firmID,activePeriod } =
-    participant || {};
-    const { t } = useTranslation('common')
-    
-    useEffect(() => {
-        if(industryID){
-        dispatch(fetchDecisionStatus({industryID})); // Replace 'industryId' with the actual industry ID
+  const { data: session, status } = useSession();
+  const { industryID, firmID, activePeriod } = session || {};
+  const { t } = useTranslation('common');
+  const paths = usePaths()
+  
+  const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
+  const [marketingMixData, setMarketingMixData] = useState<markertingMixProps[]>([]);
+  const [loading, setLoading] = useState(false);
+  
+  // Fetch decision status when industryID is available
+  useEffect(() => {
+    if (status === "authenticated" && industryID) {
+      const fetchDecisionStatusData = async () => {
+        try {
+          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
+          setDecisionStatus(data);
+        } catch (error) {
+          console.error('Error fetching decision status:', error);
         }
-      }, [dispatch,industryID]);
-      
-      const decisionStatus  = useAppSelector((state) => state.decide.decisionStatus);
-      const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 1);
-      
-    
-    useEffect(() => {
-      // Dispatch actions to get firm and brand data when the component mounts
-      if (firmID && industryID && activePeriod ) {
-        dispatch(getMarketingMixData({ industryID, firmID,period:activePeriod }));
+      };
+      fetchDecisionStatusData();
+    }
+  }, [status]);
+  
+  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
+  
+  // Fetch marketing mix data when firmID, industryID, and activePeriod are available
+  useEffect(() => {
+    const fetchData = async () => {
+      if (status === "authenticated" && firmID && industryID && activePeriod ) {
+        setLoading(true);
+        try {
+          const response = await getMarketingMixData({
+            industryID,
+            firmID,
+            period: activePeriod,
+            token: session.accessToken,
+          });
+          setMarketingMixData(response);
+        } catch (error) {
+          console.error('Error fetching marketing mix data:', error);
+        } finally {
+          setLoading(false);
+        }
       }
-    }, [dispatch,firmID, industryID, activePeriod]);
- 
-    const {data} = useAppSelector((state) => state.decide.marketingMix);
-    const selectedData = data.filter(entry => entry.is_active === true)
+    };
+  
+    if (firmID && industryID && activePeriod) {
+      fetchData();
+    }
+  }, [status]);
+    const selectedData = marketingMixData.filter(entry => entry.is_active === true)
     // if(isDecisionInProgress) return<> Decision is in Progress</>
     return ( 
         <>
