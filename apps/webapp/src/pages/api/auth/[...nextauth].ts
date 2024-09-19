@@ -120,7 +120,7 @@ const handler = NextAuth({
                 if (session?.courseCode) {
                     token.courseCode = session.courseCode;
                 }
-                if (session?.selectedPeriod) {
+                if (session?.selectedPeriod !== undefined) {
                     token.selectedPeriod = session.selectedPeriod;
                 }
                 if (session?.firmID) {
@@ -164,8 +164,7 @@ const handler = NextAuth({
             session.selectedBrandID = token.selectedBrandID as number;
             session.selectedMarketID = token.selectedMarketID as number;
             session.selectedProjectID = token.selectedProjectID as number;
-
-
+            
             if (session.accessToken) {
                 try {
                     const user = await getUser(session.accessToken)

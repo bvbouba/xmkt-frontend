@@ -30,7 +30,7 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
   const { teamName, industryID, firmID,  } = session || {};
   const selectedPeriod = session?.selectedPeriod || 0
   const [brandData,setBrandData] = useState<brandProps[]>([])
-  const [loading,setLoading] = useState(false)
+  const [loading,setLoading] = useState(true)
 
     const { t } = useTranslation('common')
 
@@ -121,12 +121,3 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
 
 export default ProductionReportPage;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-// ProductionReportPage.getLayout = function getLayout(page: ReactElement) {
-//     return <Layout>{page}</Layout>;
-//   };
-  

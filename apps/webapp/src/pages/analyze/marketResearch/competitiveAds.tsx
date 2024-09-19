@@ -32,7 +32,7 @@ function CompetitiveAds({ locale }: InferGetStaticPropsType<typeof getStaticProp
   const [m2Data,setM2Data] = useState<markertingMixProps[]>([])
   const [channels,setChannels] = useState<channelProps[]>([])
   const [segments,setSegments] = useState<segmentProps[]>([])
-  const [loading,setLoading] = useState(false)
+  const [loading,setLoading] = useState(true)
   
 
   const { t } = useTranslation('common')
@@ -49,7 +49,7 @@ function CompetitiveAds({ locale }: InferGetStaticPropsType<typeof getStaticProp
         try {
           const response1 = await fetchMarketResearchChoices({ industry:industryID, firm:firmID, period: selectedPeriod,token: session.accessToken });
           const response2 = await getMarketingMixData({ industryID,firmID:0, period:selectedPeriod,token: session.accessToken,
-              fields:"brand_id,period_id,team_name,firm_id,advertising,channel_1,channel_2,channel_3,ads_share_1,ads_share_2,ads_share_3,ads_share_4,ads_share_5"
+              fields:"brand_name,brand_id,period_id,team_name,firm_id,advertising,channel_1,channel_2,channel_3,ads_share_1,ads_share_2,ads_share_3,ads_share_4,ads_share_5"
            });
           const response3 = await getChannelsData();
           const response4 = await getSegmentsData();
@@ -293,12 +293,3 @@ segments?.map(row => dataArray2.push(
 
 export default CompetitiveAds;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-
-// CompetitiveAds.getLayout = function getLayout(page: ReactElement) {
-//     return <Layout>{page}</Layout>;
-//   };

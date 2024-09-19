@@ -42,7 +42,7 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
   const selectedPeriod = session?.selectedPeriod || 0;  // Extract selectedPeriod from session or default to 0
 
   const [firmsData, setFirmsData] = useState<firmProps[]>([]);  // Use state for firms data
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { t } = useTranslation('common');
 
@@ -231,12 +231,3 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
 
 export default IndustryBenchmarking;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-
-// IndustryBenchmarking.getLayout = function getLayout(page: ReactElement) {
-//   return <Layout>{page}</Layout>;
-// };

@@ -25,7 +25,7 @@ function RndReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps
   const selectedPeriod = session?.selectedPeriod || 0
   const [featureData,setFeatureData] = useState<featureProps[]>([])
   const [projectData,setProjectData] = useState<rndProjectProps>({})
-  const [loading,setLoading] = useState(false)
+  const [loading,setLoading] = useState(true)
 
     const { t } = useTranslation('common')
 
@@ -103,13 +103,3 @@ function RndReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps
 }
 
 export default RndReportPage;
-
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-// RndReportPage.getLayout = function getLayout(page: ReactElement) {
-//     return <Layout>{page}</Layout>;
-//   };
-  

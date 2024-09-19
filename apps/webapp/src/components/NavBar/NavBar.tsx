@@ -39,71 +39,71 @@ export const NavBar: React.FC = () => {
   ];
   const submenuItems = [
     {
-      url: paths.analyze.companyResults._period(selectedPeriod).companyDashboard.$url(),
+      url: paths.analyze.companyResults.companyDashboard.$url(),
       label: t("COMPANY_DASHBOARD"),
     },
     {
-      url: paths.analyze.companyResults._period(selectedPeriod).financialReport.$url(),
+      url: paths.analyze.companyResults.financialReport.$url(),
       label: t("FINANCIAL_REPORT"),
     },
     {
-      url: paths.analyze.companyResults._period(selectedPeriod).productionReport.$url(),
+      url: paths.analyze.companyResults.productionReport.$url(),
       label: t("PRODUCTION_REPORT"),
     },
     {
-      url: paths.analyze.companyResults._period(selectedPeriod).rndReport.$url(),
+      url: paths.analyze.companyResults.rndReport.$url(),
       label: t("R&D_REPORT"),
     },
     {
-      url: paths.analyze.companyResults._period(selectedPeriod).decisionReview.$url(),
+      url: paths.analyze.companyResults.decisionReview.$url(),
       label: t("DECISION_REVIEW"),
     },
     {
-      url: paths.analyze.marketCompetitiveNews._period(selectedPeriod).industryDashboard.$url(),
+      url: paths.analyze.marketCompetitiveNews.industryDashboard.$url(),
       label: t("INDUSTRY_DASHBOARD"),
     },
     {
-      url: paths.analyze.marketCompetitiveNews._period(selectedPeriod).industryInformation.$url(),
+      url: paths.analyze.marketCompetitiveNews.industryInformation.$url(),
       label: t("INDUSTRY_INFORMATION"),
     },
     {
-      url: paths.analyze.marketCompetitiveNews._period(selectedPeriod).marketReport.$url(),
+      url: paths.analyze.marketCompetitiveNews.marketReport.$url(),
       label: t("MARKET_REPORT"),
     },
     {
-      url: paths.analyze.marketResearch._period(selectedPeriod).industryBenchmarking.$url(),
+      url: paths.analyze.marketResearch.industryBenchmarking.$url(),
       label: t("INDUSTRY_BENCHMARKING"),
     },
     {
-      url: paths.analyze.marketResearch._period(selectedPeriod).consumerSurvey.$url(),
+      url: paths.analyze.marketResearch.consumerSurvey.$url(),
       label: t("CONSUMER_SURVEY"),
     },
     {
-      url: paths.analyze.marketResearch._period(selectedPeriod).consumerPanel.$url(),
+      url: paths.analyze.marketResearch.consumerPanel.$url(),
       label: t("CONSUMER_PANEL"),
     },
     {
-      url: paths.analyze.marketResearch._period(selectedPeriod).distributionPanel.$url(),
+      url: paths.analyze.marketResearch.distributionPanel.$url(),
       label: t("DISTRIBUTION_PANEL"),
     },
     {
-      url: paths.analyze.marketResearch._period(selectedPeriod).semanticScales.$url(),
+      url: paths.analyze.marketResearch.semanticScales.$url(),
       label: t("SEMANTIC_SCALES"),
     },
     {
-      url: paths.analyze.marketResearch._period(selectedPeriod).multidimensionalScaling.$url(),
+      url: paths.analyze.marketResearch.multidimensionalScaling.$url(),
       label: t("MULTIDIMENSIONAL_SCALING"),
     },
     {
-      url: paths.analyze.marketResearch._period(selectedPeriod).competitiveAds.$url(),
+      url: paths.analyze.marketResearch.competitiveAds.$url(),
       label: t("COMPETITIVE_ADVERSTISING_AND_COMMERCIAL_TEAM_ESTIMATES"),
     },
     {
-      url: paths.analyze.marketResearch._period(selectedPeriod).marketForecast.$url(),
+      url: paths.analyze.marketResearch.marketForecast.$url(),
       label: t("MARKET_FORCAST"),
     },
     {
-      url: paths.analyze.marketResearch._period(selectedPeriod).conjointAnalysis.$url(),
+      url: paths.analyze.marketResearch.conjointAnalysis.$url(),
       label: t("CONJOINT_ANALYSIS"),
     },
 
@@ -134,6 +134,7 @@ export const NavBar: React.FC = () => {
   ];
 
   const periods = Array.from(Array(activePeriod || 0).keys())
+
   const pageHeader = useMemo(() => {
     const breadcrumb: ILink[] = [];
     if (router.pathname.includes("/analyze")) {
@@ -163,6 +164,7 @@ export const NavBar: React.FC = () => {
 
   const matchingItem = submenuItems.find(item => item.url.pathname === router.pathname);
   const correspondingLabel = matchingItem ? matchingItem.label : ((router.pathname === paths.decide.$url().pathname ) ? "DECIDE HOME" :"Label Not Found");
+  
   return (
     <>
     <Head>

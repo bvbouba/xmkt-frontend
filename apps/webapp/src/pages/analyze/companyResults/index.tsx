@@ -29,31 +29,31 @@ function CompanyResultsPage({ locale }: InferGetStaticPropsType<typeof getStatic
   }
   const companyItems = [
     {
-      url: paths.analyze.companyResults._period(selectedPeriod).companyDashboard.$url(),
+      url: paths.analyze.companyResults.companyDashboard.$url(),
       image: "/images/company-dashboard-logo.png",
       alt: "company_dashboard",
       title: t("COMPANY_DASHBOARD"),
     },
     {
-      url: paths.analyze.companyResults._period(selectedPeriod).financialReport.$url(),
+      url: paths.analyze.companyResults.financialReport.$url(),
       image: "/images/financial-report-logo.png",
       alt: "financial_report",
       title: t("FINANCIAL_REPORT"),
     },
     {
-      url: paths.analyze.companyResults._period(selectedPeriod).productionReport.$url(),
+      url: paths.analyze.companyResults.productionReport.$url(),
       image: "/images/production-report-logo.png",
       alt: "product_report",
       title: t("PRODUCTION_REPORT"),
     },
     {
-      url: paths.analyze.companyResults._period(selectedPeriod).rndReport.$url(),
+      url: paths.analyze.companyResults.rndReport.$url(),
       image: "/images/rnd-report-logo.png",
       alt: "rnd_report",
       title: t("R&D_REPORT"),
     },
     {
-      url: paths.analyze.companyResults._period(selectedPeriod).decisionReview.$url(),
+      url: paths.analyze.companyResults.decisionReview.$url(),
       image: "/images/decision-review-logo.png",
       alt: "decision_review",
       title: t("DECISION_REVIEW"),

@@ -35,7 +35,7 @@ const [dimensional, setDimensional] = useState<DimensionScalesProps[]>([]);
 const [ideals, setIdeals] = useState<DimensionIdealsProps[]>([]);
 const [segments, setSegments] = useState<segmentProps[]>([]);
 const [dimensions, setDimensions] = useState<dimensionProps[]>([]);
-const [loading, setLoading] = useState(false); 
+const [loading, setLoading] = useState(true); 
 
 const { t } = useTranslation('common'); // For translation
 
@@ -248,13 +248,3 @@ const rows1 = segments.map(row =>{
 }
 
 export default MultidimensionalScaling;
-
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-
-// MultidimensionalScaling.getLayout = function getLayout(page: ReactElement) {
-//     return <Layout>{page}</Layout>;
-//   };

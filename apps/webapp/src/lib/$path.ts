@@ -1,69 +1,63 @@
 export const pagesPath = {
   "analyze": {
     "companyResults": {
-      _period: (period: string | number) => ({
-        "companyDashboard": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/companyResults/[period]/companyDashboard' as const, query: { period }, hash: url?.hash })
-        },
-        "decisionReview": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/companyResults/[period]/decisionReview' as const, query: { period }, hash: url?.hash })
-        },
-        "financialReport": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/companyResults/[period]/financialReport' as const, query: { period }, hash: url?.hash })
-        },
-        "productionReport": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/companyResults/[period]/productionReport' as const, query: { period }, hash: url?.hash })
-        },
-        "rndReport": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/companyResults/[period]/rndReport' as const, query: { period }, hash: url?.hash })
-        }
-      }),
+      "companyDashboard": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/companyResults/companyDashboard' as const, hash: url?.hash })
+      },
+      "decisionReview": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/companyResults/decisionReview' as const, hash: url?.hash })
+      },
+      "financialReport": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/companyResults/financialReport' as const, hash: url?.hash })
+      },
+      "productionReport": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/companyResults/productionReport' as const, hash: url?.hash })
+      },
+      "rndReport": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/companyResults/rndReport' as const, hash: url?.hash })
+      },
       $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/companyResults' as const, hash: url?.hash })
     },
     "marketCompetitiveNews": {
-      _period: (period: string | number) => ({
-        "industryDashboard": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketCompetitiveNews/[period]/industryDashboard' as const, query: { period }, hash: url?.hash })
-        },
-        "industryInformation": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketCompetitiveNews/[period]/industryInformation' as const, query: { period }, hash: url?.hash })
-        },
-        "marketReport": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketCompetitiveNews/[period]/marketReport' as const, query: { period }, hash: url?.hash })
-        }
-      }),
+      "industryDashboard": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketCompetitiveNews/industryDashboard' as const, hash: url?.hash })
+      },
+      "industryInformation": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketCompetitiveNews/industryInformation' as const, hash: url?.hash })
+      },
+      "marketReport": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketCompetitiveNews/marketReport' as const, hash: url?.hash })
+      },
       $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketCompetitiveNews' as const, hash: url?.hash })
     },
     "marketResearch": {
-      _period: (period: string | number) => ({
-        "competitiveAds": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/[period]/competitiveAds' as const, query: { period }, hash: url?.hash })
-        },
-        "conjointAnalysis": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/[period]/conjointAnalysis' as const, query: { period }, hash: url?.hash })
-        },
-        "consumerPanel": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/[period]/consumerPanel' as const, query: { period }, hash: url?.hash })
-        },
-        "consumerSurvey": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/[period]/consumerSurvey' as const, query: { period }, hash: url?.hash })
-        },
-        "distributionPanel": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/[period]/distributionPanel' as const, query: { period }, hash: url?.hash })
-        },
-        "industryBenchmarking": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/[period]/industryBenchmarking' as const, query: { period }, hash: url?.hash })
-        },
-        "marketForecast": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/[period]/marketForecast' as const, query: { period }, hash: url?.hash })
-        },
-        "multidimensionalScaling": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/[period]/multidimensionalScaling' as const, query: { period }, hash: url?.hash })
-        },
-        "semanticScales": {
-          $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/[period]/semanticScales' as const, query: { period }, hash: url?.hash })
-        }
-      }),
+      "competitiveAds": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/competitiveAds' as const, hash: url?.hash })
+      },
+      "conjointAnalysis": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/conjointAnalysis' as const, hash: url?.hash })
+      },
+      "consumerPanel": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/consumerPanel' as const, hash: url?.hash })
+      },
+      "consumerSurvey": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/consumerSurvey' as const, hash: url?.hash })
+      },
+      "distributionPanel": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/distributionPanel' as const, hash: url?.hash })
+      },
+      "industryBenchmarking": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/industryBenchmarking' as const, hash: url?.hash })
+      },
+      "marketForecast": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/marketForecast' as const, hash: url?.hash })
+      },
+      "multidimensionalScaling": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/multidimensionalScaling' as const, hash: url?.hash })
+      },
+      "semanticScales": {
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch/semanticScales' as const, hash: url?.hash })
+      },
       $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/analyze/marketResearch' as const, hash: url?.hash })
     },
     "tools": {

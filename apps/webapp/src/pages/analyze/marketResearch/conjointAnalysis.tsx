@@ -32,7 +32,7 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
   const [levels, setLevels] = useState<levelProps[]>();
   const [featureList, setFeatureList] = useState<featureProps[]>();
   const [segments, setSegments] = useState<segmentProps[]>();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { t } = useTranslation('common');
   useEffect(() => {
@@ -213,11 +213,3 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
 
 export default ConjointAnalysis;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-// ConjointAnalysis.getLayout = function getLayout(page: ReactElement) {
-//   return <Layout>{page}</Layout>;
-// };

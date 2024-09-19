@@ -34,7 +34,7 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
   const [firmData,setFirmData] = useState<firmProps[]>()
   const [brandData,setBrandData] = useState<brandProps[]>()
   const [marketsData,setMarketsData] = useState<marketProps[]>([])
-  const [loading,setLoading] = useState(false)
+  const [loading,setLoading] = useState(true)
     const { t } = useTranslation('common')
   
 
@@ -297,12 +297,3 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
 
 export default IndustryDashboard;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-// IndustryDashboard.getLayout = function getLayout(page: ReactElement) {
-//     return <Layout>{page}</Layout>;
-//   };
-  

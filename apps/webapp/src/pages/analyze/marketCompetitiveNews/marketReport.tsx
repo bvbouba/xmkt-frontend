@@ -28,7 +28,7 @@ function MarketReport({ locale }: InferGetStaticPropsType<typeof getStaticProps>
   const [featuresData,setGetfeaturesData] = useState<featureProps[]>([])
   const [m2Data,setM2Data] = useState<markertingMixProps[]>([])
 
-  const [loading,setLoading] = useState(false)
+  const [loading,setLoading] = useState(true)
   
   const { t } = useTranslation('common')
 
@@ -240,11 +240,3 @@ const selectedUnitMsData = brandData?.filter(row => row.period_id === selectedPe
 export default MarketReport;
 
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-// MarketReport.getLayout = function getLayout(page: ReactElement) {
-//     return <Layout>{page}</Layout>;
-//   };

@@ -44,7 +44,7 @@ function SemanticScales({ locale }: InferGetStaticPropsType<typeof getStaticProp
   const [ideals, setIdeals] = useState<SemanticIdealsProps[]>([]);
   const [featuresData, setFeaturesData] = useState<featureProps[]>([]);
   const [segments, setSegments] = useState<segmentProps[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (status === 'authenticated' && firmID && industryID) {
@@ -219,12 +219,3 @@ const rows1 = segments.map(row =>{
 
 export default SemanticScales;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-
-// SemanticScales.getLayout = function getLayout(page: ReactElement) {
-//     return <Layout>{page}</Layout>;
-//   };

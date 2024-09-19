@@ -42,7 +42,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
   const [shoppingHabit, setShoppingHabit] = useState<shoppingHabitProps[]>([]);
   const [marketDemand, setMarketDemand] = useState<demandProps[]>([]);
   const [channels, setChannels] = useState<channelProps[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { t } = useTranslation('common');
 
@@ -344,12 +344,3 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
 export default ConsumerSurvey;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-
-// ConsumerSurvey.getLayout = function getLayout(page: ReactElement) {
-//   return <Layout>{page}</Layout>;
-// };

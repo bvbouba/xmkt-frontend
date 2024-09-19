@@ -37,7 +37,7 @@ const selectedPeriod = session?.selectedPeriod || 0;
 
 const [forecasts, setForecasts] = useState<forecastProps[]>([]);
 const [segments, setSegments] = useState<segmentProps[]>([]);
-const [loading, setLoading] = useState(false);
+const [loading, setLoading] = useState(true);
 
 const { t } = useTranslation('common');
 
@@ -247,12 +247,3 @@ if (status === "loading" || loading) {
 
 export default MarketForecast;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-
-// MarketForecast.getLayout = function getLayout(page: ReactElement) {
-//   return <Layout>{page}</Layout>;
-// };

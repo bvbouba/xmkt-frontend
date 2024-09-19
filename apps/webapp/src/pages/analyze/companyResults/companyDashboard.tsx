@@ -35,7 +35,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
   const { t } = useTranslation('common')
   const [firmData,setFirmData] = useState<firmProps[]>()
   const [brandData,setBrandData] = useState<brandProps[]>()
-  const [loading,setLoading] = useState(false)
+  const [loading,setLoading] = useState(true)
 
   useEffect(() => {
     if (status === "authenticated" && firmID && industryID) {
@@ -211,11 +211,4 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
 
 export default CompanyDashboardPage;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
 
-// CompanyDashboardPage.getLayout = function getLayout(page: ReactElement) {
-//   return <Layout>{page}</Layout>;
-// };

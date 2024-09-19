@@ -30,9 +30,9 @@ function MarketCompetitveNewsPage({ locale }: InferGetStaticPropsType<typeof get
     }
   
     const industryItems = [
-        { url: paths.analyze.marketCompetitiveNews._period(selectedPeriod).industryDashboard.$url(), image: '/images/company-dashboard-logo.png', alt: 'industry_dashboard', title: t("INDUSTRY_DASHBOARD") },
-        { url: paths.analyze.marketCompetitiveNews._period(selectedPeriod).industryInformation.$url(), image: '/images/industry-information-logo.png', alt: 'industry_information', title: t("INDUSTRY_INFORMATION") },
-        { url: paths.analyze.marketCompetitiveNews._period(selectedPeriod).marketReport.$url(), image: '/images/market-report-logo.png', alt: 'market_report', title: t("MARKET_REPORT") },
+        { url: paths.analyze.marketCompetitiveNews.industryDashboard.$url(), image: '/images/company-dashboard-logo.png', alt: 'industry_dashboard', title: t("INDUSTRY_DASHBOARD") },
+        { url: paths.analyze.marketCompetitiveNews.industryInformation.$url(), image: '/images/industry-information-logo.png', alt: 'industry_information', title: t("INDUSTRY_INFORMATION") },
+        { url: paths.analyze.marketCompetitiveNews.marketReport.$url(), image: '/images/market-report-logo.png', alt: 'market_report', title: t("MARKET_REPORT") },
         // Add more items as needed
       ];
   

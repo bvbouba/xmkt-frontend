@@ -31,7 +31,7 @@ function MarketResearchPage({ locale }: InferGetStaticPropsType<typeof getStatic
 
     useEffect(()=>{
   
-      if (status === "authenticated" && firmID && industryID) {
+      if (status === "authenticated" && firmID && industryID ) {
        
         const loadData = async () => {
           try {
@@ -47,19 +47,23 @@ function MarketResearchPage({ locale }: InferGetStaticPropsType<typeof getStatic
         loadData()
   
       }
-    },[])
+    },[status,selectedPeriod])
+
+    if (status === "loading") {
+      return <p>Loading...</p>;
+    }
 
 
     const benchmarkingItems = [
-        { url: paths.analyze.marketResearch._period(selectedPeriod).industryBenchmarking.$url(), image: '/images/industry-benchmarking-logo.png', alt: 'industry_benchmarking', title: "INDUSTRY_BENCHMARKING", study:1 },
-        { url: paths.analyze.marketResearch._period(selectedPeriod).consumerSurvey.$url(), image: '/images/consumer-survey-logo.png', alt: 'consumer_survey', title: "CONSUMER_SURVEY" ,study:6},
-        { url: paths.analyze.marketResearch._period(selectedPeriod).consumerPanel.$url(), image: '/images/consumer-panel-logo.png', alt: 'consumer_panel', title: "CONSUMER_PANEL" ,study:5},
-        { url: paths.analyze.marketResearch._period(selectedPeriod).distributionPanel.$url(), image: '/images/distribution-panel-logo.png', alt: 'distribution_panel', title: "DISTRIBUTION_PANEL",study:7 },
-        { url: paths.analyze.marketResearch._period(selectedPeriod).semanticScales.$url(), image: '/images/semantic-scales-logo.png', alt: 'semantic_scales', title: "SEMANTIC_SCALES",study: 10},
-        { url: paths.analyze.marketResearch._period(selectedPeriod).multidimensionalScaling.$url(), image: '/images/multidimensional-scaling-logo.png', alt: 'multidimensional_scaling', title: "MULTIDIMENSIONAL_SCALING" ,study: 9},
-        { url: paths.analyze.marketResearch._period(selectedPeriod).competitiveAds.$url(), image: '/images/competitive-ads-logo.png', alt: 'competitive_ads', title: "COMPETITIVE_ADVERSTISING_AND_COMMERCIAL_TEAM_ESTIMATES" , study:2,substudy:3},
-        { url: paths.analyze.marketResearch._period(selectedPeriod).marketForecast.$url(), image: '/images/market-forecast-logo.png', alt: 'market_forecast', title: "MARKET_FORECAST",study:8 },
-        { url: paths.analyze.marketResearch._period(selectedPeriod).conjointAnalysis.$url(), image: '/images/conjoint-analysis-logo.png', alt: 'conjoint_analysis', title: "CONJOINT_ANALYSIS",study:4 },
+        { url: paths.analyze.marketResearch.industryBenchmarking.$url(), image: '/images/industry-benchmarking-logo.png', alt: 'industry_benchmarking', title: "INDUSTRY_BENCHMARKING", study:1 },
+        { url: paths.analyze.marketResearch.consumerSurvey.$url(), image: '/images/consumer-survey-logo.png', alt: 'consumer_survey', title: "CONSUMER_SURVEY" ,study:6},
+        { url: paths.analyze.marketResearch.consumerPanel.$url(), image: '/images/consumer-panel-logo.png', alt: 'consumer_panel', title: "CONSUMER_PANEL" ,study:5},
+        { url: paths.analyze.marketResearch.distributionPanel.$url(), image: '/images/distribution-panel-logo.png', alt: 'distribution_panel', title: "DISTRIBUTION_PANEL",study:7 },
+        { url: paths.analyze.marketResearch.semanticScales.$url(), image: '/images/semantic-scales-logo.png', alt: 'semantic_scales', title: "SEMANTIC_SCALES",study: 10},
+        { url: paths.analyze.marketResearch.multidimensionalScaling.$url(), image: '/images/multidimensional-scaling-logo.png', alt: 'multidimensional_scaling', title: "MULTIDIMENSIONAL_SCALING" ,study: 9},
+        { url: paths.analyze.marketResearch.competitiveAds.$url(), image: '/images/competitive-ads-logo.png', alt: 'competitive_ads', title: "COMPETITIVE_ADVERSTISING_AND_COMMERCIAL_TEAM_ESTIMATES" , study:2,substudy:3},
+        { url: paths.analyze.marketResearch.marketForecast.$url(), image: '/images/market-forecast-logo.png', alt: 'market_forecast', title: "MARKET_FORECAST",study:8 },
+        { url: paths.analyze.marketResearch.conjointAnalysis.$url(), image: '/images/conjoint-analysis-logo.png', alt: 'conjoint_analysis', title: "CONJOINT_ANALYSIS",study:4 },
       ];
     
 

@@ -1,20 +1,17 @@
 import Link from "next/link";
 import { menuProps } from "../Section/Section";
-import { ParsedUrlQueryInput } from 'querystring';
-import { useTranslation } from "react-i18next";
-import { useRegion } from "@/lib/providers/RegionProvider";
+
 
 
 export function Card({ menu,locale }: { menu: menuProps,locale?:string }) {
    
   const openNewWindow = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const { period } = menu.url.query as ParsedUrlQueryInput;
     const { pathname } = menu.url;
-    if (!pathname || period === null || period === undefined)  {
+    if (!pathname )  {
       return;
     }
-    const url = `/${locale}${menu.url.pathname?.replace(/\[period\]/, period.toString())}`;
+    const url = `/${locale}${menu.url.pathname}`;
 
     const newWindowFeatures = 'height=600,width=1200,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes';
     const newWindow = window.open(url, '_blank', newWindowFeatures);

@@ -40,7 +40,7 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
   
   const [sales, setSales] = useState<salesProps[]>([]);
   const [segments, setSegments] = useState<segmentProps[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   const { t } = useTranslation('common');
   
@@ -290,12 +290,3 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
 
 export default ConsumerPanel;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-
-// ConsumerPanel.getLayout = function getLayout(page: ReactElement) {
-//   return <Layout>{page}</Layout>;
-// };

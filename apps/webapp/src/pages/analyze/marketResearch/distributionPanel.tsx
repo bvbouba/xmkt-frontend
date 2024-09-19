@@ -32,7 +32,7 @@ function DistributionPanel({ locale }: InferGetStaticPropsType<typeof getStaticP
   const [sales, setSales] = useState<salesProps[]>([]);
   const [distributionCoverage, setDistributionCoverage] = useState<distributionCoverageProps[]>([]);
   const [channels, setChannels] = useState<channelProps[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   const { t } = useTranslation('common');
   
@@ -218,12 +218,3 @@ const chart4Data = {
 
 export default DistributionPanel;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-
-// DistributionPanel.getLayout = function getLayout(page: ReactElement) {
-//     return <Layout>{page}</Layout>;
-//   };

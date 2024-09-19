@@ -44,7 +44,7 @@ function DecisionReviewPage({ locale }: InferGetStaticPropsType<typeof getStatic
 
     const [channelsData,setChannelsData] = useState<channelProps[]>([])
     const [segmentsData,setSegmentsData] = useState<segmentProps[]>([])
-    const [loading,setLoading] = useState(false)
+    const [loading,setLoading] = useState(true)
     
   useEffect(() => {
     // Dispatch actions to get firm and brand data when the component mounts
@@ -319,11 +319,4 @@ if (typeof firmID === 'number') {
 
 export default DecisionReviewPage;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
 
-// DecisionReviewPage.getLayout = function getLayout(page: ReactElement) {
-//   return <Layout>{page}</Layout>;
-// };

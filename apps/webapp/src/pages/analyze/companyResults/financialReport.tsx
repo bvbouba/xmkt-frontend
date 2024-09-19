@@ -38,7 +38,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
   const selectedPeriod = session?.selectedPeriod || 0
   const [firmData,setFirmData] = useState<firmProps[]>([])
   const [brandData,setBrandData] = useState<brandProps[]>([])
-  const [loading,setLoading] = useState(false)
+  const [loading,setLoading] = useState(true)
   
     const { t } = useTranslation('common')
 
@@ -209,12 +209,3 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
 
 export default FinancialReportPage;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-// FinancialReportPage.getLayout = function getLayout(page: ReactElement) {
-//     return <Layout>{page}</Layout>;
-//   };
-  

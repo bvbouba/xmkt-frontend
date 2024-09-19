@@ -27,7 +27,7 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
   const selectedPeriod = session?.selectedPeriod || 0
   const { t } = useTranslation('common')
   const [industryInfo,setIndustryInfo] = useState<industryInfoProps[]>()
-  const [loading,setLoading] = useState(false)
+  const [loading,setLoading] = useState(true)
 
   useEffect(() => {
     
@@ -114,12 +114,3 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
 
 export default IndustryInformation;
 
-export const getStaticPaths: GetStaticPaths = () => ({
-  paths: [],
-  fallback: "blocking",
-});
-
-// IndustryInformation.getLayout = function getLayout(page: ReactElement) {
-//     return <Layout>{page}</Layout>;
-//   };
-  
