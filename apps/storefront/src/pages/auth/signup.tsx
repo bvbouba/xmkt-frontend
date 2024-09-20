@@ -4,10 +4,10 @@ import { GetStaticProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { AuthLayout } from "@/components/layout";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
-import {fetchSchools, signup } from "features/authSlices";
 import { useRouter } from "next/router";
 import usePaths from "@/lib/paths";
+import { fetchSchools, getUserByEmail, signup } from "features/data";
+import { school } from "types";
 
 
 type FormValues = {
@@ -35,12 +35,12 @@ const Page = (
   // { locale }: InferGetStaticPropsType<typeof getStaticProps>
 ) => {
   const { t } = useTranslation("common");
-  const dispatch = useAppDispatch();
-  const {signupState} = useAppSelector((state) => state.auth);
-  const {  error, success,loading } = signupState;
   const router = useRouter()
-  const [userType, setUserType] = useState<string>();
+  const [userType, setUserType] = useState<string>("2");
   const paths = usePaths()
+  const [schools,setSchools] = useState<school[]>()
+  const [loading,setLoading] = useState(false)
+  const [errors,setErrors] = useState<string>("")
 
   const {
     handleSubmit,
@@ -50,10 +50,16 @@ const Page = (
   } = useForm<FormValues>();
 
   useEffect(() => {
-    dispatch(fetchSchools());
-  }, [dispatch]);
-
-  const schools = useAppSelector((state) => state.auth.schools);
+    const loadData = async () => {
+      try {
+        const response = await fetchSchools();
+        setSchools(response)
+      } catch (error) {
+        console.error('Error getting course:', error);
+      }
+    }
+    loadData()
+  }, []);
 
   const watchPassword = watch("password1", "");
 
@@ -61,7 +67,9 @@ const Page = (
     return value === watchPassword || t("Passwords do not match.");
   };
 
-  const onSubmit = (data: FormValues) => {
+  
+
+  const onSubmit = async (data: FormValues) => {
     const {
       password1,
       email,
@@ -71,17 +79,34 @@ const Page = (
       phoneNumber,
       school,
     } = data;
-    // Validate and handle form submission
-    if (userType) {
-      dispatch(signup({ password1, password2, email, firstName, lastName,userType,phone:phoneNumber,school }));
-    }
+
+    setLoading(true)
+      try {
+        const response = await getUserByEmail(email)
+        if (response.id) {
+          setErrors(t("user_already_exists"));
+          setLoading(false)
+          return;
+        }
+      } catch (error) {
+         console.error("user not found")
+      }
+      
+      if (userType) {
+        const response1 =  await signup({
+          password1, password2, email, firstName, lastName,userType,phone:phoneNumber,school 
+        })        
+      if (response1.key) {
+        router.push(paths.$url())
+      } else {
+        setErrors(t('user_registration_failed'))
+      }
+      setLoading(false)
+       }
+   
   };
 
-  const renderErrorMessages = () => {
-    if (error) return <div className="text-red-500" >{t("There is an issue with parameters provided")}</div>;
-  };
 
-  if (success) router.push(paths.auth.verifyEmailDone.$url())
 
   return (
     <section>
@@ -90,7 +115,7 @@ const Page = (
           {t("Sign Up")}
         </h2>
         
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             {t("You are")}
           </label>
@@ -103,9 +128,10 @@ const Page = (
             <option value={"2"}>{t("Student")}</option>
             <option value={"1"}>{t("Instructor")}</option>
           </select>
-        </div>
+        </div> */}
 
-        {(userType === "1" || userType === "2") && (
+        {(userType === "1" || userType === "2") && 
+        (
           <form className="max-w-md mx-auto" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <div className="mb-4">
@@ -241,7 +267,7 @@ const Page = (
                       className="input focus:outline-none focus:border-blue-500"
                     >
                       <option value="">{t("Select School")}</option>
-                      {schools.map((school) => (
+                      {schools?.map((school) => (
                         <option value={school.id} key={school.id}>
                           {school.name}
                         </option>
@@ -281,7 +307,7 @@ const Page = (
                   {t("Sign Up")}
                 </button>
               </div>
-              {renderErrorMessages()}
+             {errors && <div className="text-red-500" >{errors}</div>}
             </div>
           </form>
         )}

@@ -1,31 +1,37 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import usePaths from "@/lib/paths";
-import { useAuth } from "@/lib/providers/AuthProvider";
-import { logout } from "features/authSlices";
-import { useAppDispatch } from "@/lib/hooks/redux";
 import { useRouter } from "next/router";
+import { signOut, useSession } from "next-auth/react";
+import { logout } from "features/data";
 
 export const NavbarSimple: React.FC = () => {
   const { t } = useTranslation("common");
   const paths = usePaths();
-  const { isAuthenticated } = useAuth();
-  const dispatch = useAppDispatch();
+  const { data: session, status } = useSession()
+
   const router = useRouter()
   const menus = [
-    {
-      label: t("Home"),
-      url: paths.$url(),
-    },
+    // {
+    //   label: t("Home"),
+    //   url: paths.$url(),
+    // },
     {
       label: t("Sign In"),
       url: paths.auth.login.$url(),
     },
   ];
 
-  const onLogout = () => {
-    dispatch(logout());
+  const onLogout = async () => {
+    if(status ==="authenticated"){
+      try {
+       await logout(session?.accessToken)
+       signOut()
+      } catch (error) {
+        console.log("Couldn't logout")
+      }
+     }
     void router.push(paths.auth.login.$url());
   };
 
@@ -42,7 +48,7 @@ export const NavbarSimple: React.FC = () => {
         </div>
         <div className="flex flex-col gap-y-4 lg:flex-row lg:gap-x-10 lg:gap-y-0">
           {menus.map((menu, idx) => {
-            if(isAuthenticated && idx===menus.length-1) return<></>
+            if(status ==="authenticated" && idx===menus.length-1) return<></>
             return(
             <div
               key={idx}
@@ -51,7 +57,7 @@ export const NavbarSimple: React.FC = () => {
               <Link href={menu.url}>{menu.label}</Link>
             </div>
           )})}
-          {isAuthenticated && (
+          {status ==="authenticated" && (
        
              <div
              className="flex justify-center items-center gap-x-2 lg:justify-normal"

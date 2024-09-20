@@ -18,7 +18,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const { t } = useTranslation("common");
 
     return ( 
-        <h3>{t("An email has been sent with instructions to verify your email")}</h3>
+        // <h3>{t("An email has been sent with instructions to verify your email")}</h3>
+        <h3>{t("you_have_been_registered_succesfully")}</h3>
      );
 }
 

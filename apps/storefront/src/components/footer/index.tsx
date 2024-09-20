@@ -63,12 +63,12 @@ const Footer: React.FC = () => {
           <h4 className="h4 mb-5">{t("Quick links")}</h4>
           <div className="flex gap-x-5">
             <ul className="flex-1 flex flex-col gap-y-5">
-              <li>
+              {/* <li>
                 <a href="#" className="hover:text-accent transition-all">{t("Home")}</a>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <a href="#" className="hover:text-accent transition-all">{t("Simulations")}</a>
-              </li>
+              </li> */}
               <li>
                 <a href="#" className="hover:text-accent transition-all">{t("Stores")}</a>
               </li>
@@ -87,9 +87,9 @@ const Footer: React.FC = () => {
               <li>
                 <a href="#" className="hover:text-accent transition-all">{t("Privacy Policy")}</a>
               </li>
-              <li>
+              {/* <li>
                 <a href="#" className="hover:text-accent transition-all">{t("Careers")}</a>
-              </li>
+              </li> */}
             </ul>
 
           </div>

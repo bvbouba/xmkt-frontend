@@ -1,7 +1,8 @@
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { fetchCourseById } from "features/storeSlices";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import {  fetchCoursesById } from "features/data";
 
 type FormValues = {
   courseid: string;
@@ -11,8 +12,7 @@ type FormValues = {
 
 export function SectionBanner() {
   const { t } = useTranslation("common");
-  const dispatch = useAppDispatch();
-  const {loading} = useAppSelector((state) => state.store.course);
+  const [loading, setLoading] = useState(false)
 
   const {
     handleSubmit,
@@ -21,13 +21,22 @@ export function SectionBanner() {
     formState: { errors },
     setError: setErrorForm,
   } = useForm<FormValues>();
+  const { data: session, status } = useSession();
   
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     const {
       courseid
     } = data;
-    // Validate and handle form submission
-      dispatch(fetchCourseById( {courseid}));
+
+      setLoading(true)
+        try {
+           fetchCoursesById({ courseid })
+        } catch (error) {
+          console.error('Error fetching course:', error);
+        }finally{
+          setLoading(false)
+        }
+
     
   };
   

@@ -1,11 +1,11 @@
 export const pagesPath = {
-  "aboutUs": {
-    $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/aboutUs' as const, hash: url?.hash })
+  "about_us": {
+    $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/about-us' as const, hash: url?.hash })
   },
   "auth": {
-    "confirmEmail": {
+    "confirm_email": {
       _key: (key: string | number) => ({
-        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/auth/confirmEmail/[key]' as const, query: { key }, hash: url?.hash })
+        $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/auth/confirm-email/[key]' as const, query: { key }, hash: url?.hash })
       })
     },
     "login": {
@@ -17,9 +17,6 @@ export const pagesPath = {
     "verifyEmailDone": {
       $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/auth/verifyEmailDone' as const, hash: url?.hash })
     }
-  },
-  "shop": {
-    $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/shop' as const, hash: url?.hash })
   },
   $url: (url?: { hash?: string | undefined } | undefined) => ({ pathname: '/' as const, hash: url?.hash })
 };

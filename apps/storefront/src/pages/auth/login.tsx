@@ -1,14 +1,13 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { GetStaticProps } from "next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from "next-i18next";
 import { AuthLayout } from "@/components/layout";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/redux";
 import Link from "next/link";
-import { login } from "features/authSlices";
 import usePaths from "@/lib/paths";
+import { signIn } from "next-auth/react";
 
 interface FormValues {
   email: string;
@@ -32,9 +31,8 @@ const Page = (
   const router = useRouter();
   const paths = usePaths()
   const { t } = useTranslation('common');
-  const dispatch = useAppDispatch();
-  const { loginState } = useAppSelector((state) => state.auth);
-  const { error, success, loading } = loginState;
+  const [loading,setLoading] = useState(false)
+  const [errors,setErrors] = useState("")
 
   const {
     handleSubmit,
@@ -44,15 +42,22 @@ const Page = (
 
   const onSubmit: (data: FormValues) => Promise<void> = async (data) =>  {
     const { email, password } = data;
-    try {
-      await dispatch(login({ email, password }));
-    } catch (error1) {
-      // eslint-disable-next-line no-console
-      console.error(`${t('Login error')}:`, error1);
-    }
+      setLoading(true)
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+      setLoading(false)
+
+      if (result?.ok) {
+        router.push(paths.$url());
+      } else {
+        setErrors("Invalid credentials");
+      }
+ 
   };
 
-  if (success) router.push(paths.$url());
 
   return (
     <section>
@@ -122,9 +127,9 @@ const Page = (
                 {t('Submit')}
               </button>
             </div>
-            {error && (
+            {errors && (
               <div className="text-red-500">
-                {t('There was an issue with the login. Please try again.')}
+                {errors}
               </div>
             )}
             <div className="text-blue-500 underline">
