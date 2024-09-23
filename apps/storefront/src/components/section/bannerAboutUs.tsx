@@ -16,7 +16,7 @@ export function BannerAboutUs() {
           <div className="hero__text xl:w-[48%] text-center xl:text-left">
        
             <h1 className="h1 mb-6">
-              {t("About Us")}
+              {t("about_us")}
             </h1>
     
           </div>

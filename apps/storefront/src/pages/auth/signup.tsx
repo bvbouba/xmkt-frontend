@@ -1,6 +1,6 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { GetStaticProps } from "next";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { AuthLayout } from "@/components/layout";
@@ -32,7 +32,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 const Page = (
-  // { locale }: InferGetStaticPropsType<typeof getStaticProps>
+  { locale }: InferGetStaticPropsType<typeof getStaticProps>
 ) => {
   const { t } = useTranslation("common");
   const router = useRouter()
@@ -64,7 +64,7 @@ const Page = (
   const watchPassword = watch("password1", "");
 
   const validatePasswordMatch = (value: string) => {
-    return value === watchPassword || t("Passwords do not match.");
+    return value === watchPassword || t("passwords_do_not_match.");
   };
 
   
@@ -112,7 +112,7 @@ const Page = (
     <section>
       <div className="container mx-auto flex flex-col items-center">
         <h2 className="h2 mb-5 xl:mb-[50px] text-center xl:text-left">
-          {t("Sign Up")}
+          {t("sign_up")}
         </h2>
         
         {/* <div className="mb-4">
@@ -140,7 +140,7 @@ const Page = (
                     required: true,
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: t("Invalid email format."),
+                      message: t("invalid_email_format"),
                     },
                   })}
                   id="email"
@@ -162,16 +162,16 @@ const Page = (
                       required: true,
                       minLength: {
                         value: 7,
-                        message: t("Password must be at least 7 characters."),
+                        message: t("password_must_be_at_least_7_characters"),
                       },
                       pattern: {
                         value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{7,}$/,
-                        message: t("Password must include at least one letter, one digit, and one special character."),
+                        message: t("password_must_include_at_least_one_letter,_one_digit,_and_one_special_character"),
                       },
                     })}
                     spellCheck={false}
                     id="password1"
-                    placeholder={t("Password")}
+                    placeholder={t("password")}
                     type="password"
                     className="input focus:outline-none focus:border-blue-500"
                   />
@@ -190,7 +190,7 @@ const Page = (
                     spellCheck={false}
                     id="password2"
                     type="password"
-                    placeholder={t("Confirm Password")}
+                    placeholder={t("confirm_password")}
                     className="input focus:outline-none focus:border-blue-500"
                   />
                   {!!errorsForm.password2 && (
@@ -208,7 +208,7 @@ const Page = (
                       required: true,
                     })}
                     id="firstname"
-                    placeholder={t("Firstname")}
+                    placeholder={t("firstname")}
                     type="text"
                     className="input focus:outline-none focus:border-blue-500"
                   />
@@ -224,7 +224,7 @@ const Page = (
                       required: true,
                     })}
                     id="lastname"
-                    placeholder={t("Lastname")}
+                    placeholder={t("lastname")}
                     type="text"
                     className="input focus:outline-none focus:border-blue-500"
                   />
@@ -245,11 +245,11 @@ const Page = (
                         required: true,
                         pattern: {
                           value: /^\d{10}$/,
-                          message: t("Phone number must be 10 digits."),
+                          message: t("phone_number_must_be_10_digits"),
                         },
                       })}
                       id="phoneNumber"
-                      placeholder={t("Phone Number")}
+                      placeholder={t("phone_number")}
                       type="text"
                       className="input focus:outline-none focus:border-blue-500"
                     />
@@ -266,7 +266,7 @@ const Page = (
                       })}
                       className="input focus:outline-none focus:border-blue-500"
                     >
-                      <option value="">{t("Select School")}</option>
+                      <option value="">{t("select_school")}</option>
                       {schools?.map((school) => (
                         <option value={school.id} key={school.id}>
                           {school.name}
@@ -304,7 +304,7 @@ const Page = (
                     fill="currentColor"
                   />
                 </svg>}
-                  {t("Sign Up")}
+                  {t("sign_up")}
                 </button>
               </div>
              {errors && <div className="text-red-500" >{errors}</div>}

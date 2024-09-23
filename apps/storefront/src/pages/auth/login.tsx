@@ -1,7 +1,7 @@
 import React, { ReactElement, useState } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { GetStaticProps } from "next";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from "next-i18next";
 import { AuthLayout } from "@/components/layout";
@@ -16,7 +16,7 @@ interface FormValues {
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -26,7 +26,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 const Page = (
-  // { locale }: InferGetStaticPropsType<typeof getStaticProps>
+  { locale }: InferGetStaticPropsType<typeof getStaticProps>
 ) => {
   const router = useRouter();
   const paths = usePaths()
@@ -53,7 +53,7 @@ const Page = (
       if (result?.ok) {
         router.push(paths.$url());
       } else {
-        setErrors("Invalid credentials");
+        setErrors(t("invalid_credentials"));
       }
  
   };
@@ -63,7 +63,7 @@ const Page = (
     <section>
       <div className="container mx-auto flex flex-col items-center">
         <h2 className="h2 mb-5 xl:mb-[50px] text-center xl:text-left">
-          {t('Log in')}
+          {t('log_in')}
         </h2>
         <form className="max-w-md mx-auto" onSubmit={handleSubmit(onSubmit)}>
           <div>
@@ -73,11 +73,11 @@ const Page = (
                   required: true,
                   pattern: {
                     value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: t('Invalid email format.'),
+                    message: t('invalid_email_format'),
                   },
                 })}
                 id="email"
-                placeholder={t('Email')}
+                placeholder={t('email')}
                 type="text"
                 className="input focus:outline-none focus:border-blue-500"
               />
@@ -96,7 +96,7 @@ const Page = (
                 spellCheck={false}
                 id="password"
                 type="password"
-                placeholder={t('Password')}
+                placeholder={t('password')}
                 className="input focus:outline-none focus:border-blue-500"
               />
             </div>
@@ -124,7 +124,7 @@ const Page = (
                     />
                   </svg>
                 )}
-                {t('Submit')}
+                {t('submit')}
               </button>
             </div>
             {errors && (
@@ -134,7 +134,7 @@ const Page = (
             )}
             <div className="text-blue-500 underline">
               <Link href={paths.auth.signup.$url()}>
-                {t('Create an account?')}
+                {`${t('create_an_account')}?`}
               </Link>
             </div>
           </div>

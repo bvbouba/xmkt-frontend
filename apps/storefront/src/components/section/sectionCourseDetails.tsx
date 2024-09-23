@@ -72,7 +72,7 @@ export function SectionCourseDetail() {
       <div className="container mx-auto h-full">
         <div className="">
           <div className="flex flex-col items-center">
-            <h2 className="h2 mb-6">{t("Welcome to the simulation Store")}</h2>
+            <h2 className="h2 mb-6">{t("welcome_to_the_simulation_store")}</h2>
             <div className="col-md-6 col-md-offset-3">
               <div className="">
                 <form className="flex items-center max-w-sm mx-auto" onSubmit={handleSubmit(onSubmit)}>
@@ -84,11 +84,11 @@ export function SectionCourseDetail() {
                       })}
                         type="text"
                         className="input focus:outline-none focus:border-blue-500"
-                        placeholder={t("Enter the class code")}
+                        placeholder={t("enter_the_class_code")}
                       />
 
                       <button className="btn btn-lg btn-accent mx-auto xl:mx-0"  type="submit">
-                      {loading ?  t("Searching..."):t("Search")}
+                      {loading ?  t("searching..."):t("search")}
                       </button>
                     </div>
                   </div>
@@ -124,14 +124,14 @@ export function SectionCourseDetail() {
                 </p>
               </div>
               <div>
-                <h6>{t("Published date")}:</h6>{" "}
+                <h6>{t("published_date")}:</h6>{" "}
                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
                   {formatDate(course.creation_date)}
                 </p>
               </div>
 
               <div>
-                <h6>{t("Course # ")}:</h6>
+                <h6>{t("Course_#_")}:</h6>
                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
                   {course.courseid}
                 </p>
@@ -142,16 +142,14 @@ export function SectionCourseDetail() {
                     onClick={handleEnrollClick}
                     className="focus:outline-none text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
                   >
-                    {loading1 ? t("Enrolling...") : t("Enroll")}
+                    {loading1 ? t("enrolling...") : t("enroll")}
                   </button>
                 ) : (
                   <Link
                     className="text-sm text-red-500"
                     href={paths.auth.login.$url()}
                   >
-                    {t(
-                      "You must be registered to enroll in this course. Log in or apply now."
-                    )}
+                    {t("you_must_be_registered_to_enroll_in_this_course._Log_in_or_apply_now.")}
                   </Link>
                 )}
               </div>
@@ -160,11 +158,11 @@ export function SectionCourseDetail() {
         </div>
       </>
     ) : (
-      <p>No result</p>
+      <p>{t("no_result")}</p>
     )}
     {success && (
       <p className="mt-4 text-green-500">
-        {t("You have successfully registered for the course.")}
+        {t("You_have_successfullyregistered_for_the_course.")}
       </p>
     )}
   </section>

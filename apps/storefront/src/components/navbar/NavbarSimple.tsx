@@ -18,21 +18,20 @@ export const NavbarSimple: React.FC = () => {
     //   url: paths.$url(),
     // },
     {
-      label: t("Sign In"),
+      label: t("sign_in"),
       url: paths.auth.login.$url(),
     },
   ];
 
   const onLogout = async () => {
-    if(status ==="authenticated"){
+    if (status === "authenticated") {
       try {
-       await logout(session?.accessToken)
-       signOut()
+        await logout(session?.accessToken)
+        await signOut()
       } catch (error) {
         console.log("Couldn't logout")
       }
-     }
-    void router.push(paths.auth.login.$url());
+    }
   };
 
   return (
@@ -48,22 +47,23 @@ export const NavbarSimple: React.FC = () => {
         </div>
         <div className="flex flex-col gap-y-4 lg:flex-row lg:gap-x-10 lg:gap-y-0">
           {menus.map((menu, idx) => {
-            if(status ==="authenticated" && idx===menus.length-1) return<></>
-            return(
+            if (status === "authenticated" && idx === menus.length - 1) return <div key={idx}></div>
+            return (
+              <div
+                key={idx}
+                className="flex justify-center items-center gap-x-2 lg:justify-normal"
+              >
+                <Link href={menu.url}>{menu.label}</Link>
+              </div>
+            )
+          })}
+          {status === "authenticated" && (
+
             <div
-              key={idx}
               className="flex justify-center items-center gap-x-2 lg:justify-normal"
             >
-              <Link href={menu.url}>{menu.label}</Link>
+              <button onClick={() => onLogout()}>{t("logout")}</button>
             </div>
-          )})}
-          {status ==="authenticated" && (
-       
-             <div
-             className="flex justify-center items-center gap-x-2 lg:justify-normal"
-           >
-             <button onClick={() => onLogout()}>{t("Logout")}</button>
-           </div>
           )}
         </div>
       </div>

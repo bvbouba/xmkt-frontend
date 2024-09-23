@@ -32,9 +32,9 @@ export const Navbar: React.FC = () => {
             <FontAwesomeIcon className="text-2xl text-accent" icon={faPhone} />
             +225 0702 4682 53
           </div>
-          <Link href={paths.shop.$url()}>
+          <Link href={paths.$url()}>
           <button className="btn btn-sm btn-outline w-[240px] lg:w-auto mx-auto lg:mx-0">
-            {t("Purchase Online")}
+            {t("purchase_online")}
           </button>
           </Link>
          <MobileNav  />

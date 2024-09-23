@@ -17,23 +17,23 @@ function DesktopNav() {
 
   const menus = [
     {
-      label:t("About"),
+      label:t("about"),
       url:"#"
     },
     {
-      label:t("Simulations"),
+      label:t("simulations"),
       url:"#"
     },
     {
-      label:t("Resources"),
+      label:t("resources"),
       url:"#"
     },
     {
-      label:t("Sign In"),
+      label:t("sign_in"),
       url:paths.auth.login.$url()
     },
     {
-      label:t("Register"),
+      label:t("register"),
       url:paths.auth.signup.$url()
     }
   ]
@@ -71,7 +71,7 @@ function DesktopNav() {
           <input
             type="text"
             id="search-input"
-            placeholder={t("Search....")}
+            placeholder={`${t("search")}....`}
             className="outline-none w-[100px] focus:w-[180px] focus:border-b-2 focus:border-accent placeholder:italic
             placeholder:text-base transition-all duration-150"
           />

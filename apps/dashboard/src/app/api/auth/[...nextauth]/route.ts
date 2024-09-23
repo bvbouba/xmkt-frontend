@@ -58,6 +58,7 @@ const handler = NextAuth({
           const user = res.data;
 
           if (user && user.key) {
+
             return {
               ...user,
               token: user.key,
@@ -115,6 +116,13 @@ const handler = NextAuth({
             ...session.user,
             ...user,
           };
+
+           // Check if the usertype is allowed (usertype === 1)
+           if (session.user.usertype !== 1) {
+            console.log('Unauthorized: Usertype is not allowed.');
+            throw new Error('Unauthorized');
+        }
+
         } catch (error) {
           console.error('Error fetching user data:', error);
         }

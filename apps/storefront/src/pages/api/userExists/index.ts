@@ -7,7 +7,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const { email } = req.body;
       const user = await getUserByEmail(email);
       
-      console.log("user: ", user);
       return res.status(200).json({ user });
     } catch (error) {
       console.error("Error fetching user: ", error);

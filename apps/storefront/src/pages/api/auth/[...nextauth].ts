@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import axios from 'axios';
 import { API_URI } from "myconstants";
 import { getUser } from "@/lib/auth";
-import { loadInfo } from "features/data";
 import { CourseProps } from "types";
 
 declare module "next-auth" {
@@ -41,7 +40,6 @@ const handler = NextAuth({
     },
     pages: {
         signIn: '/auth/login', // Custom login page route
-        signOut: '/auth/signup',
     },
     providers: [
         CredentialsProvider({
@@ -52,11 +50,10 @@ const handler = NextAuth({
             },
             async authorize(credentials) {
                 try {
-
                     const res = await axios.post(`${API_URI}rest-auth/login/`, {
                         email: credentials?.email,
                         password: credentials?.password
-                      });
+                    });
 
                     const user = res.data;
 
@@ -77,19 +74,15 @@ const handler = NextAuth({
         }),
     ],
     callbacks: {
-
         async jwt({ token, user, trigger, session }) {
-
             if (trigger === 'update') {
                 if (session?.course) {
                     token.course = session.course;
                 }
-               
             }
             if (user?.token) {
                 token.accessToken = user.token as string;
             }
-  
             return token;
         },
 
@@ -98,24 +91,29 @@ const handler = NextAuth({
             session.course = token.course as CourseProps;            
             if (session.accessToken) {
                 try {
-                    const user = await getUser(session.accessToken)
+                    const user = await getUser(session.accessToken);
                     session.user = {
                         ...session.user,
                         ...user,
                     };
-                
+
+                    // Check if the usertype is allowed (usertype === 2)
+                    if (session.user.usertype !== 2) {
+                        console.log('Unauthorized: Usertype is not allowed.');
+                        throw new Error('Unauthorized');
+                    }
+
                 } catch (error) {
                     console.error('Error fetching user data:', error);
+                    
                 }
             }
             return session;
         },
-
     },
     secret: process.env.NEXTAUTH_SECRET, // Use a strong secret key
 });
 
-export { handler as GET, handler as POST }
+export { handler as GET, handler as POST };
 
-export default handler
-
+export default handler;

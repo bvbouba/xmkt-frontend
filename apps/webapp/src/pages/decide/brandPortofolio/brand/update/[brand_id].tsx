@@ -123,7 +123,7 @@ function UpdateBrand({ locale }: InferGetStaticPropsType<typeof getStaticProps>)
       if (market && activePeriod && industryID && brandID && status === 'authenticated') {
  
           try {
-            updateBrand({ id: brandID, name: uppercase(name), role, project, isActive, period: activePeriod, token: session.accessToken })
+            await updateBrand({ id: brandID, name: uppercase(name), role, project, isActive, period: activePeriod, token: session.accessToken })
             setMessage(t("UPDATED_SUCCESSFULLY"))
             if(operation ==="0"){
               router.push(paths.decide.brandPortofolio.$url())

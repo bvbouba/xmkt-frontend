@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "react-i18next";
 
@@ -13,7 +13,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
   
   const Page = (
-    // { locale }: InferGetStaticPropsType<typeof getStaticProps>
+    { locale }: InferGetStaticPropsType<typeof getStaticProps>
   ) => {    
     const { t } = useTranslation("common");
 

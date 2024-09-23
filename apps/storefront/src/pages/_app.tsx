@@ -1,7 +1,7 @@
 import "@/css/input.css";
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app'
-import { ReactElement, ReactNode } from 'react';
+import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { appWithTranslation } from 'next-i18next'
 import { SessionProvider } from "next-auth/react";
 
@@ -15,8 +15,13 @@ type AppPropsWithLayout = AppProps & {
 
   function App({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
     const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
+    const [isClient, setIsClient] = useState(false)
+ 
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
   return <SessionProvider session={session}>
-  {getLayout(<Component {...pageProps} />)}
+  {isClient ? getLayout(<Component {...pageProps} />) : <div></div>}
   </SessionProvider>
 } 
 

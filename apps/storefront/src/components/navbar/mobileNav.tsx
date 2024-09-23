@@ -27,23 +27,23 @@ function MobileNav() {
 
   const menus = [
     {
-      label:t("About"),
+      label:t("about"),
       url:"#"
     },
     {
-      label:t("Simulations"),
+      label:t("simulations"),
       url:"#"
     },
     {
-      label:t("Resources"),
+      label:t("resources"),
       url:"#"
     },
     {
-      label:t("Sign In"),
+      label:t("sign_in"),
       url:paths.auth.login.$url()
     },
     {
-      label:t("Register"),
+      label:t("register"),
       url:paths.auth.signup.$url()
     }
   ]
@@ -96,7 +96,7 @@ function MobileNav() {
           <input
             type="text"
             id="mnav-search-input"
-            placeholder={t("Search....")}
+            placeholder={`${t("search")}....`}
             className="outline-none w-[160px] border-b-2 focus:border-b-2 focus:border-accent placeholder:italic"
           />
         </form>
