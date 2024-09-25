@@ -11,7 +11,7 @@ import { brandPortofolioProps, decideStatusProps, marketProps } from "types";
 import { fetchBrands, fetchDecisionStatus, getMarketsData } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -47,7 +47,7 @@ useEffect(() => {
     };
     fetchDecisionStatusData();
   }
-}, [status]);
+}, [status,industryID,session?.accessToken]);
 
 const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
 
@@ -70,7 +70,7 @@ useEffect(() => {
     };
     fetchBrandAndMarketData();
   }
-}, [status]);
+}, [status,firmID,industryID,session?.accessToken]);
 
 
 

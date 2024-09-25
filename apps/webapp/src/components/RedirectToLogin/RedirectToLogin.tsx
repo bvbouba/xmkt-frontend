@@ -10,7 +10,7 @@ export const RedirectToLogin: React.FC = () => {
     if (!isAuthenticated()) {
       router.push(paths.auth.login.$url()); // Redirect to your login page
     }
-  }, [router]);
+  }, [router,paths.auth.login]);
 
   return null;
 };

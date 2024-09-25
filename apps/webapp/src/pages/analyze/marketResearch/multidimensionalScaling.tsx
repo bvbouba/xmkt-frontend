@@ -15,7 +15,7 @@ import { fetchDimensions, getDimensionalIdealsData, getDimensionalScalesData, ge
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -42,7 +42,7 @@ const { t } = useTranslation('common'); // For translation
 
 useEffect(() => {
   // Check if the session is authenticated and we have industryID and firmID
-  if (status === "authenticated" && firmID && industryID) {
+  if (status === "authenticated" && industryID) {
 
     const loadData = async () => {
       setLoading(true);
@@ -80,7 +80,7 @@ useEffect(() => {
 
     loadData();
   }
-}, [status]);
+}, [status,industryID,selectedPeriod,session?.accessToken]);
 
 if (status === "loading" || loading) {
   return <p>Loading...</p>;

@@ -12,7 +12,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { marketProps, rndProjectProps } from "types";
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -45,7 +45,7 @@ function ResearchAndDevelopment({ locale }: InferGetStaticPropsType<typeof getSt
       };
       fetchDecisionStatusData();
     }
-  }, [status, industryID]);
+  }, [status, industryID,session?.accessToken]);
   
   const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
   
@@ -67,7 +67,7 @@ function ResearchAndDevelopment({ locale }: InferGetStaticPropsType<typeof getSt
       }
     };
     fetchData();
-  }, [status]);
+  }, [status,firmID,industryID,activePeriod,session?.accessToken]);
 
   if (status==="loading" && loading) {
     return <p>Loading...</p>;

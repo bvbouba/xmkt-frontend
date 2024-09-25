@@ -23,7 +23,7 @@ import { getBrandData, getFirmData } from "features/data";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -61,7 +61,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
           }
           loadData()
         }
-      }, [status]);
+      }, [status,firmID,industryID,session?.accessToken]);
     
       if (status === "loading" || loading) {
         return <p>Loading...</p>;

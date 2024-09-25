@@ -10,7 +10,7 @@ import { marketResearchProps } from "types";
 import { fetchMarketResearchChoices } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -47,7 +47,7 @@ function MarketResearchPage({ locale }: InferGetStaticPropsType<typeof getStatic
         loadData()
   
       }
-    },[status,selectedPeriod])
+    },[status,firmID,industryID,selectedPeriod,session?.accessToken])
 
     if (status === "loading") {
       return <p>Loading...</p>;

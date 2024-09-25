@@ -24,7 +24,7 @@ export type FormData = {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -65,7 +65,7 @@ useEffect(() => {
     };
     fetchDecisionStatusData();
   }
-}, [status]);
+}, [status,industryID,session?.accessToken]);
 
 const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
 
@@ -85,7 +85,7 @@ useEffect(() => {
     }
   };
   fetchData();
-}, [status, projectID, activePeriod]);
+}, [status, projectID, activePeriod,session?.accessToken]);
 
 // Populate form fields with project data
 useEffect(() => {

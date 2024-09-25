@@ -20,7 +20,7 @@ Chart.register(CategoryScale);
 Chart.register(ChartDataLabels);
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -43,7 +43,7 @@ const { t } = useTranslation('common');
 
 // Fetch market research choices and forecasts data when authenticated
 useEffect(() => {
-  if (status === 'authenticated' && firmID && industryID) {
+  if (status === 'authenticated' && industryID) {
     const loadData = async () => {
       setLoading(true);
       try {
@@ -67,7 +67,7 @@ useEffect(() => {
 
     loadData();
   }
-}, [status]);
+}, [status,industryID,selectedPeriod,session?.accessToken]);
 
 if (status === "loading" || loading) {
   return <p>Loading...</p>;

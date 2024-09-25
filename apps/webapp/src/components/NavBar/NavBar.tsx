@@ -159,7 +159,7 @@ export const NavBar: React.FC = () => {
     });
 
     return <Breadcrumb items={breadcrumb} />;
-  }, [router.pathname]);
+  }, [router.pathname,menuItems,submenuItems,t,paths.decide,paths.analyze.companyResults]);
 
 
   const matchingItem = submenuItems.find(item => item.url.pathname === router.pathname);

@@ -14,7 +14,7 @@ import { channelProps, distributionCoverageProps, marketResearchProps, salesProp
 import { fetchMarketResearchChoices, getChannelsData, getDistributionCoverageData, getSalesData } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -37,7 +37,7 @@ function DistributionPanel({ locale }: InferGetStaticPropsType<typeof getStaticP
   const { t } = useTranslation('common');
   
   useEffect(() => {
-    if (status === "authenticated" && firmID && industryID) {
+    if (status === "authenticated"  && industryID) {
       const loadData = async () => {
         setLoading(true);
         try {
@@ -61,7 +61,7 @@ function DistributionPanel({ locale }: InferGetStaticPropsType<typeof getStaticP
   
       loadData();
     }
-  }, [status]);
+  }, [status,industryID,selectedPeriod,session?.accessToken]);
   if (status === "loading" || loading) {
     return <p>Loading...</p>;
   }

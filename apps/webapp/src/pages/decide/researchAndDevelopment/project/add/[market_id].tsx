@@ -15,7 +15,7 @@ import { decideStatusProps } from "@/lib/type";
 import { fetchDecisionStatus } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -57,7 +57,7 @@ useEffect(() => {
     };
     fetchDecisionStatusData();
   }
-}, [status, industryID]);
+}, [status, industryID,session?.accessToken]);
 
 // Check if a decision is in progress
 const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);

@@ -12,7 +12,7 @@ import { channelProps, decideStatusProps, markertingMixProps } from "types";
 import { fetchDecisionStatus, getChannelsData, getMarketingMixData, partialUpdateMarketingMix } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -56,7 +56,7 @@ function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProp
       };
       fetchDecisionStatusData();
     }
-  }, [status, industryID]);
+  }, [status, industryID,session?.accessToken]);
 
   // Fetch marketing mix and channels data when the component mounts
   useEffect(() => {
@@ -76,7 +76,7 @@ function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProp
       }
     };
     fetchData();
-  }, [status]);
+  }, [status,firmID,industryID,activePeriod,session?.accessToken]);
   
   const selectedBrands = brands.filter((entry) => entry.is_active === true);
   

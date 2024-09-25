@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { decideStatusProps, marketProps, marketResearchProps } from "types";
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -70,7 +70,7 @@ function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getSta
       };
       fetchDecisionStatusData();
     }
-  }, [status, industryID]);
+  }, [status, industryID,session?.accessToken]);
   
   const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
   

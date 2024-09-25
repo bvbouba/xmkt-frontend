@@ -1,4 +1,4 @@
-import { CourseDetails } from "./data/type";
+import { CourseDetails } from "types";
 
 export const calculateTotalParticipants = (course: CourseDetails) => {
     let totalParticipants = 0;

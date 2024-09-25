@@ -20,7 +20,7 @@ import { brandProps, channelProps, featureProps, firmProps, markertingMixProps, 
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -81,7 +81,7 @@ function DecisionReviewPage({ locale }: InferGetStaticPropsType<typeof getStatic
     }
     
 
-  }, [status]);
+  }, [status,industryID,firmID,selectedPeriod,session?.accessToken]);
 
   if (status === "loading" || loading) {
     return <p>Loading...</p>;

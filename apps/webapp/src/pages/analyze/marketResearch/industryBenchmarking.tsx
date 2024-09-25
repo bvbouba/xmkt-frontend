@@ -27,7 +27,7 @@ interface props {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -48,7 +48,7 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
 
 
   useEffect(() => {
-    if (status === 'authenticated' && firmID && industryID) {
+    if (status === 'authenticated' && industryID) {
       const loadData = async () => {
         setLoading(true);
         try {
@@ -70,7 +70,7 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
 
       loadData();
     }
-  }, [status]);
+  }, [status,industryID,session?.accessToken]);
 
   if (status === "loading" || loading) {
     return <p>Loading...</p>;

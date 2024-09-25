@@ -1,15 +1,13 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement } from "react";
 import {StoreLayout} from "@/components/layout";
 import {
-  SectionBanner,
   SectionCourseDetail,
 } from "@/components/section";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useTranslation } from "react-i18next";
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || "en";
+  const locale = context.locale || context.defaultLocale || "fr";
   return {
     props: {
       ...(await serverSideTranslations(locale, ["common"])),

@@ -12,7 +12,7 @@ import { industryInfoProps } from "types";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -31,7 +31,7 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
 
   useEffect(() => {
     
-    if (status === "authenticated" && firmID && industryID) {
+    if (status === "authenticated"  && industryID) {
      
       const loadData = async () => {
         setLoading(true)
@@ -48,7 +48,7 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
 
     }
 
-  }, [status]);
+  }, [status,industryID,session?.accessToken]);
 
   if (status === "loading" || loading) {
     return <p>Loading...</p>;

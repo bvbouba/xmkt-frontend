@@ -45,7 +45,7 @@ export const SideBar: React.FC = () => {
       fetchData();
     }
 
-  }, [status])
+  }, [status,session?.teamID,session?.accessToken,session?.activePeriod])
 
   const locale = router.locale;
   const { t } = useTranslation('common')

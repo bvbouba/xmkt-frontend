@@ -11,7 +11,7 @@ import { useSession } from "next-auth/react";
 import { getBrandData, getFeaturesData, getMarketingMixData } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -52,7 +52,7 @@ function MarketReport({ locale }: InferGetStaticPropsType<typeof getStaticProps>
       }
       loadData()
     }
-  },[status])
+  },[status,industryID,session?.accessToken,selectedPeriod])
 
 
   if (status === "loading" || loading) {

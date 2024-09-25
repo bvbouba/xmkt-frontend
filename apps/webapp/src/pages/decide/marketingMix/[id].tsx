@@ -71,7 +71,7 @@ const choicesObjective2 = objective2Values().map(option => (
                             ));
 
 export const getStaticProps: GetStaticProps = async (context) => {
-                              const locale = context.locale || context.defaultLocale || 'en';
+                              const locale = context.locale || context.defaultLocale || 'fr';
                               return {
                                 props: {
                                   ...(await serverSideTranslations(locale, ['common'])),
@@ -127,7 +127,7 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
       };
       fetchDecisionStatusData();
     }
-  }, [status, industryID, session]);
+  }, [status, industryID, session?.accessToken]);
 
   const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 1);
 

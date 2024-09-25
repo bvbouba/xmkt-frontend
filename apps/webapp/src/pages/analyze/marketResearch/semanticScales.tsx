@@ -22,7 +22,7 @@ interface columnProps {
 
 
   export const getStaticProps: GetStaticProps = async (context) => {
-    const locale = context.locale || context.defaultLocale || 'en';
+    const locale = context.locale || context.defaultLocale || 'fr';
     return {
       props: {
         ...(await serverSideTranslations(locale, ['common'])),
@@ -47,7 +47,7 @@ function SemanticScales({ locale }: InferGetStaticPropsType<typeof getStaticProp
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (status === 'authenticated' && firmID && industryID) {
+    if (status === 'authenticated' && industryID) {
       const loadData = async () => {
         setLoading(true);
         try {
@@ -71,20 +71,23 @@ function SemanticScales({ locale }: InferGetStaticPropsType<typeof getStaticProp
       };
       loadData();
     }
-  }, [status]);
+  }, [status,industryID,selectedPeriod,session?.accessToken]);
+
+  const features = featuresData.filter(item=>item.surname !== "feature_7")
+
+  useEffect(() => {
+    // Set the initial feature to features[0] only when the component mounts
+    if (features.length > 0 && !selectedFeature) {
+      setSelectedFeature(features[0]);
+    }
+  }, [features, selectedFeature]);
+  
 
   if (status === "loading" || loading) {
     return <p>Loading...</p>;
   }
   
-const features = featuresData.filter(item=>item.surname !== "feature_7")
 
-useEffect(() => {
-  // Set the initial feature to features[0] only when the component mounts
-  if (features.length > 0 && !selectedFeature) {
-    setSelectedFeature(features[0]);
-  }
-}, [features, selectedFeature]);
 
 
 let firmIds: { [key: string]: any } = {};

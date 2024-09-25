@@ -15,7 +15,7 @@ import { channelProps, markertingMixProps, marketResearchProps, segmentProps } f
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -67,7 +67,7 @@ function CompetitiveAds({ locale }: InferGetStaticPropsType<typeof getStaticProp
       loadData()
 
     }
-  },[status])
+  },[status,industryID,firmID,selectedPeriod,session?.accessToken])
 
   if (status === "loading" || loading) {
     return <p>Loading...</p>;

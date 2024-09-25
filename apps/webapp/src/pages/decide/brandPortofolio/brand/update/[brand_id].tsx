@@ -22,7 +22,7 @@ export type FormData = {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -65,7 +65,7 @@ function UpdateBrand({ locale }: InferGetStaticPropsType<typeof getStaticProps>)
       };
       fetchDecisionStatusData();
     }
-  }, [status]);
+  }, [status,industryID,session?.accessToken]);
   
   const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
 
@@ -89,7 +89,7 @@ function UpdateBrand({ locale }: InferGetStaticPropsType<typeof getStaticProps>)
       }
     };
     fetchData();
-  }, [status]);
+  }, [status,firmID,industryID,activePeriod,session?.accessToken]);
 
   useEffect(() => {
     if (brand?.name !== undefined) {

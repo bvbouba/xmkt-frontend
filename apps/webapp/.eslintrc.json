@@ -1,5 +1,11 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": [
+    "next",
+    "next/core-web-vitals"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@next/next/no-img-element":"off",
+    "react-hooks/exhaustive-deps":"off"
+  }
 }
-
-

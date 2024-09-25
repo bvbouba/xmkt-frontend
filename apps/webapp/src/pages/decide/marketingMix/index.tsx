@@ -11,7 +11,7 @@ import { fetchDecisionStatus, getMarketingMixData } from "features/data";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -44,7 +44,7 @@ function MarketingMix({ locale }: InferGetStaticPropsType<typeof getStaticProps>
       };
       fetchDecisionStatusData();
     }
-  }, [status]);
+  }, [status,industryID,session?.accessToken]);
   
   const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
   
@@ -72,7 +72,7 @@ function MarketingMix({ locale }: InferGetStaticPropsType<typeof getStaticProps>
     if (firmID && industryID && activePeriod) {
       fetchData();
     }
-  }, [status]);
+  }, [status,firmID,industryID,activePeriod,session?.accessToken]);
     const selectedData = marketingMixData.filter(entry => entry.is_active === true)
     // if(isDecisionInProgress) return<> Decision is in Progress</>
     return ( 

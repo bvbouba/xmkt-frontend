@@ -21,7 +21,7 @@ export type FormData = {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -59,7 +59,7 @@ function AddBrand({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
       };
       fetchDecisionStatusData();
     }
-  }, [status]);
+  }, [status,industryID,session?.accessToken]);
 
   useEffect(() => {
     if (status === "authenticated" && firmID && industryID && activePeriod) {
@@ -77,7 +77,7 @@ function AddBrand({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
       };
       loadData();
     }
-  }, [status]);
+  }, [status,firmID,industryID,activePeriod,session?.accessToken]);
   const market = markets.find(m => m.id === marketID)
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {

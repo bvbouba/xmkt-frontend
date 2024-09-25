@@ -18,7 +18,7 @@ import { getBrandData, getFirmData, getMarketsData } from "features/data";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const locale = context.locale || context.defaultLocale || 'en';
+  const locale = context.locale || context.defaultLocale || 'fr';
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
@@ -61,7 +61,7 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
 
     }
  
-  }, [status]);
+  }, [status,industryID,session?.accessToken]);
 
   if (status === "loading" || loading) {
     return <p>Loading...</p>;
