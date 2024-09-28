@@ -1,1 +1,1 @@
-export {BlockHeader} from "./BlockHeader"
+export {BlockHeader} from "./block-header"
