@@ -9,7 +9,7 @@ export function middleware(request: NextRequest) {
     
   const url = request.nextUrl.clone();
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
-  const staticFileExtensions = ['jpg', 'jpeg', 'png', 'svg', 'css', 'woff', 'woff2', 'ttf'];
+  const staticFileExtensions = ['jpg', 'jpeg', 'png', 'svg', 'woff', 'woff2', 'ttf'];
 
   // Check if the request is for a static file by matching the extension
   const isStaticFile = staticFileExtensions.some(ext => url.pathname.endsWith(`.${ext}`));
