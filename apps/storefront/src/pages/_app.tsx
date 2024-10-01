@@ -16,11 +16,12 @@ type AppPropsWithLayout = AppProps & {
   function App({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
     const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
     const [isClient, setIsClient] = useState(false)
- 
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
+
   useEffect(() => {
     setIsClient(true)
   }, [])
-  return <SessionProvider session={session}>
+  return <SessionProvider session={session}  basePath={`${basePath}/api/auth`}>
   {isClient ? getLayout(<Component {...pageProps} />) : <div></div>}
   </SessionProvider>
 } 
