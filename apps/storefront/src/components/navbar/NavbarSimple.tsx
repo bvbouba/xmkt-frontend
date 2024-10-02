@@ -27,12 +27,7 @@ export const NavbarSimple: React.FC = () => {
     if (status === "authenticated") {
       try {
         await logout(session?.accessToken)
-        await signOut(
-          {
-            callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${basePath}`,
-
-          }
-        )
+        await signOut()
       } catch (error) {
         console.log("Couldn't logout")
       }

@@ -4,6 +4,8 @@ import axios from 'axios';
 import { API_URI } from "myconstants";
 import { getUser } from "@/lib/auth";
 
+const basePath=process.env.NEXT_PUBLIC_BASE_PATH || '/admin'
+
 declare module "next-auth" {
   interface Session {
     user: {
@@ -39,7 +41,7 @@ const handler = NextAuth({
     strategy: 'jwt'
   },
   pages: {
-    signIn: '/[lng]/login', // Custom login page route
+    signOut:`${process.env.NEXT_PUBLIC_BASE_URL}${basePath}`
   },
   providers: [
     CredentialsProvider({

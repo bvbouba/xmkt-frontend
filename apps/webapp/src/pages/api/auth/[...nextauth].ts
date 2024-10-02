@@ -46,13 +46,14 @@ declare module "next-auth" {
     }
 }
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
 
 const handler = NextAuth({
     session: {
         strategy: 'jwt'
     },
     pages: {
-        signIn: '/auth/login', // Custom login page route
+         signOut:`${process.env.NEXT_PUBLIC_BASE_URL}${basePath}`
     },
     providers: [
         CredentialsProvider({

@@ -66,11 +66,7 @@ export const SideBar: React.FC = () => {
   if(status ==="authenticated"){
    try {
     await logout(session?.accessToken)
-    signOut(
-      {
-        callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${basePath}`,
-      }
-    )
+    signOut()
    } catch (error) {
      console.log("Couldn't logout")
    }
