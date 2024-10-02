@@ -16,7 +16,7 @@ type AppPropsWithLayout = AppProps & {
   function App({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
     const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
     const [isClient, setIsClient] = useState(false)
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
 
   useEffect(() => {
     setIsClient(true)

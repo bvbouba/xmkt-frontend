@@ -8,7 +8,7 @@ export function middleware(request: NextRequest) {
 
     
   const url = request.nextUrl.clone();
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
   const staticFileExtensions = ['jpg', 'jpeg', 'png', 'svg', 'woff', 'woff2', 'ttf'];
 
   // Check if the request is for a static file by matching the extension

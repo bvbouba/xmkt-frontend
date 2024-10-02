@@ -21,9 +21,9 @@ export default function RootLayout({
   const showSidebar = !(pathname.includes("/dashboard/data") || 
                         pathname.includes("/login") ||
                         pathname.includes("/dashboard/team"));
-
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/admin'
   return (
-    <SessionProvider>
+    <SessionProvider basePath={`${basePath}/api/auth`}>
       <html lang={lng} dir={dir(lng)}>
         <body className={`${inter.className} bg-gray-100`}>
           <div className="flex h-screen">
