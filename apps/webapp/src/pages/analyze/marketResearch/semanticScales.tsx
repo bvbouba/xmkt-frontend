@@ -45,7 +45,8 @@ function SemanticScales({ locale }: InferGetStaticPropsType<typeof getStaticProp
   const [featuresData, setFeaturesData] = useState<featureProps[]>([]);
   const [segments, setSegments] = useState<segmentProps[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/marketing' 
+  
   useEffect(() => {
     if (status === 'authenticated' && industryID) {
       const loadData = async () => {
@@ -165,7 +166,7 @@ const rows1 = segments.map(row =>{
     <div className="container mx-auto">
       <HeaderContainer title={title}  content={t("THE_SEMANTIC_SCALES_STUDY_PROVIDES_DATA_BASED_ON_A_SEMANTIC_DIFFE")} />
       <span>
-        <img src="/images/semantic_scale_sample.png" alt="semantic_scale_sample" />
+        <img src={`${basePath}/images/semantic_scale_sample.png`} alt="semantic_scale_sample" />
       </span>
        <ParagraphContainer  content={t("SEVERAL_CRUCIAL_INFORMATION_ARE_DERIVED_FROM_THESE_QUESTIONNAIRES")}   />
      

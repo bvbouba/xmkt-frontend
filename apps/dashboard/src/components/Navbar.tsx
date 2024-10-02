@@ -12,7 +12,7 @@ export const Sidebar =  ({lng}:{lng:string}) => {
   const [open, setOpen] = useState(true);
   const { t } =  useTranslation(lng, 'sidebar')
   const { data: session } = useSession();
-
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/admin'
   const navLinks = [
     { id: 0, title: t('home'), path: `/${lng}/` },
     { id: 1, title: t('profile'), path: `/${lng}/profile` },
@@ -64,7 +64,9 @@ export const Sidebar =  ({lng}:{lng:string}) => {
       <div className="absolute bottom-4 w-full px-4">
         <form
         action={async () => {
-          await signOut();
+          await signOut({
+            callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}${basePath}`,
+          });
         }}
         >
         {session?.user && <button
