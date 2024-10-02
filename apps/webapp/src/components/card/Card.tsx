@@ -8,10 +8,11 @@ export function Card({ menu,locale }: { menu: menuProps,locale?:string }) {
   const openNewWindow = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const { pathname } = menu.url;
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
     if (!pathname )  {
       return;
     }
-    const url = `/${locale}${menu.url.pathname}`;
+    const url = `${basePath}/${locale}${menu.url.pathname}`;
 
     const newWindowFeatures = 'height=600,width=1200,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes';
     const newWindow = window.open(url, '_blank', newWindowFeatures);

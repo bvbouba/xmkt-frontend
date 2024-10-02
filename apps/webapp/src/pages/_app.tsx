@@ -16,8 +16,9 @@ type AppPropsWithLayout = AppProps & {
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={session} basePath={`${basePath}/api/auth`}>
           {getLayout(<Component {...pageProps} />)}
     </SessionProvider>
   );
