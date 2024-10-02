@@ -9,6 +9,7 @@ import usePaths from '@/lib/paths';
 const Footer: React.FC = () => {
   const paths = usePaths()
   const { t } = useTranslation("common");
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
 
   return (
     <footer className="footer pt-12 xl:pt-[150px]">
@@ -16,7 +17,7 @@ const Footer: React.FC = () => {
       <div className="flex flex-col xl:flex-row gap-x-5 gap-y-10">
         <div className="footer__item flex-1">
           <Link href={paths.$url()}>
-          <img className="mb-[30px]" src="/logo.svg" alt=''/>
+          <img className="mb-[30px]" src={`${basePath}/logo.svg`} alt=''/>
           </Link>
           <p className="mb-[20px]">
             {t("Start transforming your courses with our simulations today. Contact us")}

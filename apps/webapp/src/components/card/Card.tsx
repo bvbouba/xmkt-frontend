@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { menuProps } from "../Section/Section";
 
-
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
 
 export function Card({ menu,locale }: { menu: menuProps,locale?:string }) {
    
   const openNewWindow = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const { pathname } = menu.url;
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
     if (!pathname )  {
       return;
     }
@@ -32,7 +31,7 @@ export function Card({ menu,locale }: { menu: menuProps,locale?:string }) {
          <a onClick={openNewWindow} className="d-flex flex-column items-center text-center">
         <div className="grid grid-rows-6 h-64">
           <div className="row-span-5">
-            <img className="rounded-t-lg object-cover w-full h-full" src={menu.image} alt={menu.alt} />
+            <img className="rounded-t-lg object-cover w-full h-full" src={`${basePath}${menu.image}`} alt={menu.alt} />
           </div>
           <div className="inline-block align-middle">
             <h5 className="mb-2 text-xl font-bold tracking-tight text-white dark:text-white">

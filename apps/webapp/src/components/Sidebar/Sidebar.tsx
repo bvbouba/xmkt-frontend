@@ -46,7 +46,7 @@ export const SideBar: React.FC = () => {
     }
 
   }, [status,session?.teamID,session?.accessToken,session?.activePeriod])
-
+  const basePath=process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
   const locale = router.locale;
   const { t } = useTranslation('common')
 
@@ -72,12 +72,12 @@ export const SideBar: React.FC = () => {
    }
   }
   }
-
+  
   return (
     <aside className="w-1/6 bg-gray-100 border-r border-gray-300  text-gray-500">
       {/* Logo */}
       <div className="mb-4 text-center bg-white">
-        <img src="/logo.svg" alt="Logo" className="h-24 mx-auto" />
+        <img src={`${basePath}/logo.svg`} alt="Logo" className="h-24 mx-auto" />
       </div>
 
       {/* User Information */}

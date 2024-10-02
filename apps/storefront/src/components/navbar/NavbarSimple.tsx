@@ -10,8 +10,8 @@ export const NavbarSimple: React.FC = () => {
   const { t } = useTranslation("common");
   const paths = usePaths();
   const { data: session, status } = useSession()
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
 
-  const router = useRouter()
   const menus = [
     // {
     //   label: t("Home"),
@@ -42,7 +42,7 @@ export const NavbarSimple: React.FC = () => {
       >
         <div className="flex justify-center lg:justify-normal">
           <Link href={paths.$url()}>
-            <img src="/logo.svg" alt="" />
+            <img src={`${basePath}/logo.svg`} alt="" />
           </Link>
         </div>
         <div className="flex flex-col gap-y-4 lg:flex-row lg:gap-x-10 lg:gap-y-0">
