@@ -7,12 +7,9 @@ acceptLanguage.languages(languages)
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js|site.webmanifest).*)',
-    '/',
-    '/admin',
+ 
   ]
 }
-
-
 
 export function middleware(req: NextRequest) {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/admin'

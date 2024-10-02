@@ -25,6 +25,9 @@ export default function RootLayout({
   return (
     <SessionProvider basePath={`${basePath}/api/auth`}>
       <html lang={lng} dir={dir(lng)}>
+        <head>
+        <link rel="icon" href={`${basePath}/ico.svg`} />
+        </head>
         <body className={`${inter.className} bg-gray-100`}>
           <div className="flex h-screen">
             {showSidebar && <Sidebar lng={lng} />}
