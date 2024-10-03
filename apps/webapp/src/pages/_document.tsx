@@ -3,11 +3,11 @@ import { useRouter } from "next/router";
 
 export default function Document() {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
-  const { locale } = useRouter();
+  const locale = 'fr'
   const isFrench = locale === 'fr';
 
   return (
-    <Html lang="fr">
+    <Html lang={locale}>
       <Head>
         <link rel="icon" href={`${basePath}/ico.svg`} />
         {isFrench ? (

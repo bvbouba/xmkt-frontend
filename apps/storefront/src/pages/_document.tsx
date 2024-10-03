@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 export default function Document() {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
-  const { locale } = useRouter();
+  const locale = 'fr'
   const isFrench = locale === 'fr';
   
   return (
@@ -23,10 +23,10 @@ export default function Document() {
          {/* Conditional Meta Tags */}
          {isFrench ? (
           <>
-            <meta name="description" content="Jeu de simulation pour l'enseignement supérieur" />
-            <title>Jeux de simulation pour l'enseignement</title>
-            <meta property="og:title" content="Jeux de simulation engageants pour l'apprentissage dans l'enseignement supérieur" />
-            <meta property="og:description" content="Permettez à vos étudiants de pratiquer et d'apprendre grâce à des jeux de simulation interactifs conçus pour l'enseignement supérieur. Améliorez l'engagement et la compréhension avec nos solutions innovantes." />
+            <meta name="description" content="Jeu de simulation pour l&apos;enseignement supérieur" />
+            <title>Jeux de simulation pour l&apos;enseignement</title>
+            <meta property="og:title" content="Jeux de simulation engageants pour l&apos;apprentissage dans l&apos;enseignement supérieur" />
+            <meta property="og:description" content="Permettez à vos étudiants de pratiquer et d&apos;apprendre grâce à des jeux de simulation interactifs conçus pour l&apos;enseignement supérieur. Améliorez l&apos;engagement et la compréhension avec nos solutions innovantes." />
           </>
         ) : (
           <>
