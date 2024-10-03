@@ -1,2 +1,2 @@
-export const API_URI = "http://167.99.133.206/"
-export const DEFAULT_LOCALE="en"
+export const API_URI = "https://xmkt.serverpit.com/"
+export const DEFAULT_LOCALE="fr"
