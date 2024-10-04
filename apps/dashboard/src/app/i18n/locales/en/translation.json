@@ -175,5 +175,19 @@
   "rate_required": "Rate is required",
   "principal_required": "Principal is required",
   "principal_must_be_less_than_or_equal_to_5000": "Principal must be less than or equal to 5000",
-  "go_back":"Back"
+  "go_back":"Back",
+  "passwords_do_not_match.":"Passwords do not match.",
+    "user_already_exists":"User already exists.",
+    "user_registration_failed":"User registration failed.",
+    "sign_up":"Sign Up",
+    "invalid_email_format.":"Invalid email format.",
+    "password_must_be_at_least_7_characters":"Password must be at least 7 characters.",
+    "password_must_include_at_least_one_letter,_one_digit,_and_one_special_character":"Password must include at least one letter, one digit, and one special character.",
+    "confirm_password":"Confirm Password",
+    "firstname":"Firstname",
+    "lastname":"Lastname",
+    "phone_number_must_be_10_digits":"Phone number must be 10 digits.",
+    "phone_number":"Phone Number",
+    "select_school":"Select School",
+    "no_result":"No result"
 }

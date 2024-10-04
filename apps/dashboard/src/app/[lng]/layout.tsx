@@ -20,6 +20,7 @@ export default function RootLayout({
   const pathname = usePathname();
   const showSidebar = !(pathname.includes("/dashboard/data") || 
                         pathname.includes("/login") ||
+                        pathname.includes("/signup") ||
                         pathname.includes("/dashboard/team"));
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/admin'
   return (

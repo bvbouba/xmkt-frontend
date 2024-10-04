@@ -177,5 +177,19 @@
   "principal_required": "Le capital est requis",
   "number_of_periods_required": "Le nombre de périodes est requis",
   "number_of_periods_less_than_remaining": "Le nombre de périodes doit être inférieur au nombre de périodes restantes",
-  "go_back":"Retour"
+  "go_back":"Retour",
+  "passwords_do_not_match.": "Les mots de passe ne correspondent pas.",
+  "user_already_exists": "L'utilisateur existe déjà.",
+  "user_registration_failed": "L'enregistrement de l'utilisateur a échoué.",
+  "sign_up": "S'inscrire",
+  "invalid_email_format.": "Format de courriel invalide.",
+  "password_must_be_at_least_7_characters": "Le mot de passe doit comporter au moins 7 caractères.",
+  "password_must_include_at_least_one_letter,_one_digit,_and_one_special_character": "Le mot de passe doit inclure au moins une lettre, un chiffre et un caractère spécial.",
+  "confirm_password": "Confirmez le mot de passe",
+  "firstname": "Prénom",
+  "lastname": "Nom de famille",
+  "phone_number_must_be_10_digits": "Le numéro de téléphone doit comporter 10 chiffres.",
+  "phone_number": "Numéro de téléphone",
+  "select_school": "Sélectionnez une école",
+  "no_result": "Aucun résultat"
 }
