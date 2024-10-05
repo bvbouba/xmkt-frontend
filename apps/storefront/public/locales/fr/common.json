@@ -42,6 +42,7 @@
   "submit": "Soumettre",
   "create_an_account": "Créer un compte",
   "fail_to_register_participant":"l'inscription du participant a échoué.",
-  "user_has_already_enrolled_to_this_course":"L'utilisateur est déjà inscrit à ce cours."
+  "user_has_already_enrolled_to_this_course":"L'utilisateur est déjà inscrit à ce cours.",
+  "return_to_login": "Retour à la page de connexion"
 
 }

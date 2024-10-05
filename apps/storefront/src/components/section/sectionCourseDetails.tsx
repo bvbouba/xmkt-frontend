@@ -28,7 +28,7 @@ export function SectionCourseDetail() {
   } = useForm<FormValues>();
   const { data: session, status } = useSession();
   const [course,setCourse] = useState<CourseProps>()
-  const [success,setSucces] = useState(false)
+  const [success,setSuccess] = useState(false)
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
   const [error, setError] = useState<string>();
 
@@ -70,7 +70,8 @@ export function SectionCourseDetail() {
 
 
       try {
-      const res = await registerForCourse({ courseCode: course.courseid,token:session.accessToken });
+      await registerForCourse({ courseCode: course.courseid,token:session.accessToken });
+      setSuccess(true)
     } catch (error) {
       setError(t("fail_to_register_participant"))
      }finally{

@@ -97,7 +97,7 @@ const Page = (
           password1, password2, email, firstName, lastName,userType,phone:phoneNumber,school 
         })        
       if (response1.key) {
-        router.push(paths.$url())
+        router.push(paths.auth.verifyEmailDone.$url())
       } else {
         setErrors(t('user_registration_failed'))
       }
