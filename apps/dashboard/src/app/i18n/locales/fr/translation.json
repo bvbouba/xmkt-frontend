@@ -191,5 +191,7 @@
   "phone_number_must_be_10_digits": "Le numéro de téléphone doit comporter 10 chiffres.",
   "phone_number": "Numéro de téléphone",
   "select_school": "Sélectionnez une école",
-  "no_result": "Aucun résultat"
+  "no_result": "Aucun résultat",
+  "invalid_credentials":"Informations d'identification non valides"
+
 }

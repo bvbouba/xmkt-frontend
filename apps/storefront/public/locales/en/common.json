@@ -40,5 +40,7 @@
     "invalid_email_format":"Invalid email format.",
     "email":"Email",
     "submit":"Submit",
-    "create_an_account":"Create an account"
+    "create_an_account":"Create an account",
+    "fail_to_register_participant":"Fail to register the participant",
+    "user_has_already_enrolled_to_this_course":"User has already enrolled to this course."
   }

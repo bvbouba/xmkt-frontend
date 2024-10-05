@@ -8,7 +8,7 @@
   "Course_#_": "Cours #",
   "enrolling...": "Inscription...",
   "enroll": "S'inscrire",
-  "you_must_be_registered_to_enroll_in_this_course._Log_in_or_apply_now.": "Vous devez être inscrit pour vous inscrire à ce cours. Connectez-vous ou postulez maintenant.",
+  "you_must_be_registered_to_enroll_in_this_course._Log_in_or_apply_now.": "Vous devez être inscrit pour s'enroller à ce cours. Connectez-vous ou s'inscrire maintenant.",
   "You_have_successfullyregistered_for_the_course.": "Vous vous êtes inscrit avec succès au cours.",
   "sign_in": "Se connecter",
   "passwords_do_not_match.": "Les mots de passe ne correspondent pas.",
@@ -40,5 +40,8 @@
   "invalid_email_format": "Format de courriel invalide.",
   "email": "Email",
   "submit": "Soumettre",
-  "create_an_account": "Créer un compte"
+  "create_an_account": "Créer un compte",
+  "fail_to_register_participant":"l'inscription du participant a échoué.",
+  "user_has_already_enrolled_to_this_course":"L'utilisateur est déjà inscrit à ce cours."
+
 }

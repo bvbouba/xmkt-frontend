@@ -189,5 +189,6 @@
     "phone_number_must_be_10_digits":"Phone number must be 10 digits.",
     "phone_number":"Phone Number",
     "select_school":"Select School",
-    "no_result":"No result"
+    "no_result":"No result",
+    "invalid_credentials":"Invalid credentials"
 }

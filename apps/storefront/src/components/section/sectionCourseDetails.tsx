@@ -1,6 +1,6 @@
 import formatDate from "@/lib/date";
 import usePaths from "@/lib/paths";
-import { fetchCoursesById, registerForCourse } from "features/data";
+import { fetchCoursesById, getParticipant, registerForCourse } from "features/data";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -29,6 +29,8 @@ export function SectionCourseDetail() {
   const { data: session, status } = useSession();
   const [course,setCourse] = useState<CourseProps>()
   const [success,setSucces] = useState(false)
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
+  const [error, setError] = useState<string>();
 
   const onSubmit = async (data: FormValues) => {
     const {
@@ -54,11 +56,23 @@ export function SectionCourseDetail() {
   const handleEnrollClick = async () => {
     if (status==="authenticated" && course) {
      setLoading1(true)
-      try {
-      await registerForCourse({ courseCode: course.courseid,token:session.accessToken });
       
+     try {
+      const response = await getParticipant({courseID:course.courseid,token:session.accessToken})
+      if (response.id) {
+        setError(t("user_has_already_enrolled_to_this_course"));
+        setLoading1(false)
+        return;
+      }
     } catch (error) {
-      console.error("fail to register participant")
+       console.error("user not found")
+    }
+
+
+      try {
+      const res = await registerForCourse({ courseCode: course.courseid,token:session.accessToken });
+    } catch (error) {
+      setError(t("fail_to_register_participant"))
      }finally{
       setLoading1(false)
      }
@@ -106,7 +120,7 @@ export function SectionCourseDetail() {
           <div className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
             <img
               className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
-              src="/img/store/simulation-1.png"
+              src={`${basePath}/img/store/simulation-1.png`}
               alt=""
             />
             <div className="flex flex-col justify-between p-4 leading-normal">
@@ -165,6 +179,7 @@ export function SectionCourseDetail() {
         {t("You_have_successfullyregistered_for_the_course.")}
       </p>
     )}
+    {error && <span className="text-red-600 text-sm">{error}</span>}
   </section>
   </>
   );

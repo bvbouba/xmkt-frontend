@@ -15,7 +15,6 @@ export default function CourseDetailsPage({ params: { lng } }:{params: { lng: st
   const router = useRouter();
   const [course, setCourse] = useState<CourseDetails>();
   const [loading, setLoading] = useState(true);
-  const [totalParticipants, setTotalParticipants] = useState(0);
 
   useEffect(() => {
     
@@ -24,7 +23,6 @@ export default function CourseDetailsPage({ params: { lng } }:{params: { lng: st
         try {
           const coursesData = await getCourse({courseId:session.courseId,token:session.accessToken});
           setCourse(coursesData);
-          setTotalParticipants(calculateTotalParticipants(coursesData));
 
         } catch (error) {
           console.error('Error getting course:', error);
@@ -66,7 +64,7 @@ export default function CourseDetailsPage({ params: { lng } }:{params: { lng: st
         {/* Number of Participants */}
         <div>
           <p className="text-lg">
-            {totalParticipants} {t("registered_participants")}
+            {course?.registered_participants} {t("registered_participants")}
           </p>
         </div>
 

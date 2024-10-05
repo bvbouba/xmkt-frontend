@@ -1141,7 +1141,7 @@ export const registerForCourse = async ({courseCode,token}:{ courseCode:string,t
       }
     
     );
-        return response.data.message;
+        return response.data;
     
     }
   
@@ -1258,6 +1258,18 @@ export const registerForCourse = async ({courseCode,token}:{ courseCode:string,t
 
   export const getUserByEmail = async (email: string): Promise<UserBasicType> => {
         const response = await axios.get(`${API_URI}api/users/email/${email}/`,
+        );
+        return response.data;
+      };
+  
+  export const getParticipant = async ({courseID,token}:{courseID: string, token: string;}): Promise<Participant> => {
+        const response = await axios.get(`${API_URI}api/participant/by-course-and-user/?course_id=${courseID}`,
+          {
+            headers: {
+              'Authorization': `token ${token}`
+            }
+          }
+        
         );
         return response.data;
       };

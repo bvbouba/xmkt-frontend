@@ -34,7 +34,7 @@ export default function Form({ lng  }: { lng: string }) {
         router.push(`/${lng}/`);
         router.refresh();
       } else {
-        setError("Invalid credentials");
+        setError(t("invalid_credentials"));
       }
   };
 
