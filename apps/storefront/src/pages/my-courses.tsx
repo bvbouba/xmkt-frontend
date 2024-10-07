@@ -94,7 +94,7 @@ export default function Page({
                 <td className="border border-gray-200 p-2">{course.courseid}</td>
                 <td className="border border-gray-200 p-2">{course.puk}</td>
                 <td className="border border-gray-200 p-2">
-                  <div className="flex items-center">
+                  {course.team_password ? <div className="flex items-center">
                     {showPasswords[course.id]
                       ? decodePassword(course.team_password)
                       : "••••••"}
@@ -114,7 +114,7 @@ export default function Page({
                     />
                       )}
                     </button>
-                  </div>
+                  </div> : ""}
                 </td>
               </tr>
             ))}

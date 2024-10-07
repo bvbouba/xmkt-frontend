@@ -109,9 +109,7 @@ export default function Page({
                             <h2 className="text-2xl font-bold text-green-600 mb-4">
                                 {t("you_have_successfully_registered_for_the_course!")}
                             </h2>
-                            <p className="text-gray-700 mb-4">
-                                {t("your_pak_(Participant_Access_Key)_is")}: <strong>{course.pak}</strong>
-                            </p>
+                    
                             <p className="text-gray-700 mb-4">
                                 {t("the_instructor_will_provide_the_course_password.")}
                             </p>
