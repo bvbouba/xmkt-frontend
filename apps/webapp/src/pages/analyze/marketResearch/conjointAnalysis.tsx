@@ -64,7 +64,7 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
   }, [status,firmID,industryID,courseID,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>Loading...</p>;
+    return <p>{`${t("loading")}...`}</p>;
   }
 
   let features: string[] = [];

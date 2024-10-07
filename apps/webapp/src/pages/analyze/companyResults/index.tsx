@@ -25,7 +25,7 @@ function CompanyResultsPage({ locale }: InferGetStaticPropsType<typeof getStatic
   const selectedPeriod = session?.selectedPeriod || 0
 
   if (status === "loading") {
-    return <p>Loading...</p>;
+    return <p>{`${t("loading")}...`}</p>;
   }
   const companyItems = [
     {

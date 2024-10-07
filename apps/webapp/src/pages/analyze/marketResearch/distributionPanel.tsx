@@ -63,7 +63,7 @@ function DistributionPanel({ locale }: InferGetStaticPropsType<typeof getStaticP
     }
   }, [status,industryID,selectedPeriod,session?.accessToken]);
   if (status === "loading" || loading) {
-    return <p>Loading...</p>;
+    return <p>{`${t("loading")}...`}</p>;
   }
 
   let teamJson: { [key: string]: any } = {};

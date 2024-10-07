@@ -60,7 +60,6 @@ useEffect(() => {
           period: selectedPeriod,
           token: session.accessToken,
         });
-
         const response4 = await getSegmentsData();
 
         const response5 = await fetchDimensions();
@@ -83,7 +82,7 @@ useEffect(() => {
 }, [status,industryID,selectedPeriod,session?.accessToken]);
 
 if (status === "loading" || loading) {
-  return <p>Loading...</p>;
+  return <p>{`${t("loading")}...`}</p>;
 }
   
 let firmIds : { [key: string]: any } = {};

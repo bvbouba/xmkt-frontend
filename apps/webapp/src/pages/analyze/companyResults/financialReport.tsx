@@ -64,7 +64,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
       }, [status,firmID,industryID,session?.accessToken]);
     
       if (status === "loading" || loading) {
-        return <p>Loading...</p>;
+        return <p>{`${t("loading")}...`}</p>;
       }
 
       let firmColors:string[] = []; // Default color array

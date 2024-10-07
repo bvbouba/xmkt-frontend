@@ -94,7 +94,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
   }, [status,firmID,industryID,selectedPeriod,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>Loading...</p>;
+    return <p>{`${t("loading")}...`}</p>;
   }
 
   const total_size = marketDemand.reduce((a, c) => a + c.size, 0);

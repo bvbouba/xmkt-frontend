@@ -115,7 +115,7 @@ function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getSta
   };
 
   if (status==="loading" && loading) {
-    return <p>Loading...</p>;
+    return <p>{`${t("loading")}...`}</p>;
   }
 
       // if(isDecisionInProgress) return<> Decision is in Progress</>

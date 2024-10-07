@@ -54,7 +54,7 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
       }, [status,firmID,industryID,session?.accessToken]);
 
       if (status === "loading" || loading) {
-        return <p>Loading...</p>;
+        return <p>{`${t("loading")}...`}</p>;
       }
 
 

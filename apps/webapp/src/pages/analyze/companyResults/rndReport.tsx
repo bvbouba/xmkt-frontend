@@ -51,7 +51,7 @@ function RndReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps
       }, [status,firmID,industryID,selectedPeriod,session?.accessToken]);
     
       if (status === "loading" || loading) {
-        return <p>Loading...</p>;
+        return <p>{`${t("loading")}...`}</p>;
       }
 
   const selectedFeatures = featureData?.filter(feature=>['feature_1','feature_2',

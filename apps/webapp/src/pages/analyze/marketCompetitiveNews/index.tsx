@@ -26,7 +26,7 @@ function MarketCompetitveNewsPage({ locale }: InferGetStaticPropsType<typeof get
     const { t } = useTranslation('common')
 
     if (status === "loading") {
-      return <p>Loading...</p>;
+      return <p>{`${t("loading")}...`}</p>;
     }
   
     const industryItems = [
