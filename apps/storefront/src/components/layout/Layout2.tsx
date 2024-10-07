@@ -18,7 +18,7 @@ export function RootLayout({
       <div className="flex flex-col">
       <NavbarSimple />
         {children}
-        <Footer />
+        {/* <Footer /> */}
         </div>
   );
 }

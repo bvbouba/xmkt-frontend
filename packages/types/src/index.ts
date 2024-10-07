@@ -602,6 +602,7 @@ export interface Team {
     user: number;
     course: number; 
     courseid: string;
+    course_name:string;
     puk: string; 
     first_name: string; 
     last_name: string; 
@@ -611,6 +612,7 @@ export interface Team {
     active_period: number;
     instructor: string; 
     firm_id: number; 
+    team_password: string;
 }
 
 export interface Decision {

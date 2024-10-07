@@ -14,3 +14,7 @@ export function uppercase(string:string) {
 export function lowercase(string:string) {
   return string.toLowerCase();
 }
+
+export function decodeBase64(encodedString:string) {
+  return atob(encodedString);
+}

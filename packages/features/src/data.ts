@@ -1273,3 +1273,15 @@ export const registerForCourse = async ({courseCode,token}:{ courseCode:string,t
         );
         return response.data;
       };
+
+
+  export const getAllEnrolledCourses = async (token: string): Promise<Participant[]> => {
+        const response = await axios.get(`${API_URI}api/participant/enrolled-courses/`,
+          {
+            headers: {
+              'Authorization': `token ${token}`
+            }
+          }
+        );
+        return response.data;
+      };

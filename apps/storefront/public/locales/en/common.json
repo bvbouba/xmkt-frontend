@@ -5,7 +5,7 @@
     "search": "Search",
     "By": "By",
     "published_date": "Published date",
-    "Course_#_": "Course #",
+    "course_#_": "Course #",
     "enrolling...": "Enrolling...",
     "enroll": "Enroll",
     "you_must_be_registered_to_enroll_in_this_course._Log_in_or_apply_now.": "You must be registered to enroll in this course. Log in or apply now.",
@@ -43,5 +43,23 @@
     "create_an_account":"Create an account",
     "fail_to_register_participant":"Fail to register the participant",
     "user_has_already_enrolled_to_this_course":"User has already enrolled to this course.",
-    "return_to_login":"Return to login"
-  }
+    "return_to_login":"Return to login",
+    "course_not_found":"Course not found.",
+  "back": "Back",
+  "you_have_successfully_registered_for_the_course!": "You have successfully registered for the course!",
+  "your_pak_(Participant_Access_Key)_is": "Your PAK (Participant Access Key) is",
+  "the_instructor_will_provide_the_course_password.": "The instructor will provide the course password.",
+  "later_you_can_access_this_course_and_all_details_in_the": "Later, you can access this course and all details in the",
+  "my_courses": "My Courses",
+  "section": "section",
+  "course_id": "Course ID",
+  "enroll_now": "Enroll Now",
+  "you_must_be_registered_to_enroll_in_this_course._log_in_or_apply_now": "You must be registered to enroll in this course. Log in or apply now.",
+  "course_name": "Course Name",
+  "courseid": "Course ID",
+  "puk": "Participant Access Key (PAK)",
+  "team_password": "Team Password",
+  "no_courses_found": "No courses found",
+  "invalid_password": "Invalid password"
+  
+}

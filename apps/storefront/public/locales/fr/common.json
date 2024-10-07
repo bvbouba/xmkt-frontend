@@ -5,7 +5,7 @@
   "search": "Rechercher",
   "By": "Par",
   "published_date": "Date de publication",
-  "Course_#_": "Cours #",
+  "course_#_": "Cours #",
   "enrolling...": "Inscription...",
   "enroll": "S'inscrire",
   "you_must_be_registered_to_enroll_in_this_course._Log_in_or_apply_now.": "Vous devez être inscrit pour s'enroller à ce cours. Connectez-vous ou s'inscrire maintenant.",
@@ -43,6 +43,23 @@
   "create_an_account": "Créer un compte",
   "fail_to_register_participant":"l'inscription du participant a échoué.",
   "user_has_already_enrolled_to_this_course":"L'utilisateur est déjà inscrit à ce cours.",
-  "return_to_login": "Retour à la page de connexion"
+  "return_to_login": "Retour à la page de connexion",
+  "course_not_found":"Course introuvable.",
+  "back": "Retour",
+  "you_have_successfully_registered_for_the_course!": "Vous vous êtes inscrit avec succès au cours !",
+  "your_pak_(Participant_Access_Key)_is": "Votre PAK (Clé d'Accès Participant) est",
+  "the_instructor_will_provide_the_course_password.": "L'instructeur fournira le mot de passe du cours.",
+  "later_you_can_access_this_course_and_all_details_in_the": "Plus tard, vous pourrez accéder à ce cours et à tous les détails dans la section",
+  "my_courses": "Mes cours",
+  "section": "section",
+  "course_id": "ID du cours",
+  "enroll_now": "S'inscrire maintenant",
+  "you_must_be_registered_to_enroll_in_this_course._log_in_or_apply_now": "Vous devez être inscrit pour participer à ce cours. Connectez-vous ou inscrivez-vous maintenant.",
+  "course_name": "Nom du cours",
+"courseid": "ID du cours",
+"puk": "Clé d'accès du participant (PAK)",
+"team_password": "Mot de passe de l'équipe",
+"no_courses_found": "Aucun cours trouvé",
+"invalid_password": "Mot de passe invalide"
 
 }
