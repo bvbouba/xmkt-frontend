@@ -64,7 +64,7 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
   }, [status,industryID,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{`${t("loading")}...`}</p>;
+    return <p>{t("LOADING...")}</p>;
   }
 
  const periods = Array.from(Array(selectedPeriod+1).keys())

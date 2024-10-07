@@ -60,7 +60,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
   }, [status,firmID,industryID,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{`${t("loading")}...`}</p>;
+    return <p>{t("LOADING...")}</p>;
   }
   
   let firmColors: string[] = []; // Default color array

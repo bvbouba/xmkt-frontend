@@ -50,7 +50,7 @@ function MarketResearchPage({ locale }: InferGetStaticPropsType<typeof getStatic
     },[status,firmID,industryID,selectedPeriod,session?.accessToken])
 
     if (status === "loading") {
-      return <p>{`${t("loading")}...`}</p>;
+      return <p>{t("LOADING...")}</p>;
     }
 
 

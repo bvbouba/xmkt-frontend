@@ -82,7 +82,7 @@ useEffect(() => {
 }, [status,industryID,selectedPeriod,session?.accessToken]);
 
 if (status === "loading" || loading) {
-  return <p>{`${t("loading")}...`}</p>;
+  return <p>{t("LOADING...")}</p>;
 }
   
 let firmIds : { [key: string]: any } = {};

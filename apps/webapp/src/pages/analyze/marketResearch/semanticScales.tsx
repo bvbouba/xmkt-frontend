@@ -85,7 +85,7 @@ function SemanticScales({ locale }: InferGetStaticPropsType<typeof getStaticProp
   
 
   if (status === "loading" || loading) {
-    return <p>{`${t("loading")}...`}</p>;
+    return <p>{t("LOADING...")}</p>;
   }
   
 

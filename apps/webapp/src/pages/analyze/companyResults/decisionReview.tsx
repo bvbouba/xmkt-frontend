@@ -84,7 +84,7 @@ function DecisionReviewPage({ locale }: InferGetStaticPropsType<typeof getStatic
   }, [status,industryID,firmID,selectedPeriod,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{`${t("loading")}...`}</p>;
+    return <p>{t("LOADING...")}</p>;
   }
   
  const channels = translateGenericFunction(channelsData,locale)

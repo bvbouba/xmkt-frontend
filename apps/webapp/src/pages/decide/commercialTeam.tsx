@@ -81,7 +81,7 @@ function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProp
   const selectedBrands = brands.filter((entry) => entry.is_active === true);
   
   if (status==="loading" && loading1) {
-    return <p>{`${t("loading")}...`}</p>;
+    return <p>{t("LOADING...")}</p>;
   }
 
   const onSubmit = async (data: any) => {

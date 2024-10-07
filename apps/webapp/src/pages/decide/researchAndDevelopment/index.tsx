@@ -70,7 +70,7 @@ function ResearchAndDevelopment({ locale }: InferGetStaticPropsType<typeof getSt
   }, [status,firmID,industryID,activePeriod,session?.accessToken]);
 
   if (status==="loading" && loading) {
-    return <p>{`${t("loading")}...`}</p>;
+    return <p>{t("LOADING...")}</p>;
   }
 
 return ( <>

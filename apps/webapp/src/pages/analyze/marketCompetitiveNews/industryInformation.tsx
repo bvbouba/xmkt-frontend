@@ -51,7 +51,7 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
   }, [status,industryID,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{`${t("loading")}...`}</p>;
+    return <p>{t("LOADING...")}</p>;
   }
 
 

@@ -56,7 +56,7 @@ function MarketReport({ locale }: InferGetStaticPropsType<typeof getStaticProps>
 
 
   if (status === "loading" || loading) {
-    return <p>{`${t("loading")}...`}</p>;
+    return <p>{t("LOADING...")}</p>;
   }
 
   const features = translateFeatures(featuresData,locale)
