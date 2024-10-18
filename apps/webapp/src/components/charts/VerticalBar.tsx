@@ -57,7 +57,11 @@ const VerticalBar = ({data,title,inPercent,legend}:props) => {
       },
       datalabels: {
         color: 'black',
-        anchor: 'end',
+        anchor: function(context) {
+          const value = context.dataset.data[context.dataIndex];
+          const numValue = typeof value === 'number' ? value : null;
+          return numValue !== null && numValue < 0 ? 'start' : 'end';
+        },
         align: 'end',
          display: true,
           formatter: function(value, context) {

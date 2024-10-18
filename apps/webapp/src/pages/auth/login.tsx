@@ -61,7 +61,7 @@ const LoginPage = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) =
       if (result?.ok) {
         router.push(paths.$url());
       } else {
-        setErrors1("Invalid credentials");
+        setErrors1(t("INVALID_CREDENTIALS"));
       }
   };
 

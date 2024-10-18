@@ -403,5 +403,7 @@
 "CONFIRM_WITHDRAWAL_BRAND": "Confirmez le retrait de la marque {{ name }}",
 "ARE_YOU_SURE_YOU_WANT_MODIFY_THIS_PRODUCT":"Êtes-vous sûr de vouloir modifier ce produit?",
 "TOTAL_DO_NOT_ADD_UP": "Le total ne s'élève pas à 100",
-"ARE_YOU_SURE_YOU_WANT_TO_CHANGE": "Êtes-vous sûr de vouloir changer ?"
+"ARE_YOU_SURE_YOU_WANT_TO_CHANGE": "Êtes-vous sûr de vouloir changer ?",
+"COULD_NOT_COLLECT_INFO": "Impossible de collecter des informations",
+"INVALID_CREDENTIALS": "Identification non valide"
 }

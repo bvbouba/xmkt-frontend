@@ -1,6 +1,6 @@
 
 import { Table } from "@/components/Table";
-import {  industryFinancialItems,industryMarketShareItems, unit } from "@/lib/constants";
+import {  industryFinancialItems,industryMarketShareItems, transformConstants, unit } from "@/lib/constants";
 import { brandProps, firmProps, industryDataProps, marketProps } from "types";
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
@@ -200,7 +200,7 @@ const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
 
           <div className="col pt-4 pr-4">
             {industryData && (
-               <Table data={industryData}  headerless={true} items={industryFinancialItems} lookup="team_name" heads={[...new Set(industryData.map((entry) => entry.team_name))]}/>
+               <Table data={industryData}  headerless={true} items={transformConstants(locale).industryFinancialItems} lookup="team_name" heads={[...new Set(industryData.map((entry) => entry.team_name))]}/>
             )}
             <span className="f_annotation  italic text-sm">
               {t("SPI:_SHARE_PRICE_INDEX,_REV:_REVENUES(MILLION_$),_NC:_NET_CONTRIB")},

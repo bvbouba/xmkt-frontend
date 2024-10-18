@@ -398,5 +398,7 @@
 "CONFIRM_WITHDRAWAL_BRAND":"Confirm the withdrawal of the brand {{ name }}",
 "ARE_YOU_SURE_YOU_WANT_MODIFY_THIS_PRODUCT":"Are you sure you want to modify this product?",
 "TOTAL_DO_NOT_ADD_UP":"Total do not add up to 100",
-"ARE_YOU_SURE_YOU_WANT_TO_CHANGE":"Are you sure you want to change ?"
+"ARE_YOU_SURE_YOU_WANT_TO_CHANGE":"Are you sure you want to change ?",
+"COULD_NOT_COLLECT_INFO":"Could not collect info",
+"INVALID_CREDENTIALS": "Invalid credentials"
 }

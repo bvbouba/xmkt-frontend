@@ -47,7 +47,7 @@ function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getSta
     setValue,
   } = useForm();
   const paths = usePaths();
-  const { data: session, status } = useSession();
+  const { data: session, status,update } = useSession();
   const { industryID, firmID, activePeriod, teamID } = session || {};
   const { t } = useTranslation('common');
   
@@ -101,17 +101,21 @@ function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getSta
   const benchmark = marketResearchChoices.find(m => m.study === 1);
   
   const onSubmit = async (data: any) => {
-    if (window.confirm(t("ARE_YOU_SURE_YOU_WANT_TO_CHANGE"))) {
-      if(status ==="authenticated"){try {
+
+    if(status ==="authenticated"){try {
         await Promise.all(marketResearchChoices.map(async (entry) => {
           const choice = checkChoice(data[entry.id]);
           await updateMarketResearchChoice({ id: entry.id, choice, token: session.accessToken });
         }));
+        const newSession = await update({
+          ...session,
+          refresh:session.refresh+1
+        })
         setMessage(t("UPDATED_SUCCESSFULLY"));
       } catch (error) {
         console.error('Error updating market research choices:', error);
       }}
-    }
+    
   };
 
   if (status==="loading" && loading) {
@@ -142,6 +146,8 @@ function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getSta
             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               type="checkbox"
               {...register(`${benchmark?.id}`, { required: false })}
+              checked
+              disabled
             /> 
             <label
             className="ms-2"

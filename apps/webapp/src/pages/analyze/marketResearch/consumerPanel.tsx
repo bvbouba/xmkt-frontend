@@ -241,7 +241,7 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
                     {columns.map((column) => (
                       <td key={column.id} className="px-2 py-1" align="center">
                         {column.percent
-                          ? `${row[column.id]} %`
+                          ? `${row[column.id] ? row[column.id] : 0} %`
                           : column.numeric
                           ? row[column.id]
                           : row[column.id]}

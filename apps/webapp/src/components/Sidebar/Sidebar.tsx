@@ -46,6 +46,7 @@ export const SideBar: React.FC = () => {
     }
 
   }, [status,session?.teamID,session?.accessToken,session?.activePeriod])
+  
   const basePath=process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
   const locale = router.locale;
   const { t } = useTranslation('common')

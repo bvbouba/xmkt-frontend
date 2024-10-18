@@ -91,7 +91,7 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
   const { id } = router.query;
   const ID = typeof id === "string" ? parseInt(id, 10) : null;
   const paths = usePaths();
-  const { data: session, status } = useSession();
+  const { data: session, status,update } = useSession();
   const { industryID, activePeriod, teamID } = session || {};
   const selectedChoice: string = (watch("perceptual_obj") || "").toString();
   const dimension1 = watch("dimension_1");
@@ -215,7 +215,6 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
       objective_1,
       objective_2,
     } = data;
-
     if (ID && teamID && status === "authenticated") {
       setLoading(true);
       try {
@@ -237,6 +236,11 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
           objective_2:parseFloat(objective_2) || null,
           token: session.accessToken,
         });
+        const newSession = await update({
+          ...session,
+          refresh:session.refresh+1
+        })
+
         setMessage(t("UPDATED_SUCCESSFULLY"));
       } catch (error) {
         console.error('Error updating marketing mix:', error);
@@ -273,6 +277,8 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
     <>
       
       {message && <SuccessMessage message={message} setMessage={setMessage} />}
+
+      
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">
           {t("MARKETING_MIX_DECISION")} - {brand?.brand_name}

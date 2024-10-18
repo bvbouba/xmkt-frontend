@@ -41,7 +41,7 @@ const projectID = typeof project_id === 'string' ? parseInt(project_id, 10) : nu
 
 const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>();
 
-const { data: session, status } = useSession();
+const { data: session, status,update } = useSession();
 const { activePeriod, teamID, industryID } = session || {};  // Assuming session participant data structure
 
 const paths = usePaths();
@@ -113,6 +113,10 @@ const onSubmit: SubmitHandler<FormData> = async (data) => {
         period: activePeriod,
         token: session.accessToken
       });
+      const newSession = await update({
+        ...session,
+        refresh:session.refresh+1
+      })
       setMessage(t("UPDATED_SUCCESSFULLY"))
     } catch (error) {
       console.error('Error updating project:', error);

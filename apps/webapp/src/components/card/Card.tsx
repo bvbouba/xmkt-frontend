@@ -29,12 +29,12 @@ export function Card({ menu,locale }: { menu: menuProps,locale?:string }) {
         legacyBehavior
       >
          <a onClick={openNewWindow} className="d-flex flex-column items-center text-center">
-        <div className="grid grid-rows-6 h-64">
+        <div className="grid grid-rows-6 h-52">
           <div className="row-span-5">
             <img className="rounded-t-lg object-cover w-full h-full" src={`${basePath}${menu.image}`} alt={menu.alt} />
           </div>
           <div className="inline-block align-middle">
-            <h5 className="mb-2 text-xl font-bold tracking-tight text-white dark:text-white">
+            <h5 className="mb-2 text-md font-bold tracking-tight text-white dark:text-white">
               {menu.title}
             </h5>
           </div>
