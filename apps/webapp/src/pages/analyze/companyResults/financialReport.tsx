@@ -18,7 +18,7 @@ import { Bar } from "react-chartjs-2";
 import { options } from "@/components/charts/VerticalBar";
 import { useSession } from "next-auth/react";
 import { brandProps, firmProps } from "@/lib/type";
-import { getBrandData, getFirmData } from "features/data";
+import { getBrandResultByFirm, getFirmData } from "features/data";
 
 
 
@@ -50,7 +50,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
             setLoading(true)
           try {
             const response1 = await getFirmData({ industryID, firmID, token: session.accessToken });
-            const response2 = await getBrandData({ industryID, firmID,token: session.accessToken });
+            const response2 = await getBrandResultByFirm({ industryID, firmID,token: session.accessToken });
             setFirmData(response1)
             setBrandData(response2)
           } catch (error) {

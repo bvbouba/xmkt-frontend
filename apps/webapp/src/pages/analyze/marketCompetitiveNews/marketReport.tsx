@@ -8,7 +8,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import {  useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { getBrandData, getFeaturesData, getMarketingMixData } from "features/data";
+import { getBrandResultByFirm, getFeaturesData, getMarketingMixData } from "features/data";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'fr';
@@ -38,7 +38,7 @@ function MarketReport({ locale }: InferGetStaticPropsType<typeof getStaticProps>
       const loadData = async () => {
         setLoading(true)
         try {
-          const response1 = await getBrandData({ industryID, firmID:0, token: session.accessToken });
+          const response1 = await getBrandResultByFirm({ industryID, firmID:0, token: session.accessToken });
           const response2 = await getMarketingMixData({ industryID, firmID:0,period:selectedPeriod , token: session.accessToken,fields:"is_active,brand_name,price,project" });
           const response3 = await getFeaturesData()
           setBrandData(response1)

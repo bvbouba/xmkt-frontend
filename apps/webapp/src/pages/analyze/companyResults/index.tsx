@@ -21,9 +21,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 function CompanyResultsPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
   const paths = usePaths();
   const { t } = useTranslation('common')
-  const { data: session,status } = useSession()
-  const selectedPeriod = session?.selectedPeriod || 0
-
+  const { status,data:session } = useSession()
+  
   if (status === "loading") {
     return <p>{t("LOADING...")}</p>;
   }

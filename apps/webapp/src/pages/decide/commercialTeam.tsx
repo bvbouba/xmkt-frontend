@@ -8,8 +8,9 @@ import Link from "next/link";
 import { ReactElement, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
-import { channelProps, decideStatusProps, markertingMixProps } from "types";
-import { fetchDecisionStatus, getChannelsData, getMarketingMixData, partialUpdateMarketingMix } from "features/data";
+import { channelProps, markertingMixProps } from "types";
+import {  getChannelsData, getMarketingMixData, partialUpdateMarketingMix } from "features/data";
+import { Loading } from "@/components/Loading";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'fr';
@@ -33,36 +34,18 @@ function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProp
   const { data: session, status,update } = useSession();
   const { industryID, firmID, activePeriod, teamID } = session || {};
   
-  const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
   const [brands, setBrands] = useState<markertingMixProps[]>([]);
   const [channels, setChannels] = useState<channelProps[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [loading1, setLoading1] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [loading1, setLoading1] = useState(false);
 
   const [message, setMessage] = useState<string>("");
-  
-  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-  
-  // Fetch decision status when industryID is available
-  useEffect(() => {
-    if (status === "authenticated" && industryID) {
-      const fetchDecisionStatusData = async () => {
-        try {
-          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
-          setDecisionStatus(data);
-        } catch (error) {
-          console.error('Error fetching decision status:', error);
-        }
-      };
-      fetchDecisionStatusData();
-    }
-  }, [status, industryID,session?.accessToken]);
-
+    
   // Fetch marketing mix and channels data when the component mounts
   useEffect(() => {
     const fetchData = async () => {
       if (status === "authenticated" && firmID && industryID && activePeriod) {
-        setLoading1(true)
+        setLoading(true)
         try {
           const marketingMixData = await getMarketingMixData({ industryID, firmID, period: activePeriod, token: session.accessToken });
           setBrands(marketingMixData);
@@ -71,7 +54,7 @@ function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProp
         } catch (error) {
           console.error('Error fetching data:', error);
         }finally{
-          setLoading1(false)
+          setLoading(false)
         } 
       }
     };
@@ -80,14 +63,10 @@ function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProp
   
   const selectedBrands = brands.filter((entry) => entry.is_active === true);
   
-  if (status==="loading" && loading1) {
-    return <p>{t("LOADING...")}</p>;
-  }
-
   const onSubmit = async (data: any) => {
     // Handle form submission
     if (teamID && status === 'authenticated') {
-      setLoading(true)
+      setLoading1(true)
       try {
         await Promise.all(
           brands.map(async (entry) => {
@@ -105,7 +84,7 @@ function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProp
             });
           })
         );
-        const newSession = await update({
+        await update({
           ...session,
           refresh:session.refresh+1
         })
@@ -114,11 +93,16 @@ function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProp
       } catch (error) {
         console.error('Error updating marketing mix:', error);
       }finally{
-        setLoading(false)
+        setLoading1(false)
       }
     }
   };
-    // if(isDecisionInProgress) return<> Decision is in Progress</>
+  if (session?.decisionStatus !== 1 && loading===false) {
+    return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
+    }
+    if (loading) {
+      return <Loading />;
+    }
   
     return (
       <>
@@ -192,7 +176,7 @@ function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProp
                   className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-600"
                   type="submit"
                 >
-                 {loading ? t("...SAVING") : t("SAVE")}
+                 {loading1 ? t("...SAVING") : t("SAVE")}
                 </button>
               </div>
               <div>

@@ -192,6 +192,6 @@
   "phone_number": "Numéro de téléphone",
   "select_school": "Sélectionnez une école",
   "no_result": "Aucun résultat",
-  "invalid_credentials":"Informations d'identification non valides"
-
+  "invalid_credentials":"Informations d'identification non valides",
+    "commericial":"Commerciaux"
 }

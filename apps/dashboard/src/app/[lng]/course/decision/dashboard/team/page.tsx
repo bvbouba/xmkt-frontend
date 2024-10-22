@@ -84,7 +84,7 @@ export default function Page({ params: { lng } }: { params: { lng: string; } }) 
   }
 
   return (
-    <div className="p-8">
+    <div className="px-8 w-1/2">
       <h1 className="text-2xl font-bold mb-6">{t('team_decision_summary')} - {session?.teamName}</h1>
 
       {/* Marketing Mix Section */}
@@ -96,21 +96,17 @@ export default function Page({ params: { lng } }: { params: { lng: string; } }) 
             <th className="py-2 px-4 border-b">{t('advertising')}</th>
             <th className="py-2 px-4 border-b">{t('price')}</th>
             <th className="py-2 px-4 border-b">{t('production')}</th>
-            <th className="py-2 px-4 border-b">{t('channel_1')}</th>
-            <th className="py-2 px-4 border-b">{t('channel_2')}</th>
-            <th className="py-2 px-4 border-b">{t('channel_3')}</th>
+            <th className="py-2 px-4 border-b">{t('commercial')}</th>
           </tr>
         </thead>
         <tbody>
           {teamDecision.map((brand,index) => (
             <tr key={index} className="text-center">
               <td className="py-2 px-4 border-b">{brand.brand_name}</td>
-              <td className="py-2 px-4 border-b">{brand.advertising}</td>
-              <td className="py-2 px-4 border-b">{brand.price}</td>
+              <td className="py-2 px-4 border-b">${brand.advertising}</td>
+              <td className="py-2 px-4 border-b">${brand.price}</td>
               <td className="py-2 px-4 border-b">{brand.production}</td>
-              <td className="py-2 px-4 border-b">{brand.channel_1}</td>
-              <td className="py-2 px-4 border-b">{brand.channel_2}</td>
-              <td className="py-2 px-4 border-b">{brand.channel_3}</td>
+              <td className="py-2 px-4 border-b">{brand.channel_1+brand.channel_2+brand.channel_3}</td>
             </tr>
           ))}
         </tbody>
@@ -122,20 +118,20 @@ export default function Page({ params: { lng } }: { params: { lng: string; } }) 
         <tbody>
           <tr>
             <td className="py-2 px-4 border-b">{t('budget')}</td>
-            <td className="py-2 px-4 border-b">{budget.budget}</td>
+            <td className="py-2 px-4 border-b">${budget.budget}</td>
           </tr>
           <tr>
             <td className="py-2 px-4 border-b">{t('expenses')}</td>
-            <td className="py-2 px-4 border-b">{budget.expenses}</td>
+            <td className="py-2 px-4 border-b">${budget.expenses}</td>
           </tr>
           <tr>
             <td className="py-2 px-4 border-b">{t('loans')}</td>
-            <td className="py-2 px-4 border-b">{budget.loans}</td>
+            <td className="py-2 px-4 border-b">${budget.loans}</td>
           </tr>
           <tr>
             <td className="py-2 px-4 border-b">{t('deviation')}</td>
             <td className={`py-2 px-4 border-b ${budget.deviation < 0 ? 'text-red-500' : ''}`}>
-              {budget.deviation}
+              ${budget.deviation}
             </td>
           </tr>
         </tbody>
@@ -168,7 +164,7 @@ export default function Page({ params: { lng } }: { params: { lng: string; } }) 
             <tr key={index} className="text-center">
               <td className="py-2 px-4 border-b">{loan.period}</td>
               <td className="py-2 px-4 border-b">{loan.rate}</td>
-              <td className="py-2 px-4 border-b">{loan.principal}</td>
+              <td className="py-2 px-4 border-b">${loan.principal}</td>
               <td className="py-2 px-4 border-b">{loan.number_of_periods}</td>
               <td className="py-2 px-4 border-b">{loan.is_active ? t('yes') : t('no')}</td>
               <td className="py-2 px-4 border-b">

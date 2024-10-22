@@ -13,6 +13,7 @@ import { fetchDecisionStatus, getMarketsData, getProjectData, submitBrand } from
 import { decideStatusProps } from "@/lib/type";
 import { marketProps, rndProjectProps } from "types";
 import usePaths from "@/lib/paths";
+import { Loading } from "@/components/Loading";
 
 export type FormData = {
   name: string,
@@ -47,20 +48,7 @@ function AddBrand({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [loading, setLoading] = useState(false);
   const [messsage,setMessage] = useState<string>("")
  
-  useEffect(() => {
-    if (status === "authenticated" && industryID) {
-      const fetchDecisionStatusData = async () => {
-        try {
-          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
-          setDecisionStatus(data);
-        } catch (error) {
-          console.error('Error fetching decision status:', error);
-        }
-      };
-      fetchDecisionStatusData();
-    }
-  }, [status,industryID,session?.accessToken]);
-
+ 
   useEffect(() => {
     if (status === "authenticated" && firmID && industryID && activePeriod) {
       const loadData = async () => {
@@ -107,6 +95,14 @@ function AddBrand({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
       return t("NAME_MUST_START_WITH", { firstLetter })
     }
   };
+
+  if (session?.decisionStatus !== 1 && loading===false) {
+    return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
+}
+
+if (loading) {
+  return <Loading />;
+}
 
   return (
     <>

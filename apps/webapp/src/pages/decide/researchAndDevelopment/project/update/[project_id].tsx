@@ -15,6 +15,7 @@ import { CustomModal as Modal } from "@/components/Modal";
 import { useSession } from "next-auth/react";
 import { decideStatusProps, featureProps, projectProps } from "types";
 import { deleteProject, fetchDecisionStatus, fetchProjectById, getFeaturesData, partialUpdateProject } from "features/data";
+import { Loading } from "@/components/Loading";
 
 
 export type FormData = {
@@ -52,22 +53,6 @@ const [project, setProject] = useState<projectProps>();
 const [features, setFeatures] = useState<featureProps[]>([]);
 const [loading, setLoading] = useState(false);
 const [message, setMessage] = useState<string>("")
-// Fetch decision status when industryID is available
-useEffect(() => {
-  if (status === "authenticated" && industryID) {
-    const fetchDecisionStatusData = async () => {
-      try {
-        const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
-        setDecisionStatus(data);
-      } catch (error) {
-        console.error('Error fetching decision status:', error);
-      }
-    };
-    fetchDecisionStatusData();
-  }
-}, [status,industryID,session?.accessToken]);
-
-const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
 
 // Fetch project and features data
 useEffect(() => {
@@ -140,7 +125,15 @@ const onDelete = async () => {
   }
 }
 };
-    // if(isDecisionInProgress) return<> Decision is in Progress</>
+
+if (session?.decisionStatus !== 1 && loading===false) {
+  return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
+}
+
+if (loading) {
+  return <Loading />;
+}
+
     return (
       <>
       

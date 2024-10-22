@@ -11,7 +11,7 @@ import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/component
 import { categoryColors } from "@/lib/constants/colors";
 import GroupedBar from "@/components/charts/GroupedBar";
 import { useSession } from "next-auth/react";
-import { getBrandData } from "features/data";
+import { getBrandResultByFirm } from "features/data";
 import { brandProps } from "types";
 
 
@@ -41,7 +41,7 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
         const loadData = async () => {
           setLoading(true)
         try {
-          const response = await getBrandData({ industryID, firmID,token: session.accessToken });
+          const response = await getBrandResultByFirm({ industryID, firmID,token: session.accessToken });
            setBrandData(response)
         } catch (error) {
           console.error('Error getting data:', error);

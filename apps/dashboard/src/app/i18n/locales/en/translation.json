@@ -190,5 +190,6 @@
     "phone_number":"Phone Number",
     "select_school":"Select School",
     "no_result":"No result",
-    "invalid_credentials":"Invalid credentials"
+    "invalid_credentials":"Invalid credentials",
+    "commericial":"Commercial"
 }

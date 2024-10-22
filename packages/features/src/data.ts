@@ -322,16 +322,25 @@ export const getFirmData = async ({ firmID, industryID, token }: { firmID: numbe
   return response.data
 }
 
-export const getBrandData = async ({ firmID,industryID,token }: { firmID: number,industryID:number,token:string }): Promise<brandProps[]> => {
-      const response  = await axios.get(`${API_URI}api/analyze/brand/${ industryID }/${firmID}`,
+export const getBrandResultByFirm = async ({ firmID,industryID,token }: { firmID: number,industryID:number,token:string }): Promise<brandProps[]> => {
+      const response  = await axios.get(`${API_URI}api/brand-result-list/${ industryID }/${firmID}`,
       {
         headers: {
                  'Authorization': `token ${token}`
                  }
       });
-
         return response.data
   }
+
+  export const getPeriodResultByBrand = async ({ brandID,period,token }: { brandID: number,period:number,token:string }): Promise<brandProps> => {
+    const response  = await axios.get(`${API_URI}api/brand-result-detail/${ brandID }/${period}`,
+    {
+      headers: {
+               'Authorization': `token ${token}`
+               }
+    });
+      return response.data
+}
 
 export const getProjectData = async ({ firmID, industryID, period, token }: { token: string, firmID: number, industryID: number, period: number }): Promise<rndProjectProps> => {
 

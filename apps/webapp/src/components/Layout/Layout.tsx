@@ -1,19 +1,25 @@
-import { useSession } from "next-auth/react";
+import {  useSession } from "next-auth/react";
 import { useRouter } from "next/router"; 
 import { NavBar } from "../NavBar";
 import { SideBar } from "../Sidebar";
 import usePaths from "@/lib/paths";
+import { useEffect } from "react";
+import { Loading } from "../Loading";
 
 export function Layout({ children }: { children?: React.ReactNode }) {
-  const { status } = useSession();
+  const { status,data:session } = useSession();
   const router = useRouter();
   const paths = usePaths()
-  
 
-  if (status === "unauthenticated") {
-    router.push(paths.auth.login.$url()); 
-    return null; 
-  }
+
+
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push(paths.auth.login.$url()); 
+    }
+  }, [status]);
+
 
   return (
     <div className="flex h-screen bg-gray-100">

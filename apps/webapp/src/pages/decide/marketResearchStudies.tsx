@@ -1,4 +1,5 @@
 import { Layout } from "@/components/Layout";
+import { Loading } from "@/components/Loading";
 import { SuccessMessage } from "@/components/ToastMessages";
 import usePaths from "@/lib/paths";
 import { formatPrice } from "@/lib/utils";
@@ -55,24 +56,10 @@ function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getSta
   const [marketResearchChoices, setMarketResearchChoices] = useState<marketResearchProps[]>([]);
   const [markets, setMarkets] = useState<marketProps[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loading1, setLoading1] = useState(false);
   const [message, setMessage] = useState<string>("");
   
-  // Fetch decision status when industryID is available
-  useEffect(() => {
-    if (status === "authenticated" && industryID) {
-      const fetchDecisionStatusData = async () => {
-        try {
-          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
-          setDecisionStatus(data);
-        } catch (error) {
-          console.error('Error fetching decision status:', error);
-        }
-      };
-      fetchDecisionStatusData();
-    }
-  }, [status, industryID,session?.accessToken]);
-  
-  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
+
   
   // Fetch market research choices and markets data when the component mounts
   useEffect(() => {
@@ -101,8 +88,9 @@ function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getSta
   const benchmark = marketResearchChoices.find(m => m.study === 1);
   
   const onSubmit = async (data: any) => {
-
-    if(status ==="authenticated"){try {
+    if(status ==="authenticated"){
+      setLoading1(true)
+      try {
         await Promise.all(marketResearchChoices.map(async (entry) => {
           const choice = checkChoice(data[entry.id]);
           await updateMarketResearchChoice({ id: entry.id, choice, token: session.accessToken });
@@ -115,14 +103,18 @@ function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getSta
       } catch (error) {
         console.error('Error updating market research choices:', error);
       }}
+      setLoading1(false)
     
   };
 
-  if (status==="loading" && loading) {
-    return <p>{t("LOADING...")}</p>;
-  }
+  if (session?.decisionStatus !== 1 && loading===false) {
+    return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
+}
 
-      // if(isDecisionInProgress) return<> Decision is in Progress</>
+if (loading) {
+  return <Loading />;
+}
+
 
     return ( 
         <>
@@ -198,7 +190,7 @@ function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getSta
                   className="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-600"
                   type="submit"
                 >
-                  {loading ? t("...SAVING") : t("SAVE")}
+                  {loading1 ? t("...SAVING") : t("SAVE")}
                 </button>
               </div>
               <div>

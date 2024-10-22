@@ -1,7 +1,7 @@
 import usePaths from "@/lib/paths";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Breadcrumb, ILink } from "../breadcumb/Breadcrumb";
 import Head from "next/head";
 import { useTranslation } from "next-i18next";
@@ -13,8 +13,19 @@ export const NavBar: React.FC = () => {
   const { t } = useTranslation('common')
   const { data: session, update } = useSession()
   const {activePeriod} = session || {}
-  const selectedPeriod = session?.selectedPeriod || 0
+  const selectedPeriod = session?.selectedPeriod
+  
  
+  useEffect(() => {
+    if (!session?.selectedPeriod && typeof activePeriod === "number") {
+      update({
+        ...session,
+        selectedPeriod: activePeriod - 1, // Set to activePeriod - 1
+      });
+    }
+  }, [session, activePeriod, update]);
+
+  
   const menuItems = [
     {
       id: 1,
@@ -228,7 +239,7 @@ export const NavBar: React.FC = () => {
                     <option value="" disabled>
                       {t("SELECT_PERIOD")}
                     </option>
-                    {periods.map((period, index) => (
+                    {selectedPeriod && periods.map((period, index) => (
                       <option key={index} value={index}>
                         {period}
                       </option>

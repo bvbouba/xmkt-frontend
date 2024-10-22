@@ -12,6 +12,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { fetchBrandById, fetchDecisionStatus, getMarketsData, getProjectData, updateBrand } from "features/data";
 import { brandPortofolioProps, decideStatusProps, marketProps, rndProjectProps } from "types";
+import { Loading } from "@/components/Loading";
 
 
 export type FormData = {
@@ -52,22 +53,6 @@ function UpdateBrand({ locale }: InferGetStaticPropsType<typeof getStaticProps>)
   const [loading, setLoading] = useState(false);
   const [messsage, setMessage] = useState<string>("")
 
-  // Fetch decision status when industryID is available
-  useEffect(() => {
-    if (status === "authenticated" && industryID) {
-      const fetchDecisionStatusData = async () => {
-        try {
-          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
-          setDecisionStatus(data);
-        } catch (error) {
-          console.error('Error fetching decision status:', error);
-        }
-      };
-      fetchDecisionStatusData();
-    }
-  }, [status,industryID,session?.accessToken]);
-  
-  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
 
   // Fetch project, brand, and market data when the component mounts
   useEffect(() => {
@@ -142,7 +127,13 @@ function UpdateBrand({ locale }: InferGetStaticPropsType<typeof getStaticProps>)
     }
   };
 
-  // if(isDecisionInProgress) return<> Decision is in Progress</>
+  if (session?.decisionStatus !== 1 && loading===false) {
+    return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
+}
+
+if (loading) {
+  return <Loading />;
+}
 
   return (
     <>

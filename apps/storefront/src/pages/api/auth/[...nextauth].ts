@@ -4,6 +4,7 @@ import axios from 'axios';
 import { API_URI } from "myconstants";
 import { getUser } from "@/lib/auth";
 import { CourseProps } from "types";
+import { logout } from "features/data";
 
 declare module "next-auth" {
     interface Session {
@@ -100,6 +101,7 @@ const handler = NextAuth({
 
                     // Check if the usertype is allowed (usertype === 2)
                     if (session.user.usertype !== 2) {
+                        await logout(session.accessToken)
                         console.log('Unauthorized: Usertype is not allowed.');
                         throw new Error('Unauthorized');
                     }

@@ -1,7 +1,9 @@
 import { Layout } from "@/components/Layout";
+import { Loading } from "@/components/Loading";
 import { CardBasic } from "@/components/card/Card";
 import usePaths from "@/lib/paths";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { ReactElement } from "react";
@@ -20,6 +22,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
 function DecidePage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
     const paths = usePaths()
     const { t } = useTranslation('common')
+    const { data: session,status } = useSession();
+
     const contentItems = [
         {
           url: paths.decide.teamIdentity.$url(),
@@ -64,6 +68,14 @@ function DecidePage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
         //     title: "MARKETING PLAN",
         //   },
       ];
+     
+      if (session?.decisionStatus !== 1) {
+        return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
+       }
+
+       if (status==="loading") {
+        return <Loading />;
+      }
 
     return ( 
         <>

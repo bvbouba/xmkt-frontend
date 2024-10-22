@@ -193,7 +193,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
 
   const chart3Data = {
-    labels: [""],
+    labels: segments.map(s => (locale === "fr") ? s.name_fr : s.name ),
     datasets: channels.map((row,id) => ({
       data: segments.map((row1) =>
         getValueByChannelSegment(shoppingHabit, row.name, row1.name, `percent`)
@@ -204,6 +204,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
       borderColor: channelColors[id],
     })),
   };
+
   const title = t("CONSUMER_SURVEY_-_PERIOD", {selectedPeriod});
 
   // if(marketResearchChoices.some((choice => choice.study === 6 && choice.choice === false))){
@@ -332,7 +333,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
         <div className="grid grid-cols-1 gap-4 m-4 h-80">
           <GraphContainer>
 
-            <HorizontalBar data={chart3Data}  title="" inPercent={true} legendPos="right" />
+            <HorizontalBar data={chart3Data}  title="" inPercent={true} legendPos="right" stacked={true} />
 
           </GraphContainer>
         </div>

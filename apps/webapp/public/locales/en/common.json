@@ -400,5 +400,9 @@
 "TOTAL_DO_NOT_ADD_UP":"Total do not add up to 100",
 "ARE_YOU_SURE_YOU_WANT_TO_CHANGE":"Are you sure you want to change ?",
 "COULD_NOT_COLLECT_INFO":"Could not collect info",
-"INVALID_CREDENTIALS": "Invalid credentials"
+"INVALID_CREDENTIALS": "Invalid credentials",
+"UNITS_OF_BRAND_WERE_SOLD_DURING_LAST_PERIOD":"{{ unit_sold }} units of brand {{ brand_name }} were sold during period {{ period }}",
+"THERE_ARE_UNITS_OF_BRAND_AVAILABLE_IN_YOUR_INVENTORY":"There are {{ inventory}} units of {{ brand_name}} available in your inventory",
+"THE_PRICE_WAS_AT_THE_LAST_PERIOD":"The price was ${{ price}} in period {{ period }}",
+"THE_ADVERTISING_BUDGET_OF_BRAND_IN_PERIOD":"The advertising budget of {{ brand_name }} in period {{ period }} was ${{ advertising }}"
 }

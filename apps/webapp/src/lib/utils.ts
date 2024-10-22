@@ -200,7 +200,6 @@ export const getMapData = ({mergedata,xKey,yKey}:props
 
 ) => {
 
-  
   if(xKey === undefined || yKey === undefined) return null
   const labelColors = mergedata.map((entry) =>
     entry.segment_name

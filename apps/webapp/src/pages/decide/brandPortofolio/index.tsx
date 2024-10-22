@@ -9,6 +9,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { brandPortofolioProps, decideStatusProps, marketProps } from "types";
 import { fetchBrands, fetchDecisionStatus, getMarketsData } from "features/data";
+import { Loading } from "@/components/Loading";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'fr';
@@ -34,22 +35,6 @@ const [brands, setBrands] = useState<brandPortofolioProps[]>([]);
 const [markets, setMarkets] = useState<marketProps[]>([]);
 const [loading, setLoading] = useState(true);
 
-// Fetch Decision Status
-useEffect(() => {
-  if (status === "authenticated" && industryID) {
-    const fetchDecisionStatusData = async () => {
-      try {
-        const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
-        setDecisionStatus(data);
-      } catch (error) {
-        console.error('Error fetching decision status:', error);
-      }
-    };
-    fetchDecisionStatusData();
-  }
-}, [status,industryID,session?.accessToken]);
-
-const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
 
 // Fetch Brands and Markets
 useEffect(() => {
@@ -74,11 +59,14 @@ useEffect(() => {
 
 
 
-if (status==="loading" && loading) {
-  return <p>{t("LOADING...")}</p>;
+if (session?.decisionStatus !== 1 && loading===false) {
+  return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
 }
 
-      // if(isDecisionInProgress) return<> Decision is in Progress</>
+if (loading) {
+  return <Loading />;
+}
+
     return ( 
         <>
         

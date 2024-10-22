@@ -6,11 +6,10 @@ import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Link from "next/link";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
-import { decideStatusProps } from "types";
-import { fetchDecisionStatus, updateTeamName } from "features/data";
+import {  updateTeamName } from "features/data";
 
 interface FormValues {
     teamName: string;
@@ -30,31 +29,14 @@ interface FormValues {
 function TeamIdentity({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
 
   const { data: session, status,update } = useSession();
-const { teamName, teamID, industryID, activePeriod } = session || {};
+const { teamName, teamID,  activePeriod } = session || {};
 const paths = usePaths();
 const firstLetter = teamName?.[0];
 const { handleSubmit, register, formState: { errors: errorsForm } } = useForm<FormValues>();
-const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
 const [loading, setLoading] = useState(false);
+
 const { t } = useTranslation('common');
 const [message, setMessage] = useState<string>("")
-
-// Fetch decision status when industryID is available
-useEffect(() => {
-  if (status === "authenticated" && industryID) {
-    const fetchDecisionStatusData = async () => {
-      try {
-        const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
-        setDecisionStatus(data);
-      } catch (error) {
-        console.error('Error fetching decision status:', error);
-      }
-    };
-    fetchDecisionStatusData();
-  }
-}, [status, industryID,session?.accessToken]);
-
-const isDecisionInProgress = decisionStatus?.status === 2 || decisionStatus?.status === 0;
 
 // Handle form submission
 const onSubmit = async (data: FormValues) => {
@@ -88,8 +70,10 @@ const validateName = (value: string) => {
   }
 };
 
+if (session?.decisionStatus !== 1) {
+  return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
+}
 
-      // if(isDecisionInProgress) return<> Decision is in Progress</>
 
 
     return (

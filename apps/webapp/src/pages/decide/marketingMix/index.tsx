@@ -8,6 +8,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { decideStatusProps, markertingMixProps } from "types";
 import { fetchDecisionStatus, getMarketingMixData } from "features/data";
+import { Loading } from "@/components/Loading";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -29,24 +30,9 @@ function MarketingMix({ locale }: InferGetStaticPropsType<typeof getStaticProps>
   
   const [decisionStatus, setDecisionStatus] = useState<decideStatusProps>();
   const [marketingMixData, setMarketingMixData] = useState<markertingMixProps[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   
-  // Fetch decision status when industryID is available
-  useEffect(() => {
-    if (status === "authenticated" && industryID) {
-      const fetchDecisionStatusData = async () => {
-        try {
-          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
-          setDecisionStatus(data);
-        } catch (error) {
-          console.error('Error fetching decision status:', error);
-        }
-      };
-      fetchDecisionStatusData();
-    }
-  }, [status,industryID,session?.accessToken]);
-  
-  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
+
   
   // Fetch marketing mix data when firmID, industryID, and activePeriod are available
   useEffect(() => {
@@ -74,7 +60,17 @@ function MarketingMix({ locale }: InferGetStaticPropsType<typeof getStaticProps>
     }
   }, [status,firmID,industryID,activePeriod,session?.accessToken]);
     const selectedData = marketingMixData.filter(entry => entry.is_active === true)
-    // if(isDecisionInProgress) return<> Decision is in Progress</>
+    
+    if (session?.decisionStatus !== 1 && loading===false) {
+      return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
+  }
+
+  if (loading) {
+  return (
+    <Loading />
+  );
+}
+
     return ( 
         <>
         

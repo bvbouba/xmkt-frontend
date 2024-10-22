@@ -36,7 +36,6 @@ function SemanticScales({ locale }: InferGetStaticPropsType<typeof getStaticProp
   const { t } = useTranslation('common');
 
   const industryID = session?.industryID;
-  const firmID = session?.firmID;
   const selectedPeriod = session?.selectedPeriod || 0;
 
   const [selectedFeature, setSelectedFeature] = useState<featureProps | undefined>(undefined);

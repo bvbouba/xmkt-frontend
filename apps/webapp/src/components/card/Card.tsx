@@ -55,11 +55,11 @@ export function CardBasic({menu}:{menu:menuProps}) {
           href={menu.url}
           className="d-flex flex-column items-center text-center"
         >
-          <div className="grid grid-rows-6 h-64 p-6">
+          <div className="grid grid-rows-6 h-52 p-6">
           <div className="row-span-5 border border-gray-200 rounded-lg shadow">
             <img className="rounded-t-lg object-cover w-full h-full" src={`${basePath}${menu.image}`} alt={menu.alt} /></div>
           <div className="p-2">
-            <h5 className="mb-2 text-xl font-bold tracking-tight text-gray dark:text-white">
+            <h5 className="mb-2 text-ms font-bold tracking-tight text-gray dark:text-white">
               {menu.title}
             </h5>
           </div>

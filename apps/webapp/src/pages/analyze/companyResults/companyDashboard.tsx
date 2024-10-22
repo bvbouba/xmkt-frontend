@@ -11,7 +11,7 @@ import { colorGrades } from "@/lib/constants/colors";
 import VerticalBar from "@/components/charts/VerticalBar";
 import DoughnutChart from "@/components/charts/DoughnutChart";
 import { useSession } from "next-auth/react";
-import { getBrandData, getFirmData } from "features/data";
+import { getBrandResultByFirm, getFirmData } from "features/data";
 import { brandProps, firmProps } from "types";
 
 
@@ -44,7 +44,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
         setLoading(true)
         try {
           const response = await getFirmData({ industryID, firmID, token: session.accessToken });
-          const response1 = await getBrandData({ industryID, firmID, token: session.accessToken });
+          const response1 = await getBrandResultByFirm({ industryID, firmID, token: session.accessToken });
           setFirmData(response)
           setBrandData(response1)
         } catch (error) {

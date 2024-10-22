@@ -1,4 +1,5 @@
 import { Layout } from "@/components/Layout";
+import { Loading } from "@/components/Loading";
 import { ButtonNext } from "@/components/button";
 import usePaths from "@/lib/paths";
 import { decideStatusProps } from "@/lib/type";
@@ -32,23 +33,7 @@ function ResearchAndDevelopment({ locale }: InferGetStaticPropsType<typeof getSt
   const [markets, setMarkets] = useState<marketProps[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Fetch decision status when industryID is available
-  useEffect(() => {
-    if (status === 'authenticated' && industryID) {
-      const fetchDecisionStatusData = async () => {
-        try {
-          const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
-          setDecisionStatus(data);
-        } catch (error) {
-          console.error('Error fetching decision status:', error);
-        }
-      };
-      fetchDecisionStatusData();
-    }
-  }, [status, industryID,session?.accessToken]);
-  
-  const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-  
+
   // Fetch project and market data when the component mounts
   useEffect(() => {
     const fetchData = async () => {
@@ -69,9 +54,13 @@ function ResearchAndDevelopment({ locale }: InferGetStaticPropsType<typeof getSt
     fetchData();
   }, [status,firmID,industryID,activePeriod,session?.accessToken]);
 
-  if (status==="loading" && loading) {
-    return <p>{t("LOADING...")}</p>;
-  }
+  if (session?.decisionStatus !== 1 && loading===false) {
+    return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
+}
+
+if (loading) {
+  return <Loading />;
+}
 
 return ( <>
          

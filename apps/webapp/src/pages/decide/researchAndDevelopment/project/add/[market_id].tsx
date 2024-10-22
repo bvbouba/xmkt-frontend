@@ -13,6 +13,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { decideStatusProps } from "@/lib/type";
 import { fetchDecisionStatus } from "features/data";
+import { Loading } from "@/components/Loading";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'fr';
@@ -44,24 +45,14 @@ const handlePreviousStep = () => {
   setStep(step - 1);
 };
 
-// Fetch decision status based on industryID when the session is authenticated
-useEffect(() => {
-  if (status === 'authenticated' && industryID) {
-    const fetchDecisionStatusData = async () => {
-      try {
-        const data = await fetchDecisionStatus({ industryID, token: session.accessToken });
-        setDecisionStatus(data);
-      } catch (error) {
-        console.error('Error fetching decision status:', error);
-      }
-    };
-    fetchDecisionStatusData();
-  }
-}, [status, industryID,session?.accessToken]);
 
-// Check if a decision is in progress
-const isDecisionInProgress = (decisionStatus?.status === 2) || (decisionStatus?.status === 0);
-  // if(isDecisionInProgress) return<> Decision is in Progress</>
+if (session?.decisionStatus !== 1 && loading===false) {
+  return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
+}
+
+if (loading) {
+  return <Loading />;
+}
 
   
   return (

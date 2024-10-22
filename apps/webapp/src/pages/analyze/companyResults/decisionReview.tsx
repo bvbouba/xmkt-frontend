@@ -14,7 +14,7 @@ import DoughnutChart from "@/components/charts/DoughnutChart";
 import GroupedBar from "@/components/charts/GroupedBar";
 import HorizontalBar from "@/components/charts/HorizontalBar";
 import { useSession } from "next-auth/react";
-import { getBrandData, getChannelsData, getFeaturesData, getFirmData, getMarketingMixData, getMarketsData, getOnlineQueryInfoData, getProjectAllData, getSegmentsData } from "features/data";
+import { getBrandResultByFirm, getChannelsData, getFeaturesData, getFirmData, getMarketingMixData, getMarketsData, getOnlineQueryInfoData, getProjectAllData, getSegmentsData } from "features/data";
 import { brandProps, channelProps, featureProps, firmProps, markertingMixProps, marketProps, onlineQueryProps, projectProps, segmentProps } from "types";
 
 
@@ -57,7 +57,7 @@ function DecisionReviewPage({ locale }: InferGetStaticPropsType<typeof getStatic
       const response2 = await getOnlineQueryInfoData({ industryID, firmID, period:selectedPeriod,token: session.accessToken });
       const response3 = await getMarketingMixData({ industryID, firmID, period:selectedPeriod,token: session.accessToken, });
       const response4 = await getFirmData({ industryID, firmID,token: session.accessToken });
-      const response5 = await getBrandData({ industryID, firmID,token: session.accessToken });
+      const response5 = await getBrandResultByFirm({ industryID, firmID,token: session.accessToken });
       setAllProjects(response1)
       setOnlineQuery(response2)
       setMarketingMix(response3)

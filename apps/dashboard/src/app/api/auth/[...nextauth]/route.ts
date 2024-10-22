@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import axios from 'axios';
 import { API_URI } from "myconstants";
 import { getUser } from "@/lib/auth";
+import { logout } from "features/data";
 
 const basePath=process.env.NEXT_PUBLIC_BASE_PATH || '/admin'
 
@@ -110,7 +111,7 @@ const handler = NextAuth({
       session.industryId = token.industryId as number;
       session.teamName = token.teamName as string;
       session.courseId = token.courseId as number;
-
+      
       if (session.accessToken) {
         try {
           const user = await getUser(session.accessToken)
@@ -118,9 +119,9 @@ const handler = NextAuth({
             ...session.user,
             ...user,
           };
-
            // Check if the usertype is allowed (usertype === 1)
            if (session.user.usertype !== 1) {
+            await logout(session.accessToken)
             console.log('Unauthorized: Usertype is not allowed.');
             throw new Error('Unauthorized');
         }

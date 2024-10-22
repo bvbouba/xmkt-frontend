@@ -14,7 +14,7 @@ import LineChart from "@/components/charts/LineChart";
 import HorizontalBar from "@/components/charts/HorizontalBar";
 import VerticalBar, { options } from "@/components/charts/VerticalBar";
 import { useSession } from "next-auth/react";
-import { getBrandData, getFirmData, getMarketsData } from "features/data";
+import { getBrandResultByFirm, getFirmData, getMarketsData } from "features/data";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -46,7 +46,7 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
         setLoading(true)
         try {
           const response1 = await getFirmData({ industryID, firmID:0, token: session.accessToken });
-          const response2 = await getBrandData({ industryID, firmID:0, token: session.accessToken });
+          const response2 = await getBrandResultByFirm({ industryID, firmID:0, token: session.accessToken });
           const response3 = await getMarketsData()
           setFirmData(response1)
           setBrandData(response2)
@@ -183,6 +183,7 @@ datasets:[{
         }]}
 const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
 
+console.log(marketShareChartData)
     return ( 
         <>
         

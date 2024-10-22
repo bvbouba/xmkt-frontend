@@ -3,7 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import axios from 'axios';
 import { API_URI } from "myconstants";
 import { getUser } from "@/lib/auth";
-import { loadInfo } from "features/data";
+import { getDecision, loadInfo, logout } from "features/data";
+import { signOut } from 'next-auth/react';
 
 declare module "next-auth" {
     interface Session {
@@ -33,6 +34,7 @@ declare module "next-auth" {
         selectedMarketID?:number;
         selectedBrandID?:number;
         selectedProjectID?:number;
+        decisionStatus?:number;
     }
 
     interface User {
@@ -98,7 +100,6 @@ const handler = NextAuth({
     callbacks: {
 
         async jwt({ token, user, trigger, session }) {
-
             if (trigger === 'update') {
                 if (session?.teamID) {
                     token.teamID = session.teamID[0];
@@ -139,6 +140,9 @@ const handler = NextAuth({
                 if (session?.selectedProjectID) {
                     token.selectedProjectID = session.selectedProjectID;
                 }
+                if (session?.decisionStatus) {
+                    token.decisionStatus = session.decisionStatus;
+                }
             }
             if (user?.token) {
                 token.accessToken = user.token as string;
@@ -165,6 +169,7 @@ const handler = NextAuth({
             session.selectedBrandID = token.selectedBrandID as number;
             session.selectedMarketID = token.selectedMarketID as number;
             session.selectedProjectID = token.selectedProjectID as number;
+            session.decisionStatus = token.decisionStatus as number;
             
             if (session.accessToken) {
                 try {
@@ -173,6 +178,13 @@ const handler = NextAuth({
                         ...session.user,
                         ...user,
                     };
+
+
+                    if (session.user.usertype !== 2) {
+                        await logout(session.accessToken)
+                        await signOut({ redirect: false });
+                    }
+                    
                     const participant = await loadInfo({pak:session.pak})
                     session = {
                         ...session,
@@ -183,8 +195,12 @@ const handler = NextAuth({
                         activePeriod:participant?.active_period,
                         teamID:participant?.team[0],
                         firmID:participant?.firm_id,
-                        industryID:participant?.industry_id
+                        industryID:participant?.industry_id,
                     }
+                    const decision = await getDecision(session.industryID, session.accessToken);
+
+                    session.decisionStatus = decision.status;
+
                 } catch (error) {
                     console.error('Error fetching user data:', error);
                 }
