@@ -100,7 +100,7 @@ function CommercialTeam({ locale }: InferGetStaticPropsType<typeof getStaticProp
   if (session?.decisionStatus !== 1 && loading===false) {
     return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
     }
-    if (loading) {
+    if (loading && brands.length === 0) {
       return <Loading />;
     }
   

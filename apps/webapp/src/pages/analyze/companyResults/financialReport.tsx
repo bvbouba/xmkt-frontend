@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import { unit } from "@/lib/constants";
 import { Table } from "@/components/Table";
 import { Loading } from "@/components/Loading";
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
+import {  GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
 import { categoryColors, colorGrades } from "@/lib/constants/colors";
 import { getValueByPeriod } from "@/lib/utils";
-import { useRouter } from "next/router";
 import MultiAxisLine from "@/components/charts/MultiAxisLine";
 import LineChart from "@/components/charts/LineChart";
 import DoughnutChart from "@/components/charts/DoughnutChart";
@@ -19,6 +18,7 @@ import { options } from "@/components/charts/VerticalBar";
 import { useSession } from "next-auth/react";
 import { brandProps, firmProps } from "@/lib/type";
 import { getBrandResultByFirm, getFirmData } from "features/data";
+import Title from "@/components/title";
 
 
 
@@ -64,7 +64,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
       }, [status,firmID,industryID,session?.accessToken]);
     
       if (status === "loading" || loading) {
-        return <p>{t("LOADING...")}</p>;
+        return <Loading />;
       }
 
       let firmColors:string[] = []; // Default color array
@@ -75,7 +75,8 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
       
       const periods = Array.from(Array(selectedPeriod+1).keys())
 
-      const filteredFirmData = firmData.filter(item => item.period_id <= selectedPeriod )
+      const filteredFirmData = firmData.filter(item => item.period_id <= selectedPeriod ).sort((a, b) =>
+        b.period_id - a.period_id)
       const profitData = {
         labels:periods.map((item) => `${(selectedPeriod < 4 ) ? t("PERIOD"): t("PER")} ${item}`),
         datasets: firmFinancialChartItems.map(
@@ -140,18 +141,13 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
             borderColor: firmColors
           }]}
 
-    const title = t("FINANCIAL_REPORT_-_FIRM",{teamName,selectedPeriod})
-
-
-
-
     const filteredBrandData = brandData.filter(b=> b.period_id == selectedPeriod)
     return (
         <>
-        
+         <Title pageTitle={t(`FINANCIAL_REPORT`)} period={selectedPeriod} />
         <div className="">
         <div className="container mx-auto">
-        <HeaderContainer title={title} content={t("THE_FINANCIAL_REPORT_OF_FIRM",{teamName,selectedPeriod})} />
+        <HeaderContainer title={t(`FINANCIAL_REPORT`)} teamName={teamName} period={selectedPeriod} content={t("THE_FINANCIAL_REPORT_OF_FIRM",{teamName,selectedPeriod})} />
      <ParagraphContainer title={t("COMPANY_PROFIT_&_LOSS_STATEMENT")} content={t("THE_TABLE_BELOW_SHOWS_THE_EVOLUTION_OF_FIRM", {teamName,selectedPeriod})} />
     
       <div className="p-5">

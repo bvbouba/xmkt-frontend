@@ -111,7 +111,7 @@ function MarketResearchStudies({ locale }: InferGetStaticPropsType<typeof getSta
     return <div>{t("DECISION_ROUND_NOT_ACTIVE")}</div>;
 }
 
-if (loading) {
+if (loading && marketResearchChoices.length === 0) {
   return <Loading />;
 }
 

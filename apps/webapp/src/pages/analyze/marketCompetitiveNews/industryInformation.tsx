@@ -8,6 +8,8 @@ import {  useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { getIndustryInfoData } from "features/data";
 import { industryInfoProps } from "types";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 
 
@@ -51,7 +53,7 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
   }, [status,industryID,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
 
 
@@ -65,14 +67,13 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
                     })
                 )
    
-                const title = t("INDUSTRY_INFORMATION_-_PERIOD",{selectedPeriod})
 
     return ( 
     <>
-    
+      <Title pageTitle={t("INDUSTRY_INFORMATION")} period={selectedPeriod} />
         
     <div className="container mx-auto p-4">
-      <HeaderContainer title={title} content={t("THIS_REPORT_PROVIDES_ECONOMIC_DATA_FOR_THE_CURRENT_PERIOD_AS_WELL")} />
+      <HeaderContainer title={t("INDUSTRY_INFORMATION")} period={selectedPeriod} content={t("THIS_REPORT_PROVIDES_ECONOMIC_DATA_FOR_THE_CURRENT_PERIOD_AS_WELL")} />
 
       <ParagraphContainer title={t("ECONOMIC_VARIABLES")} />
 

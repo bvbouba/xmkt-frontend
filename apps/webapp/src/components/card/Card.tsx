@@ -22,18 +22,18 @@ export function Card({ menu,locale }: { menu: menuProps,locale?:string }) {
   };
 
   return ( 
-    <div className="max-w-sm bg-gray-500 border p-2 border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="max-w-sm border border-gray-500 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <Link 
         href={"#"}
         passHref
         legacyBehavior
       >
          <a onClick={openNewWindow} className="d-flex flex-column items-center text-center">
-        <div className="grid grid-rows-6 h-52">
+        <div className="grid grid-rows-6 h-48">
           <div className="row-span-5">
-            <img className="rounded-t-lg object-cover w-full h-full" src={`${basePath}${menu.image}`} alt={menu.alt} />
+            <img className="rounded-t-lg object-contain	w-full h-full" src={`${basePath}${menu.image}`} alt={menu.alt} />
           </div>
-          <div className="inline-block align-middle">
+          <div className="inline-block align-middle bg-gray-500">
             <h5 className="mb-2 text-md font-bold tracking-tight text-white dark:text-white">
               {menu.title}
             </h5>
@@ -56,8 +56,8 @@ export function CardBasic({menu}:{menu:menuProps}) {
           className="d-flex flex-column items-center text-center"
         >
           <div className="grid grid-rows-6 h-52 p-6">
-          <div className="row-span-5 border border-gray-200 rounded-lg shadow">
-            <img className="rounded-t-lg object-cover w-full h-full" src={`${basePath}${menu.image}`} alt={menu.alt} /></div>
+          <div className="row-span-5 border border-gray-500 rounded-lg shadow">
+            <img className="rounded-t-lg object-contain w-full h-full" src={`${basePath}${menu.image}`} alt={menu.alt} /></div>
           <div className="p-2">
             <h5 className="mb-2 text-ms font-bold tracking-tight text-gray dark:text-white">
               {menu.title}

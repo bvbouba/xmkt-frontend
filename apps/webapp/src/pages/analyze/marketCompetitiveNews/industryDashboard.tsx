@@ -15,6 +15,8 @@ import HorizontalBar from "@/components/charts/HorizontalBar";
 import VerticalBar, { options } from "@/components/charts/VerticalBar";
 import { useSession } from "next-auth/react";
 import { getBrandResultByFirm, getFirmData, getMarketsData } from "features/data";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -64,7 +66,7 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
   }, [status,industryID,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
 
  const periods = Array.from(Array(selectedPeriod+1).keys())
@@ -181,16 +183,14 @@ datasets:[{
             backgroundColor: "rgba(54, 162, 235, 1)",
             borderColor: "rgba(54, 162, 235, 1)",
         }]}
-const title = t("INDUSTRY_DASHBOARD_-_FIRM", {teamName,selectedPeriod})
 
-console.log(marketShareChartData)
     return ( 
         <>
-        
+        <Title pageTitle={t("INDUSTRY_DASHBOARD")} period={selectedPeriod} />
             
         <div className="">
         <div className="container mx-auto">
-      <HeaderContainer title={title}/>
+      <HeaderContainer title={t("INDUSTRY_DASHBOARD")} period={selectedPeriod} teamName={teamName} />
 
       <div className="p-1">
         <div className="grid grid-cols-2 gap-4">

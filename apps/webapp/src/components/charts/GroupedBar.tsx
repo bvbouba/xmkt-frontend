@@ -20,12 +20,20 @@ interface props {
 }
 const GroupedBar = ({data,title,stacked,yGrid,inPercent,legendPos}:props) => {
 
+  // Extract the data arrays from each dataset
+const allData = data.datasets.flatMap(dataset => dataset.data);
+
+// Find the maximum value
+const maxValue = Math.max(...allData);
+
+
     const options : ChartOptions<'bar'>  = {
         responsive:true,
         maintainAspectRatio: false,
         layout: { padding: 10 },
          scales: {
              y: {
+              max:1.2*maxValue,
                 stacked: (stacked) ? true : false,
                  ticks: {
                    display: false,

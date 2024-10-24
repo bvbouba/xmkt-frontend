@@ -1,5 +1,7 @@
 import { Layout } from "@/components/Layout";
+import { Loading } from "@/components/Loading";
 import { Section } from "@/components/Section";
+import Title from "@/components/title";
 import usePaths from "@/lib/paths";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { useSession } from "next-auth/react";
@@ -26,7 +28,7 @@ function MarketCompetitveNewsPage({ locale }: InferGetStaticPropsType<typeof get
     const { t } = useTranslation('common')
 
     if (status === "loading") {
-      return <p>{t("LOADING...")}</p>;
+      return <Loading />;
     }
   
     const industryItems = [
@@ -38,7 +40,7 @@ function MarketCompetitveNewsPage({ locale }: InferGetStaticPropsType<typeof get
   
     return (
         <>
-        
+      <Title pageTitle={t("MARKET_&_COMPETITIVE_NEWS")} period={selectedPeriod} />
       <Section menuItems={industryItems} locale={locale}/>
       </>
     );

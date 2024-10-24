@@ -108,7 +108,7 @@ const ScatterChart = ({data,closePairs,labelColors,ticks,xTitle,yTitle,min,max}:
       },
       plugins: {
         tooltip:{
-            enabled:true
+            enabled:false
            },
         legend: {
           display: false,

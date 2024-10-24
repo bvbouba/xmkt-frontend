@@ -10,6 +10,8 @@ import { featureProps, segmentProps, SemanticIdealsProps, SemanticScalesProps } 
 import ScatterChart from "@/components/charts/ScatterChart";
 import { useSession } from "next-auth/react";
 import {  getFeaturesData, getSegmentsData, getSemanticIdealsData, getSemanticScalesData } from "features/data";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 
 
@@ -84,7 +86,7 @@ function SemanticScales({ locale }: InferGetStaticPropsType<typeof getStaticProp
   
 
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
   
 
@@ -154,16 +156,16 @@ const rows1 = segments.map(row =>{
   const chartData = getMapData({mergedata,xKey:etalon?.abbrev,
                              yKey:selectedFeature?.abbrev,})
 
-  const title = t("SEMANTIC_SCALES_-_PERIOD",{selectedPeriod});
   // if(marketResearchChoices.some((choice => choice.study === 10 && choice.choice === false))){
   //   router.push(paths.analyze.marketResearch.$url());
   // }
     return (  <>
     
-       
+    <Title pageTitle={t("SEMANTIC_SCALES")} period={selectedPeriod} />      
+
     <div className="">
     <div className="container mx-auto">
-      <HeaderContainer title={title}  content={t("THE_SEMANTIC_SCALES_STUDY_PROVIDES_DATA_BASED_ON_A_SEMANTIC_DIFFE")} />
+      <HeaderContainer title={t("SEMANTIC_SCALES")} period={selectedPeriod}  content={t("THE_SEMANTIC_SCALES_STUDY_PROVIDES_DATA_BASED_ON_A_SEMANTIC_DIFFE")} />
       <span>
         <img src={`${basePath}/images/semantic_scale_sample.png`} alt="semantic_scale_sample" />
       </span>

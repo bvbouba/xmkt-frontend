@@ -8,6 +8,8 @@ import { ReactElement, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { marketResearchProps } from "types";
 import { fetchMarketResearchChoices } from "features/data";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'fr';
@@ -50,7 +52,7 @@ function MarketResearchPage({ locale }: InferGetStaticPropsType<typeof getStatic
     },[status,firmID,industryID,selectedPeriod,session?.accessToken])
 
     if (status === "loading") {
-      return <p>{t("LOADING...")}</p>;
+      return <Loading />;
     }
 
 
@@ -81,7 +83,7 @@ function MarketResearchPage({ locale }: InferGetStaticPropsType<typeof getStatic
     
     return (
         <>
-        
+    <Title pageTitle={t("MARKET_RESEARCH")} period={selectedPeriod} />      
       <Section menuItems={filteredBenchmarkingItems} locale={locale} />
       </>
     );

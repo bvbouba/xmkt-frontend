@@ -82,12 +82,12 @@ export const SideBar: React.FC = () => {
       </div>
 
       {/* User Information */}
-      <div className="bg-gray-100 p-4 mb-4">
+      {session && <div className="bg-gray-100 p-4 mb-4">
         <div>{t("COURSE")}: {session?.courseCode}</div>
         <div>{t("INDUSTRY")}: {session?.industryName}</div>
         <div>{t("TEAM")}: {session?.teamName}</div>
         <div>{t("USER")}: {session?.user.lastname} {session?.user.firstname} </div>
-      </div>
+      </div>}
 
       {/* Menu Icons */}
       <div className="grid grid-cols-4 p-2 gap-2 mb-4 bg-white">

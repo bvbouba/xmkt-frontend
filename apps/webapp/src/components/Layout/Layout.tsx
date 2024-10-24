@@ -10,18 +10,21 @@ export function Layout({ children }: { children?: React.ReactNode }) {
   const { status,data:session } = useSession();
   const router = useRouter();
   const paths = usePaths()
-
-
-
+  const user = session?.user
 
   useEffect(() => {
     if (status === 'unauthenticated') {
-      router.push(paths.auth.login.$url()); 
+      router.push(paths.auth.login.$url());
     }
-  }, [status]);
-
+  
+    if (session?.accessToken && (!user || Object.keys(user).length === 0)) {
+      router.push(paths.auth.login.$url());
+    }
+  }, [status, session, user, router, paths.auth.login]);
 
   return (
+
+    <>
     <div className="flex h-screen bg-gray-100">
       <SideBar />
 
@@ -33,6 +36,7 @@ export function Layout({ children }: { children?: React.ReactNode }) {
         </main>
       </div>
     </div>
+    </>
   );
 }
 

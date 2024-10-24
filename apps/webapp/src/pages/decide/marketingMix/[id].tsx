@@ -123,7 +123,7 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
           const marketingMixData = await fetchMarketingMixById({ id: ID, token: session.accessToken });
           setBrand(marketingMixData);
 
-
+         
           if (brand?.brand_id) {
             const decision = await fetchMarketingMixDecisionByTeam({
               teamId: teamID, period: lastPeriod, token: session.accessToken,
@@ -300,17 +300,21 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
             <div className="col-span-2">
               <h2 className="text-xl font-bold mb-2">{t("PRODUCTION")}</h2>
               <p>
-                {t("ENTER_HERE_YOUR_PRODUCTION_PLAN_IN_UNITS", { brand_name: brand?.brand_name })}
-                .
+                {`${t("ENTER_HERE_YOUR_PRODUCTION_PLAN_IN_UNITS", { brand_name: brand?.brand_name })}.`}
+                
               </p>
 
               <p>
                 {brandResult && t("UNITS_OF_BRAND_WERE_SOLD_DURING_LAST_PERIOD", { unit_sold: brandResult?.unit_sold*1000, brand_name: brand?.brand_name, period: lastPeriod })}
-                .
+                
               </p>
               <p>
-                {brandResult && t("THERE_ARE_UNITS_OF_BRAND_AVAILABLE_IN_YOUR_INVENTORY", { inventory: brandResult?.inventory_end*1000, brand_name: brand?.brand_name })}
-                .
+                {brandResult && t("THERE_ARE_UNITS_OF_BRAND_AVAILABLE_IN_YOUR_INVENTORY", { inventory: (brandResult?.inventory_end-brand?.disposal_volume)*1000, brand_name: brand?.brand_name })}
+                
+              </p>
+              <p>
+                {brand?.disposal_volume!==0 && t("THE_UNSOLD_UNIT_OF_BRAND_WILL_BE_DESTOCKED", { inventory: brand?.disposal_volume*1000, brand_name: brand?.brand_name })}
+                
               </p>
 
             </div>
@@ -543,7 +547,7 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
 
           <hr className="my-4" />
 
-          <div className="grid grid-cols-4 gap-4 mb-4">
+          {/* <div className="grid grid-cols-4 gap-4 mb-4">
             <div className="col-span-4">
               <h2 className="text-xl font-bold mb-2">{t("PERCEPTUAL_OBJECTIVE")}</h2>
               <p>
@@ -586,12 +590,12 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
               </label>
             </div>
             <div></div>
-          </div>
+          </div> */}
 
           {selectedChoice !== "0" && (
             <div className="grid grid-cols-4 gap-4 mb-4">
 
-              <div>
+              {/* <div>
                 <label
                   className="block text-gray-700 text-sm font-bold mb-2"
                   htmlFor="team"
@@ -610,10 +614,10 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
                   {(selectedChoice === "1") ? featureOptions({ locale }) : dimensionOptions({ locale })}
                 </select>
 
-              </div>
+              </div> */}
 
 
-              <div>
+              {/* <div>
                 {(dimension1) && (<><label
                   className="block text-gray-700 text-sm font-bold mb-2"
                   htmlFor="team"
@@ -631,9 +635,9 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
                     {(selectedChoice === "1") ? choicesObjective1 : choicesObjective2}
                   </select></>)
                 }
-              </div>
+              </div> */}
 
-              <div>
+              {/* <div>
                 {objective1 && <><label
                   className="block text-gray-700 text-sm font-bold mb-2"
                   htmlFor="team"
@@ -652,9 +656,9 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
                     {(selectedChoice === "1") ? featureOptions({ locale }) : dimensionOptions({ locale })}
                   </select>
                 </>}
-              </div>
+              </div> */}
 
-              <div>
+              {/* <div>
                 {dimension2 && <> <label
                   className="block text-gray-700 text-sm font-bold mb-2"
                   htmlFor="team"
@@ -672,7 +676,7 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
                     {(selectedChoice === "1") ? choicesObjective1 : choicesObjective2}
                   </select>
                 </>}
-              </div>
+              </div> */}
 
             </div>
           )}

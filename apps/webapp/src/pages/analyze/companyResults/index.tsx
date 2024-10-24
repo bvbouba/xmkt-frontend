@@ -1,10 +1,13 @@
 import { Layout } from "@/components/Layout";
+import { Loading } from "@/components/Loading";
 import { Section } from "@/components/Section";
+import Title from "@/components/title";
 import usePaths from "@/lib/paths";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Head from "next/head";
 import { ReactElement } from "react";
 
 
@@ -22,9 +25,9 @@ function CompanyResultsPage({ locale }: InferGetStaticPropsType<typeof getStatic
   const paths = usePaths();
   const { t } = useTranslation('common')
   const { status,data:session } = useSession()
-  
+
   if (status === "loading") {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
   const companyItems = [
     {
@@ -61,6 +64,7 @@ function CompanyResultsPage({ locale }: InferGetStaticPropsType<typeof getStatic
 
   return (
     <>
+    <Title pageTitle={t("COMPANY_RESULTS")} period={session?.selectedPeriod}/>
     <Section menuItems={companyItems} locale={locale}/>
     </>
   );

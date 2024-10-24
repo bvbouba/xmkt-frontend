@@ -13,6 +13,8 @@ import HorizontalBar from "@/components/charts/HorizontalBar";
 import { useSession } from "next-auth/react";
 import {  getBrandAwarenessData, getChannelsData, getMarketDemandData, getPurchaseIntentData, getSegmentsData, getShoppingHabitData } from "features/data";
 import { brandAwarenessProps, channelProps, demandProps, segmentProps, shoppingHabitProps } from "types";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 
 interface columnProps {
@@ -94,7 +96,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
   }, [status,firmID,industryID,selectedPeriod,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
 
   const total_size = marketDemand.reduce((a, c) => a + c.size, 0);
@@ -205,7 +207,6 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
     })),
   };
 
-  const title = t("CONSUMER_SURVEY_-_PERIOD", {selectedPeriod});
 
   // if(marketResearchChoices.some((choice => choice.study === 6 && choice.choice === false))){
   //   router.push(paths.analyze.marketResearch.$url());
@@ -213,10 +214,10 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
 
   return (
     <>
-      
+                  <Title pageTitle={t("CONSUMER_SURVEY")} period={selectedPeriod} />      
       <div className="">
       <div className="container mx-auto">
-        <HeaderContainer   title={title} content={t("THE_SURVEY_QUESTIONNAIRE_HAS_BEEN_ADMINISTERED_TO_1000_INDIVIDUAL", {period:selectedPeriod})} />
+        <HeaderContainer   title={t("CONSUMER_SURVEY")} period={selectedPeriod} content={t("THE_SURVEY_QUESTIONNAIRE_HAS_BEEN_ADMINISTERED_TO_1000_INDIVIDUAL", {period:selectedPeriod})} />
         
         <ParagraphContainer   title={t("BRAND_AWARENESS")} content={t("THE_BRAND_AWARENESS_FIGURES_IN_THE_CHART_AND_TABLE_BELOW_REPRESEN")}/>
   

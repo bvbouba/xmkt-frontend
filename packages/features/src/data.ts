@@ -312,23 +312,28 @@ export const loadInfo = async ({ pak }: { pak: string }): Promise<Participant> =
   return response.data;
 };
 
-export const getFirmData = async ({ firmID, industryID, token }: { firmID: number, industryID: number, token: string }): Promise<firmProps[]> => {
-  const response = await axios.get(`${API_URI}api/analyze/firm/${industryID}/${firmID}`,
-    {
-      headers: {
-        'Authorization': `token ${token}`
-      }
-    });
+export const getFirmData = async ({ firmID, industryID, token,fields,period }: { firmID: number, industryID: number, token: string, fields?:string,period?:number }): Promise<firmProps[]> => {
+  const url = new URL(`${API_URI}api/analyze/firm/${industryID}/${firmID}`);
+
+  if (fields) url.searchParams.append('fields', fields);
+  if (period) url.searchParams.append('period', period.toString());
+
+  const response = await axios.get(url.toString(), {
+    headers: { 'Authorization': `token ${token}` }
+  })
   return response.data
 }
 
-export const getBrandResultByFirm = async ({ firmID,industryID,token }: { firmID: number,industryID:number,token:string }): Promise<brandProps[]> => {
-      const response  = await axios.get(`${API_URI}api/brand-result-list/${ industryID }/${firmID}`,
-      {
-        headers: {
-                 'Authorization': `token ${token}`
-                 }
-      });
+
+
+export const getBrandResultByFirm = async ({ firmID,industryID,token,fields,period }: { firmID: number,industryID:number,token:string,fields?:string,period?:number }): Promise<brandProps[]> => {
+      const url = new URL(`${API_URI}api/brand-result-list/${ industryID }/${firmID}`);
+      if (fields) url.searchParams.append('fields', fields);
+      if (period) url.searchParams.append('period', period.toString());
+
+      const response = await axios.get(url.toString(), {
+        headers: { 'Authorization': `token ${token}` }
+      })
         return response.data
   }
 

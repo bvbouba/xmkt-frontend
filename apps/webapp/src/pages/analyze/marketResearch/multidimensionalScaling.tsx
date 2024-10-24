@@ -11,6 +11,8 @@ import ScatterChart from "@/components/charts/ScatterChart";
 import { useSession } from "next-auth/react";
 import { DimensionIdealsProps, dimensionProps, DimensionScalesProps, segmentProps } from "types";
 import { fetchDimensions, getDimensionalIdealsData, getDimensionalScalesData, getSegmentsData } from "features/data";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 
 
@@ -82,7 +84,7 @@ useEffect(() => {
 }, [status,industryID,selectedPeriod,session?.accessToken]);
 
 if (status === "loading" || loading) {
-  return <p>{t("LOADING...")}</p>;
+  return <Loading />;
 }
   
 let firmIds : { [key: string]: any } = {};
@@ -146,7 +148,6 @@ const rows1 = segments.map(row =>{
                       yKey:dimensions[2]?.name})
 
 
-  const title = t("MULTIDIMENSIONAL_SCALING_OF_BRAND_SIMILARITIES_&_PREFERENCES_-_PERIOD",{selectedPeriod});
 
   // if(marketResearchChoices.some((choice => choice.study === 9 && choice.choice === false))){
   //   router.push(paths.analyze.marketResearch.$url());
@@ -154,10 +155,11 @@ const rows1 = segments.map(row =>{
 
     return (<>
     
-    
+    <Title pageTitle={t("MULTIDIMENSIONAL_SCALING")} period={selectedPeriod} />      
+
     <div className="">
     <div className="container mx-auto">
-      <HeaderContainer  title={title} content={t("THIS_STUDY_PROVIDES_A_JOINT_SPACE_CONFIGURATION_OBTAINED_WITH_NON")}/>
+      <HeaderContainer  title={t("MULTIDIMENSIONAL_SCALING")} period={selectedPeriod}  content={t("THIS_STUDY_PROVIDES_A_JOINT_SPACE_CONFIGURATION_OBTAINED_WITH_NON")}/>
       <ParagraphContainer title={t("PERCEPTUAL_MAP")} content={t("THIS_STUDY_PROVIDES_A_GRAPHICAL_REPRESENTATION_OF_THE_PERCEPTUAL_POSITIONING_OF_BRANDS_AND_CONSUMERS")}/>
     
       

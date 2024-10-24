@@ -34,7 +34,7 @@ Array.prototype.SumArray = function (arr) {
 }
 
 const HorizontalBar = ({ data, title, inPercent,inThousand,legendPos,legendDisplay=true,yGrid,xGrid,stacked}: Props) => {
-  console.log(inPercent)
+
   let max = 0
   let arr = Array.apply(null, Array(data.labels?.length)).map(Number.prototype.valueOf,0);
     data.datasets.map(row =>

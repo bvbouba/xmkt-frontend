@@ -13,6 +13,8 @@ import DoughnutChart from "@/components/charts/DoughnutChart";
 import { useSession } from "next-auth/react";
 import {  getSalesData, getSegmentsData } from "features/data";
 import {  salesProps, segmentProps } from "types";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 
 interface columnProps {
@@ -73,7 +75,7 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
   }, [status,firmID,industryID,selectedPeriod,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
 
   const totalSize = sales?.reduce((a, c) => a + c.volume, 0);
@@ -176,7 +178,6 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
   };
 
   
-  const title = t("CONSUMER_PANEL_-_PERIOD",{selectedPeriod});
 
   // if(marketResearchChoices.some((choice => choice.study === 5 && choice.choice === false))){
   //   router.push(paths.analyze.marketResearch.$url());
@@ -184,12 +185,13 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
 
   return (
     <>
-      
+            <Title pageTitle={t("CONSUMER_PANEL")} period={selectedPeriod} />      
+
 
       <div className="">   
       <div className="container mx-auto">
 
-        <HeaderContainer title={title} content={t("THE_CONSUMER_PANEL_STUDY_SHOWN_BELOW_IS_BASED_ON_A_SAMPLE_GROUP_O")}  />
+        <HeaderContainer title={t("CONSUMER_PANEL")} period={selectedPeriod} content={t("THE_CONSUMER_PANEL_STUDY_SHOWN_BELOW_IS_BASED_ON_A_SAMPLE_GROUP_O")}  />
         
         
         <ParagraphContainer title={t("MARKET_SHARES_(BASED_ON_UNITS_SOLD)")} content={t("THE_MARKET_SHARES_FIGURES_IN_THE_CHART_AND_TABLE_BELOW_REPRESENT_THE_PROPORTION_OF_INDIVIDUALS_WHO_HAVE_PURCHASED_A_GIVEN_BRAND_DURING_PERIOD",{selectedPeriod})} />

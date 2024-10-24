@@ -17,6 +17,8 @@ import GroupedBar from "@/components/charts/GroupedBar";
 import { useSession } from "next-auth/react";
 import { firmProps } from "types";
 import {  getFirmData } from "features/data";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 
 interface props {
@@ -73,7 +75,7 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
   }, [status,industryID,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
 
   const labels = firmsData
@@ -156,7 +158,6 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
                     row2 => temp[row2.team_name]=getValueByTeam(firmsData,row2.team_name,selectedPeriod,row.id)*row.sign)
                     return temp
                   })
-   const title = t("OVERALL_COMPANY_PERFORMANCES_AND_EXPENDITURES_-_PERIOD",{selectedPeriod})
   //  if(marketResearchChoices.some(choice => choice.study === 1 && choice.choice === false)){
   //   router.push(paths.analyze.marketResearch.$url());
   // }
@@ -165,10 +166,11 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
                   
                   return (
     <>
-      
+          <Title pageTitle={t("INDUSTRY_BENCHMARKING")} period={selectedPeriod} />      
+
       <div className="">
       <div className="container mx-auto">
-      <HeaderContainer title={title}/>
+      <HeaderContainer title={t("INDUSTRY_BENCHMARKING")} period={selectedPeriod}/>
 
       <div className="p-1">
         <ParagraphContainer title={t("OVERALL_COMPANY_PERFORMANCES_AND_EXPENDITURES")} content={t("THE_TWO_CHARTS_BELOW_SHOW_THE_OVERALL_PERFORMANCE_OF_THE_COMPETIN")} />

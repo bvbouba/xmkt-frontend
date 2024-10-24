@@ -12,6 +12,8 @@ import DoughnutChart from "@/components/charts/DoughnutChart";
 import { useSession } from "next-auth/react";
 import { channelProps, distributionCoverageProps, marketResearchProps, salesProps } from "types";
 import { fetchMarketResearchChoices, getChannelsData, getDistributionCoverageData, getSalesData } from "features/data";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'fr';
@@ -63,7 +65,7 @@ function DistributionPanel({ locale }: InferGetStaticPropsType<typeof getStaticP
     }
   }, [status,industryID,selectedPeriod,session?.accessToken]);
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
 
   let teamJson: { [key: string]: any } = {};
@@ -149,7 +151,6 @@ const chart4Data = {
                     borderColor: channelColors,
                   }]
                 }
-  const title = t("DISTRIBUTION_PANEL_-_PERIOD", {selectedPeriod});
 
   // if(marketResearchChoices.some((choice => choice.study === 7 && choice.choice === false))){
   //   router.push(paths.analyze.marketResearch.$url());
@@ -157,9 +158,10 @@ const chart4Data = {
 
     return (  
     <>   
+                      <Title pageTitle={t("DISTRIBUTION_PANEL")} period={selectedPeriod} />      
     <div className="">
     <div className="container mx-auto">
-      <HeaderContainer  title={title} content={t("THE_DISTRIBUTION_PANEL_PROVIDES_CONTINUOUS_TRACKING_OF_PRODUCT_SA")} />
+      <HeaderContainer  title={t("DISTRIBUTION_PANEL")} period={selectedPeriod} content={t("THE_DISTRIBUTION_PANEL_PROVIDES_CONTINUOUS_TRACKING_OF_PRODUCT_SA")} />
       
       <ParagraphContainer title={t("SALES_AND_MARKET_SHARES_BY_CHANNEL")} content={t( "THE_TABLE_AND_CHARTS_BELOW_PROVIDE_THE_MARKET_SHARES,_BASED_ON_UN")} />
 

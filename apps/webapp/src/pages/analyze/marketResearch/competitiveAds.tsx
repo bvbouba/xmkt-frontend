@@ -11,6 +11,8 @@ import { channelColors, colorGrades, segmentColors } from "@/lib/constants/color
 import { useSession } from "next-auth/react";
 import { fetchMarketResearchChoices, getChannelsData, getMarketingMixData, getSegmentsData } from "features/data";
 import { channelProps, markertingMixProps, marketResearchProps, segmentProps } from "types";
+import { Loading } from "@/components/Loading";
+import { Title } from "@/components/title";
 
 
 
@@ -70,7 +72,7 @@ function CompetitiveAds({ locale }: InferGetStaticPropsType<typeof getStaticProp
   },[status,industryID,firmID,selectedPeriod,session?.accessToken])
 
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
 
 
@@ -206,8 +208,6 @@ segments?.map(row => dataArray2.push(
                return temp
               })
     
-    const title1 = t("COMPETITIVE_ADVERTISING_ESTIMATES_-_PERIOD",{selectedPeriod})   
-    const title2 = t("ESTIMATED_COMMERCIAL_TEAM_SIZE_ESTIMATES_-_PERIOD",{selectedPeriod})
     
     const choice1 = marketResearchChoices?.some((choice => choice.study === 2 && choice.choice === true))
     const choice2 = marketResearchChoices?.some((choice => choice.study === 3 && choice.choice === true))
@@ -219,13 +219,13 @@ segments?.map(row => dataArray2.push(
     
     return ( <>
     
-        
+    <Title pageTitle={t("COMPETITIVE_ADVERSTISING_AND_COMMERCIAL_TEAM_ESTIMATES")} period={selectedPeriod} />      
 
     <div className="">
     <div className="container mx-auto">
       {choice1 && <>
       
-        <HeaderContainer  title={title1} content={t("ESTIMATES_OF_COMPETITIVE_ADVERTISING_BUDGETS_ARE_GIVEN_BY_FIRM_BY")} />
+        <HeaderContainer  title={t("COMPETITIVE_ADVERTISING_ESTIMATES")} period={selectedPeriod} content={t("ESTIMATES_OF_COMPETITIVE_ADVERTISING_BUDGETS_ARE_GIVEN_BY_FIRM_BY")} />
 
 
 
@@ -258,7 +258,7 @@ segments?.map(row => dataArray2.push(
 
       {choice2 && <><div className="mt-6">
 
-      <HeaderContainer  title={title2} content={t("ESTIMATES_OF_COMPETITIVE_COMMERCIAL_TEAM_SIZE_ARE_GIVEN_BY_FIRM_B")} />
+      <HeaderContainer  title={t("ESTIMATED_COMMERCIAL_TEAM_SIZE_ESTIMATES")} period={selectedPeriod} content={t("ESTIMATES_OF_COMPETITIVE_COMMERCIAL_TEAM_SIZE_ARE_GIVEN_BY_FIRM_B")} />
 
 
       </div>

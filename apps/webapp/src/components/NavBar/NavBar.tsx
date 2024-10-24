@@ -17,7 +17,7 @@ export const NavBar: React.FC = () => {
   
  
   useEffect(() => {
-    if (!session?.selectedPeriod && typeof activePeriod === "number") {
+    if (session?.selectedPeriod === undefined && typeof activePeriod === "number") {
       update({
         ...session,
         selectedPeriod: activePeriod - 1, // Set to activePeriod - 1
@@ -234,12 +234,12 @@ export const NavBar: React.FC = () => {
                     onChange={(e) => update({
                       ...session,
                       selectedPeriod:parseInt(e.target.value)})} // Handle the selected period
-                    value={selectedPeriod}
+                    // value={selectedPeriod}
                   >
                     <option value="" disabled>
                       {t("SELECT_PERIOD")}
                     </option>
-                    {selectedPeriod && periods.map((period, index) => (
+                    {selectedPeriod!==undefined && periods.map((period, index) => (
                       <option key={index} value={index}>
                         {period}
                       </option>

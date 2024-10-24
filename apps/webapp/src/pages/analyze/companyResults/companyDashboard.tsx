@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { barThickness, unit } from "@/lib/constants";
 import { BlockHeader } from "@/components/blockHeader";
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
+import {  GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer } from "@/components/container";
@@ -13,6 +13,8 @@ import DoughnutChart from "@/components/charts/DoughnutChart";
 import { useSession } from "next-auth/react";
 import { getBrandResultByFirm, getFirmData } from "features/data";
 import { brandProps, firmProps } from "types";
+import { Loading } from "@/components/Loading";
+import { Title } from "@/components/title";
 
 
 
@@ -43,10 +45,11 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
       const loadData = async () => {
         setLoading(true)
         try {
-          const response = await getFirmData({ industryID, firmID, token: session.accessToken });
-          const response1 = await getBrandResultByFirm({ industryID, firmID, token: session.accessToken });
+          const response = await getFirmData({ industryID, firmID, token: session.accessToken,fields:"id,period_id,stockprice,revenue,net_contribution,market_share,unit_market_share" });
+          const response1 = await getBrandResultByFirm({ industryID, firmID, token: session.accessToken,fields:"id,period_id,brand_name,revenue,contribution" });
           setFirmData(response)
           setBrandData(response1)
+
         } catch (error) {
           console.error('Error getting course:', error);
         } finally{
@@ -60,7 +63,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
   }, [status,firmID,industryID,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
   
   let firmColors: string[] = []; // Default color array
@@ -81,7 +84,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
         backgroundColor: "rgba(54, 162, 235, 1)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
-        barThickness
+        barThickness:barThickness/(selectedPeriod+1)
       },
     ],
   };
@@ -94,7 +97,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
         backgroundColor: "rgba(54, 162, 235, 1)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
-        barThickness
+        barThickness:barThickness/(selectedPeriod+1)
       },
     ],
   };
@@ -107,7 +110,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
         backgroundColor: "rgba(54, 162, 235, 1)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
-        barThickness
+        barThickness:barThickness/(selectedPeriod+1)
       },
     ],
   };
@@ -120,7 +123,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
         backgroundColor: "rgba(54, 162, 235, 1)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
-        barThickness
+        barThickness:barThickness/(selectedPeriod+1)
       },
     ],
   };
@@ -134,7 +137,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
         backgroundColor: "rgba(54, 162, 235, 1)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
-        barThickness
+        barThickness:barThickness/(selectedPeriod+1)
       },
     ],
   };
@@ -165,14 +168,12 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
   };
 
 
-  const title = t("COMPANY_DASHBOARD_LONG", { teamName, industryName, selectedPeriod })
-
   return (
     <>
-
+      <Title pageTitle={t(`COMPANY_DASHBOARD`)} period={selectedPeriod}/>
       <div className="">
         <div className="container mx-auto">
-          <BlockHeader title={title} />
+          <BlockHeader title={`${t(`COMPANY_DASHBOARD`)} - ${t("FIRM")} ${teamName} - ${t("INDUSTRY")} ${industryName} - ${t("PERIOD")} ${selectedPeriod}`} />
           <div className="grid grid-cols-3 gap-4">
             <GraphContainer>
                 <VerticalBar data={stockPriceData} title={t("SPI")} />

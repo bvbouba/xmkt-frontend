@@ -90,7 +90,7 @@ export interface markertingMixProps {
   channel_3: number;
   commercial_cost: CommercialProps;
   project: ProjectBasicProps;
-  is_active?: boolean
+  is_active?: boolean,
   [key: string]: any;
 }
 

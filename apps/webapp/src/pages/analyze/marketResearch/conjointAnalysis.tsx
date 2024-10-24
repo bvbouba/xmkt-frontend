@@ -9,6 +9,8 @@ import LineChart from "@/components/charts/LineChart";
 import { useSession } from "next-auth/react";
 import {  getFeaturesData, getLevelsData, getSegmentsData, getUtilitiesData } from "features/data";
 import { featureProps, levelProps, segmentProps, utilitiesProps } from "types";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 
 
@@ -64,7 +66,7 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
   }, [status,firmID,industryID,courseID,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
 
   let features: string[] = [];
@@ -172,9 +174,6 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
   });
 
  
-
-  const title =  t("CONJOINT_ANALYSIS_-_PERIOD", {selectedPeriod})
-
   // if(marketResearchChoices.some((choice => choice.study === 4 && choice.choice === false))){
   //   router.push(paths.analyze.marketResearch.$url());
   // }
@@ -182,10 +181,11 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
   return (
     <>
       
-      
+      <Title pageTitle={t("CONJOINT_ANALYSIS")} period={selectedPeriod} />      
+
       <div className="">
       <div className="container mx-auto">
-      <HeaderContainer  title={title} content={t("THIS_STUDY_ENABLES_FIRMS_TO_ESTIMATE_THE_RELATIVE_IMPORTANCE_OF_T")} />
+      <HeaderContainer  title={t("CONJOINT_ANALYSIS")} period={selectedPeriod} content={t("THIS_STUDY_ENABLES_FIRMS_TO_ESTIMATE_THE_RELATIVE_IMPORTANCE_OF_T")} />
 
       <div className="grid grid-cols-1 mb-4 h-80">
           <GraphContainer>

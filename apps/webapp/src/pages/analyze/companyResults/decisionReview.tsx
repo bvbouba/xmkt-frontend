@@ -4,7 +4,7 @@ import {marketingItems, perceptualItems, transformConstants } from "@/lib/consta
 import {  useEffect, useState } from "react";
 
 import { OnlineQueryTable, ProjectTableBasic, Table } from "@/components/Table";
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
+import {  GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { getValueByBrand, getValueByPeriodMarket, translateFeatures, translateGenericFunction } from "@/lib/utils";
@@ -16,6 +16,8 @@ import HorizontalBar from "@/components/charts/HorizontalBar";
 import { useSession } from "next-auth/react";
 import { getBrandResultByFirm, getChannelsData, getFeaturesData, getFirmData, getMarketingMixData, getMarketsData, getOnlineQueryInfoData, getProjectAllData, getSegmentsData } from "features/data";
 import { brandProps, channelProps, featureProps, firmProps, markertingMixProps, marketProps, onlineQueryProps, projectProps, segmentProps } from "types";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 
 
@@ -56,8 +58,8 @@ function DecisionReviewPage({ locale }: InferGetStaticPropsType<typeof getStatic
       const response1 = await getProjectAllData({ industryID, firmID, period:selectedPeriod,token: session.accessToken });
       const response2 = await getOnlineQueryInfoData({ industryID, firmID, period:selectedPeriod,token: session.accessToken });
       const response3 = await getMarketingMixData({ industryID, firmID, period:selectedPeriod,token: session.accessToken, });
-      const response4 = await getFirmData({ industryID, firmID,token: session.accessToken });
-      const response5 = await getBrandResultByFirm({ industryID, firmID,token: session.accessToken });
+      const response4 = await getFirmData({ industryID, firmID,token: session.accessToken,period:selectedPeriod });
+      const response5 = await getBrandResultByFirm({ industryID, firmID,token: session.accessToken,period:selectedPeriod });
       setAllProjects(response1)
       setOnlineQuery(response2)
       setMarketingMix(response3)
@@ -84,7 +86,7 @@ function DecisionReviewPage({ locale }: InferGetStaticPropsType<typeof getStatic
   }, [status,industryID,firmID,selectedPeriod,session?.accessToken]);
 
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
   
  const channels = translateGenericFunction(channelsData,locale)
@@ -134,12 +136,10 @@ if (typeof firmID === 'number') {
   };
 
   const byBrandData = {
-    labels: brandData?.filter((row) => row.period_id === selectedPeriod)
-      .map((row1) => row1.brand_name),
+    labels: brandData?.map((row1) => row1.brand_name),
 
     datasets: transformConstants(locale).adcomItems.map((row, id) => ({
-      data: brandData?.filter((row1) => row1.period_id === selectedPeriod)
-        .map((row2) =>
+      data: brandData?.map((row2) =>
           getValueByBrand(brandData, row2.brand_name, selectedPeriod, row.id)
         ),
       label: row.label,
@@ -221,11 +221,12 @@ if (typeof firmID === 'number') {
   return (
     <>
       
-     
+      <Title pageTitle={t(`DECISION_REVIEW`)} period={selectedPeriod} />
+
      
       <div className="">
       <div className="container mx-auto">
-      <HeaderContainer title={`${t("DECISION_REVIEW")} - ${t("PERIOD")} ${selectedPeriod}`} />
+      <HeaderContainer title={t("DECISION_REVIEW")} period={selectedPeriod}/>
 
   
       <ParagraphContainer  title={t("RESSOURCE_ALLOCATION_OVERVIEW")} content={t("THE_THREE_CHARTS_BELOW_SHOW_HOW_RESOURCES_HAVE_BEEN_ALLOCATED_ACR")}/>
@@ -278,7 +279,7 @@ if (typeof firmID === 'number') {
        </div>
        </div>
       </div>
-
+{/* 
       <div>
       <ParagraphContainer  title={t("PERCEPTUAL_OBJECTIVES")}/>
    
@@ -286,7 +287,7 @@ if (typeof firmID === 'number') {
        <div className="p-4"><Table data={selectedMarketingMix}  items={perceptualItems} lookup="brand_name" heads={[...new Set(selectedMarketingMix.map((entry) => entry.brand_name))]}/>
       </div>
        </div>
-      </div>
+      </div> */}
 
       <div>
       <ParagraphContainer  title={t("COMMERCIAL_TEAM_SIZE")} content={`${t("THE_TABLE_BELOW_SHOWS_THE_NUMBER_OF_COMMERCIAL_PERSONS_ALLOCATED_")} ${selectedPeriod}`} />

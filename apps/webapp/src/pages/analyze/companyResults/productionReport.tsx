@@ -13,6 +13,8 @@ import GroupedBar from "@/components/charts/GroupedBar";
 import { useSession } from "next-auth/react";
 import { getBrandResultByFirm } from "features/data";
 import { brandProps } from "types";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -41,7 +43,7 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
         const loadData = async () => {
           setLoading(true)
         try {
-          const response = await getBrandResultByFirm({ industryID, firmID,token: session.accessToken });
+          const response = await getBrandResultByFirm({ industryID, firmID,token: session.accessToken, period:selectedPeriod });
            setBrandData(response)
         } catch (error) {
           console.error('Error getting data:', error);
@@ -54,13 +56,13 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
       }, [status,firmID,industryID,session?.accessToken]);
 
       if (status === "loading" || loading) {
-        return <p>{t("LOADING...")}</p>;
+        return <Loading />;
       }
 
 
 
         const productionData = {
-            labels: brandData.filter(row => row.period_id === selectedPeriod).map(
+            labels: brandData.map(
                 row1 => row1.brand_name),
             datasets: productionItems.map(
                     (row,id) => ({
@@ -72,19 +74,15 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
                               })
                     )}
 
-    const title = t("PRODUCTION_REPORT_-_FIRM", {teamName,selectedPeriod})
 
-   
       
-    const filteredBrandData = brandData.filter(b=> b.period_id == selectedPeriod)
-
     return (
         <>
-        
+                 <Title pageTitle={t("PRODUCTION_REPORT")} period={selectedPeriod} />
         <div>
         <div className="container mx-auto">
           
-      <HeaderContainer title={title} content={`${t("THE_REPORT_BELOW_PROVIDES_WITH_INFORMATION_ON_PRODUCTION_LEVELS_A")} ${selectedPeriod}.`}/>
+      <HeaderContainer title={t("PRODUCTION_REPORT")} period={selectedPeriod} teamName={teamName} content={`${t("THE_REPORT_BELOW_PROVIDES_WITH_INFORMATION_ON_PRODUCTION_LEVELS_A")} ${selectedPeriod}.`}/>
 
  
       <ParagraphContainer title={t("SALES,_PRODUCTION_&_INVENTORY")} content={t("THE_CHART_BELOW_SHOWS_THE_UNITS_SOLD", {selectedPeriod})}/>
@@ -101,7 +99,7 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
 
       <div className="p-5">
 
-      <Table data={filteredBrandData} items={transformConstants(locale).inventoryItems} lookup="brand_name" heads={[...new Set(brandData.map((entry) => entry.brand_name))]}/>
+      <Table data={brandData} items={transformConstants(locale).inventoryItems} lookup="brand_name" heads={[...new Set(brandData.map((entry) => entry.brand_name))]}/>
       
       </div>
         <ParagraphContainer title={t("_UNIT_COST,_COGS_AND_INVENTORY_HOLDING_COST")} 
@@ -110,7 +108,7 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
 
       <div className="p-5">
 
-      <Table data={filteredBrandData} items={transformConstants(locale).costItems} lookup="brand_name" heads={[...new Set(brandData.map((entry) => entry.brand_name))]}/>
+      <Table data={brandData} items={transformConstants(locale).costItems} lookup="brand_name" heads={[...new Set(brandData.map((entry) => entry.brand_name))]}/>
        
       </div>
     </div>

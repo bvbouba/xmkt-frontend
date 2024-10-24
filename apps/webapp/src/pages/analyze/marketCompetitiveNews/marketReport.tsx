@@ -9,6 +9,8 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import {  useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { getBrandResultByFirm, getFeaturesData, getMarketingMixData } from "features/data";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'fr';
@@ -56,7 +58,7 @@ function MarketReport({ locale }: InferGetStaticPropsType<typeof getStaticProps>
 
 
   if (status === "loading" || loading) {
-    return <p>{t("LOADING...")}</p>;
+    return <Loading />;
   }
 
   const features = translateFeatures(featuresData,locale)
@@ -100,16 +102,15 @@ const selectedUnitMsData = brandData?.filter(row => row.period_id === selectedPe
           })
     return temp })
     
-    const title = t("MARKET_REPORT_-_PERIOD",{selectedPeriod})
    
     return (
         <>
         
-          
+        <Title pageTitle={t("MARKET_REPORT")} period={selectedPeriod} />      
 
         <div className="container mx-auto p-4">
 
-        <HeaderContainer   title={title} content={`${t("THIS_REPORT_PROVIDES_GENERAL_INFORMATION_FOR_ALL_BRANDS_MARKETED_")} ${selectedPeriod}`} />
+        <HeaderContainer   title={t("MARKET_REPORT")} period={selectedPeriod} content={`${t("THIS_REPORT_PROVIDES_GENERAL_INFORMATION_FOR_ALL_BRANDS_MARKETED_")} ${selectedPeriod}`} />
 
       <div className="p-1">
         <ParagraphContainer title= {t("BRAND_RETAIL_SALES_AND_VOLUME")} content={t("THIS_TWO_TABLE_BELOW_SHOWS_THE_MARKETED_BRANDS_RETAIL_SALES_(IN_T")} />

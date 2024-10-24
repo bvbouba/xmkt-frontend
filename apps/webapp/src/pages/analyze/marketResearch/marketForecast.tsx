@@ -14,6 +14,8 @@ import DoughnutChart from "@/components/charts/DoughnutChart";
 import { useSession } from "next-auth/react";
 import { forecastProps, segmentProps } from "types";
 import {  getForecastsData, getSegmentsData } from "features/data";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 Chart.register(CategoryScale);
 // Register the plugin to all charts:
@@ -70,7 +72,7 @@ useEffect(() => {
 }, [status,industryID,selectedPeriod,session?.accessToken]);
 
 if (status === "loading" || loading) {
-  return <p>{t("LOADING...")}</p>;
+  return <Loading />;
 }
 
   const chart1Data = {
@@ -167,7 +169,6 @@ if (status === "loading" || loading) {
     },
   ]}
   
-  const title = t("MARKET_FORECAST_-_PERIOD",{selectedPeriod})
   // if(marketResearchChoices.some(choice => choice.study === 8 && choice.choice === false)){
   //   router.push(paths.analyze.marketResearch.$url());
   // }
@@ -175,11 +176,12 @@ if (status === "loading" || loading) {
   return (
     <>
       
+      <Title pageTitle={t("MARKET_FORECAST")} period={selectedPeriod} />      
      
       <div className="">
       <div className="container mx-auto">
 
-      <HeaderContainer  title={title} content={t("THIS_STUDY_PROVIDES_ESTIMATES_OF_THE_EVENTUAL_MARKET_SIZE_IN_ONE_")} />
+      <HeaderContainer  title={t("MARKET_FORECAST")} period={selectedPeriod} content={t("THIS_STUDY_PROVIDES_ESTIMATES_OF_THE_EVENTUAL_MARKET_SIZE_IN_ONE_")} />
      
      <ParagraphContainer  title={t("TOTAL_MARKET_SIZE")} content={t("THE_CHARTS_BELOW_SHOW_THE_ACTUAL_SIZE_THIS_PERIODAND_THE_EXPECTED")}  />
 

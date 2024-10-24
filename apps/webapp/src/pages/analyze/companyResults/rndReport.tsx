@@ -8,6 +8,8 @@ import {  useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { getFeaturesData, getProjectData } from "features/data";
 import { featureProps, rndProjectProps } from "types";
+import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const locale = context.locale || context.defaultLocale || 'fr';
@@ -51,21 +53,21 @@ function RndReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps
       }, [status,firmID,industryID,selectedPeriod,session?.accessToken]);
     
       if (status === "loading" || loading) {
-        return <p>{t("LOADING...")}</p>;
+        return <Loading />;
       }
 
   const selectedFeatures = featureData?.filter(feature=>['feature_1','feature_2',
   'feature_3','feature_4','feature_5'].includes(feature.surname))
 
-  const title = t("R&D_REPORT_-_FIRM", {teamName,selectedPeriod})
 
     return (<>
     
-        
+    <Title pageTitle={t("R&D_REPORT")} period={selectedPeriod} />
+
     <div>
     <div className="container mx-auto">
 
-      <HeaderContainer title={title} content={`${t("THIS_REPORT_PROVIDES_INFORMATION_ON_THE_ACTIVITIES_CONDUCTED_FOR_")} ${selectedPeriod}`}/>
+      <HeaderContainer title={t("R&D_REPORT")} period={selectedPeriod} teamName={teamName} content={`${t("THIS_REPORT_PROVIDES_INFORMATION_ON_THE_ACTIVITIES_CONDUCTED_FOR_")} ${selectedPeriod}`}/>
   
       <>
       <ProjectTable
@@ -89,12 +91,14 @@ function RndReportPage({ locale }: InferGetStaticPropsType<typeof getStaticProps
         subtitle={t("THE_PROJECTS_LISTED_BELOW_ARE_PARTIALLY_DEVELOPED_IN_THE_CURRENT_")}
       />
 
-      <ProjectTable
+      {/* <ProjectTable
         projects={projectData.shelved}
         title={t("SHELVED_PROJECTS")}
         features={translateFeatures(selectedFeatures,locale)}
         subtitle={t("THE_PROJECTS_LISTED_BELOW_HAVE_BEEN_SHELVED.")}
-      /></>
+      /> */}
+      
+      </>
      
     </div>
     </div>
