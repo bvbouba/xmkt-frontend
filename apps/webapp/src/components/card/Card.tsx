@@ -22,7 +22,7 @@ export function Card({ menu,locale }: { menu: menuProps,locale?:string }) {
   };
 
   return ( 
-    <div className="max-w-sm border border-gray-500 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="max-w-sm border-8 border-gray-500 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <Link 
         href={"#"}
         passHref
@@ -33,8 +33,8 @@ export function Card({ menu,locale }: { menu: menuProps,locale?:string }) {
           <div className="row-span-5">
             <img className="rounded-t-lg object-contain	w-full h-full" src={`${basePath}${menu.image}`} alt={menu.alt} />
           </div>
-          <div className="inline-block align-middle bg-gray-500">
-            <h5 className="mb-2 text-md font-bold tracking-tight text-white dark:text-white">
+          <div className="bg-gray-500">
+            <h5 className="leading-5 text-base font-bold tracking-tight text-white dark:text-white uppercase">
               {menu.title}
             </h5>
           </div>
@@ -58,11 +58,11 @@ export function CardBasic({menu}:{menu:menuProps}) {
           <div className="grid grid-rows-6 h-52 p-6">
           <div className="row-span-5 border border-gray-500 rounded-lg shadow">
             <img className="rounded-t-lg object-contain w-full h-full" src={`${basePath}${menu.image}`} alt={menu.alt} /></div>
-          <div className="p-2">
-            <h5 className="mb-2 text-ms font-bold tracking-tight text-gray dark:text-white">
+          <span className="inline-block align-middle">
+            <h5 className="mb-2 text-base font-bold tracking-tight text-gray dark:text-white">
               {menu.title}
             </h5>
-          </div>
+          </span>
           </div>
         
         </Link>

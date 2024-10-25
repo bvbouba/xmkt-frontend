@@ -12,6 +12,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { brandProps, markertingMixProps, MarketingMixType } from "types";
 import { fetchMarketingMixDecisionByTeam, fetchDimensions, fetchMarketingMixById, getFeaturesData, getSegmentsData, partialUpdateMarketingMix, getBrandResultByFirm, getPeriodResultByBrand } from "features/data";
+import Title from "@/components/title";
 
 interface FormData {
   brand_name: string;
@@ -280,7 +281,7 @@ function DetailPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) 
     <>
 
       {message && <SuccessMessage message={message} setMessage={setMessage} />}
-
+      <Title pageTitle={`${t("MARKETING_MIX_DECISION")} - ${brand?.brand_name}`} />
 
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">

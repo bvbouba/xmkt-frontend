@@ -241,7 +241,7 @@
   "BRAND_MAPS": "Brand maps",
   "SELECT_DIMENSIONS": "Select dimensions:",
   "LOG_IN": "Log in",
-  "PAK": "Pak",
+  "PAK": "Participation Activation Key (PAK)",
   "ENTER_PAK": "Enter pak",
   "LOAD": "Load",
   "TEAM": "Team",
@@ -391,5 +391,7 @@
 "THE_UNSOLD_UNIT_OF_BRAND_WILL_BE_DESTOCKED":"{{ inventory}} unsold units of {{ brand_name}} will be destocked.",
 "THE_PRICE_WAS_AT_THE_LAST_PERIOD":"The price was ${{ price}} in period {{ period }}",
 "THE_ADVERTISING_BUDGET_OF_BRAND_IN_PERIOD":"The advertising budget of {{ brand_name }} in period {{ period }} was ${{ advertising }}",
-"APP_TITLE":"Marketing & Strategy Simulation Game"
+"APP_TITLE":"Marketing & Strategy Simulation Game",
+"READY_TO_START":"Ready to start?",
+"FILL_IN_LOGIN_INFORMATION": "Fill in the fields below with the information given by your professor"
 }

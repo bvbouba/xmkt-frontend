@@ -43,3 +43,5 @@ div.selected::after {
   background: linear-gradient(rgba(135, 206, 250, 0), rgba(135, 206, 250, 0.7));
   transition: height 0.3s; 
 }
+
+

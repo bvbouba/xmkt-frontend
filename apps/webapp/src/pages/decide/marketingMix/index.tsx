@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { decideStatusProps, markertingMixProps } from "types";
 import { fetchDecisionStatus, getMarketingMixData } from "features/data";
 import { Loading } from "@/components/Loading";
+import Title from "@/components/title";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -73,7 +74,7 @@ function MarketingMix({ locale }: InferGetStaticPropsType<typeof getStaticProps>
 
     return ( 
         <>
-        
+          <Title pageTitle={t(`MARKETING_MIX_DECISIONS_-_OVERVIEW`)} />
         <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-semibold mb-4">{t("MARKETING_MIX_DECISIONS_-_OVERVIEW")}</h1>
       <div className="mb-4">

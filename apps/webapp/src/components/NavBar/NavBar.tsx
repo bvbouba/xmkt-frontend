@@ -183,22 +183,22 @@ export const NavBar: React.FC = () => {
       </Head>
     <div>
       <div>
-        <nav className="bg-blue-900 text-white h-16 flex justify-between">
+        <nav className="bg-blue-900 text-white h-24 flex justify-between">
           {/* Analyze Section */}
-          <div className="flex">
+          <div className="grid grid-cols-3 grid-rows-3 border-r border-white">
             <div
-              className="uppercase flex items-center  font-bold text-lg px-4"
+              className="col-span-3 uppercase font-bold text-lg px-4 "
               style={{
                 textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
                 fontSize: "1.25rem",
               }}
             >
-             {(!router.pathname.includes(paths.decide.$url().pathname)) ? <div>{t("ANALYZE")}</div> : <div><Link href={paths.analyze.companyResults.$url()}>{t("ANALYZE")}</Link></div>}
+             <div className="text-center">{(!router.pathname.includes(paths.decide.$url().pathname)) ? t("ANALYZE") : <Link href={paths.analyze.companyResults.$url()}>{t("ANALYZE")}</Link>}</div>
             </div>
-            {(!router.pathname.includes(paths.decide.$url().pathname)) && menuItems.map((menu) => (
+            {menuItems.map((menu,idx) => (
               <div
                 key={menu.id}
-                className={`flex items-center  cursor-pointer border-r border-white ${
+                className={`row-span-2 flex items-center  cursor-pointer ${idx!==0 ? "border-l":""} border-white ${
                   router.pathname.includes(menu.url.pathname) ? "selected" : ""
                 }`}
               >
@@ -234,7 +234,7 @@ export const NavBar: React.FC = () => {
                     onChange={(e) => update({
                       ...session,
                       selectedPeriod:parseInt(e.target.value)})} // Handle the selected period
-                    // value={selectedPeriod}
+                    value={selectedPeriod}
                   >
                     <option value="" disabled>
                       {t("SELECT_PERIOD")}

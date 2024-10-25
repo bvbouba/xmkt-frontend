@@ -1,0 +1,16 @@
+.custom-button {
+  @apply bg-blue-500 text-white py-2 px-6 pr-10 rounded-l-md focus:outline-none hover:bg-blue-600 inline-flex items-center relative;
+}
+
+.custom-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 1.5rem;
+  background-color: white;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transition: background-color 0.3s ease;
+}
+

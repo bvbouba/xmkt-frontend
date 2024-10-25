@@ -1,4 +1,5 @@
 import { Layout } from "@/components/Layout";
+import Title from "@/components/title";
 import { GetStaticProps, InferGetStaticPropsType } from "next";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
@@ -19,7 +20,10 @@ export default function Home({ locale }: InferGetStaticPropsType<typeof getStati
   const { t } = useTranslation('common')
   const {data:session} = useSession()
   return (
+    <>
+    <Title pageTitle=""/>
     <h1>{t("WELCOME_TO_YOUR_APP")}</h1>
+    </>
   );
 }
 

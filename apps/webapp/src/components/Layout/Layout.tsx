@@ -12,6 +12,7 @@ export function Layout({ children }: { children?: React.ReactNode }) {
   const paths = usePaths()
   const user = session?.user
 
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push(paths.auth.login.$url());
@@ -21,6 +22,11 @@ export function Layout({ children }: { children?: React.ReactNode }) {
       router.push(paths.auth.login.$url());
     }
   }, [status, session, user, router, paths.auth.login]);
+
+
+  if ((status==="loading" || status==="unauthenticated") && (!user || Object.keys(user).length === 0)) {
+    return <></>
+  }
 
   return (
 

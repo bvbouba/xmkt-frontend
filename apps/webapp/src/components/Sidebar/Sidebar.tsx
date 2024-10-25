@@ -73,9 +73,16 @@ export const SideBar: React.FC = () => {
    }
   }
   }
-  
+    
+  const infoItems = [
+    {title:t("COURSE"), value:session?.courseCode},
+    {title:t("INDUSTRY"), value:session?.industryName},
+    {title:t("TEAM"), value:session?.teamName},
+  ]
+
+
   return (
-    <aside className="w-1/6 bg-gray-100 border-r border-gray-300  text-gray-500">
+    <aside className="w-1/5 bg-gray-100 border-r border-gray-300  text-gray-500">
       {/* Logo */}
       <div className="mb-4 text-center bg-white">
         <img src={`${basePath}/logo.svg`} alt="Logo" className="h-24 mx-auto" />
@@ -83,10 +90,17 @@ export const SideBar: React.FC = () => {
 
       {/* User Information */}
       {session && <div className="bg-gray-100 p-4 mb-4">
-        <div>{t("COURSE")}: {session?.courseCode}</div>
-        <div>{t("INDUSTRY")}: {session?.industryName}</div>
-        <div>{t("TEAM")}: {session?.teamName}</div>
-        <div>{t("USER")}: {session?.user.lastname} {session?.user.firstname} </div>
+        {
+          infoItems.map((info,idx) =>
+            <div key={idx}>
+              <span className='uppercase'>{info.title}</span>: 
+               <span className='font-bold'>{` ${info.value}`}</span>
+              </div>
+          )
+        }
+            <span className=''>
+            {session?.user.lastname} {session?.user.firstname}
+            </span>
       </div>}
 
       {/* Menu Icons */}
