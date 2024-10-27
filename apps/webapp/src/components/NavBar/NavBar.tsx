@@ -183,7 +183,7 @@ export const NavBar: React.FC = () => {
       </Head>
     <div>
       <div>
-        <nav className="bg-blue-900 text-white h-24 flex justify-between">
+        <nav className="bg-blue-900 text-white h-24 flex">
           {/* Analyze Section */}
           <div className="grid grid-cols-3 grid-rows-3 border-r border-white">
             <div
@@ -210,9 +210,9 @@ export const NavBar: React.FC = () => {
           </div>
 
           {/* Last 2 Menus */}
-          <div className="flex ">
+          <div className="grid grid-cols-2 ">
             <div
-              className={`border-r flex items-center border-white px-4 uppercase cursor-pointer pr-8 ${
+              className={`border-r flex items-center justify-center border-white uppercase cursor-pointer ${
                 router.pathname.includes(paths.decide.$url().pathname)
                   ? "selected"
                   : ""
@@ -225,10 +225,13 @@ export const NavBar: React.FC = () => {
               <Link href={paths.decide.$url()}> {t("DECIDE")} </Link>
             </div>
             <div
-              className={`border-r flex items-center border-white px-4 uppercase cursor-pointer`}
+              className={`flex items-center border-white px-4 uppercase cursor-pointer`}
             >
               <div>
                 <div>
+                  <label className="text-[15px]">
+                  {t("SELECT_PERIOD")}
+                  </label>
                   <select
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     onChange={(e) => update({
@@ -236,9 +239,9 @@ export const NavBar: React.FC = () => {
                       selectedPeriod:parseInt(e.target.value)})} // Handle the selected period
                     value={selectedPeriod}
                   >
-                    <option value="" disabled>
+                    {/* <option value="" disabled>
                       {t("SELECT_PERIOD")}
-                    </option>
+                    </option> */}
                     {selectedPeriod!==undefined && periods.map((period, index) => (
                       <option key={index} value={index}>
                         {period}

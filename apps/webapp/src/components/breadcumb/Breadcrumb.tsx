@@ -7,6 +7,7 @@ export interface ILink {
   url: UrlObject;
 }
 export const Breadcrumb = ({ items }: { items: ILink[]}) => {
+  if (items.length === 0) return <></>
   return (
     <div className="bg-gray-500 text-white uppercase p-2">
       <ol className="flex items-center">

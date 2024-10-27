@@ -6,7 +6,7 @@
   "ANALYZE": "Analyser",
   "DECIDE": "Décider",
   "HOME": "Accueil",
-  "SELECT_PERIOD": "Sélectionner la période",
+  "SELECT_PERIOD": "Choisir la période",
   "COURSE": "Cours",
   "INDUSTRY": "Industrie",
   "USER": "Utilisateur",
@@ -14,10 +14,11 @@
   "TEAM_INFO": "Info équipe",
   "MANUAL": "Manuel",
   "FAQ": "FAQ",
+  "DECISION":"Décision",
   "DECISION_ROUND": "Round de décision",
   "ERRORS": "Erreurs",
   "WARNINGS": "Avertissements",
-  "ERROR/WARNING_DETAILS": "Détails Erreur/Avertissement",
+  "ERROR/WARNING_DETAILS": "Erreur & Avertissement",
   "AUTHORIZED_BUDGET": "Budget autorisé",
   "LOANS": "Prêts",
   "EXPENSES": "Dépenses",
@@ -398,6 +399,7 @@
 "THE_ADVERTISING_BUDGET_OF_BRAND_IN_PERIOD": "Le budget publicitaire de {{ brand_name }} pendant la période {{ period }} était de ${{ advertising }}",
 "APP_TITLE":"Jeu de Simulation Marketing & Stratégie",
 "READY_TO_START":"Prêt à jouer ?",
-"FILL_IN_LOGIN_INFORMATION": "Remplissez les champs ci-dessous avec les informations fournies par votre professeur"
+"FILL_IN_LOGIN_INFORMATION": "Remplissez les champs ci-dessous avec les informations fournies par votre professeur",
+"INFORMATION_ABOUT_ERROR_MESSAGES":"La liste des messages ci-dessous a été générée par la simulation suite à l'analyse de vos décisions. Les erreurs indiquent des corrections à apporter en raison de décisions incohérentes."
 
 }

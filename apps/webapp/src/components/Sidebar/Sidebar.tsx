@@ -6,15 +6,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { formatPrice, uppercase } from '@/lib/utils';
-import { CustomModal as Modal } from "@/components/Modal"
+import { formatPrice } from '@/lib/utils';
 import { useSession, signOut } from 'next-auth/react';
 import { BudgetDetails, ErrorLog } from 'types';
 import { getBudgetDetail, getErrorLogByTeam, logout } from 'features/data';
 
 export const SideBar: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<ErrorLog[]>([]);
   const router = useRouter()
   const [budget, setBudget] = useState<BudgetDetails>();
   const { data: session, status } = useSession()
@@ -53,14 +50,18 @@ export const SideBar: React.FC = () => {
 
   const countErrors = errors.filter((error) => error.severity === 1).length || 0;
   const countWarnings = errors.filter((error) => error.severity !== 1).length || 0;
+  
   const openModal = (severity: number) => {
-    const filteredContent = errors.filter((error: any) => error.severity === severity);
-    setModalContent(filteredContent);
-    setIsModalOpen(true);
-  };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+    const url = `${basePath}/${locale}/decide/errors/${severity}`;
+
+    const newWindowFeatures = 'height=600,width=1200,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes';
+    const newWindow = window.open(url, '_blank', newWindowFeatures);
+    
+    if (newWindow) {
+      newWindow.focus();
+    }
+ 
   };
 
   const handleClick = async() =>{
@@ -79,6 +80,9 @@ export const SideBar: React.FC = () => {
     {title:t("INDUSTRY"), value:session?.industryName},
     {title:t("TEAM"), value:session?.teamName},
   ]
+
+  const newWindowFeatures = 'height=600,width=1200,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes';
+
 
 
   return (
@@ -130,9 +134,9 @@ export const SideBar: React.FC = () => {
       </div>
 
       {/* Decision Round Information */}
-      <div className='p-4 mb-4 cursor-pointer'>
-        <div className="text-blue-500 p-2">
-          {uppercase(t("DECISION_ROUND"))} {session?.activePeriod}
+      <div className='mb-4 cursor-pointer'>
+        <div className="text-blue-500 text-xl px-2 uppercase border-b border-gray-300">
+          {t("DECISION_ROUND")} {session?.activePeriod}
         </div>
 
         {/* Errors Indicator */}
@@ -152,68 +156,23 @@ export const SideBar: React.FC = () => {
       </div>
 
 
-      {/* Modal */}
-      <Modal isOpen={isModalOpen} closeModal={closeModal} title={t("ERROR/WARNING_DETAILS")}
-      >
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  #
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  {t("TITLE")}
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  {t("CONTENT")}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {modalContent.map((item, index) => {
-                const content = (locale === "fr") ? item.content_fr : item.content
-                const title = (locale === "fr") ? item.title_fr : item.title
-                const message = content.replace("<brand>", item.brand_name)
-                return (
-                  <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                      {index + 1}
-                    </th>
-                    <td className="px-6 py-4">
-                      {title}
-                    </td>
-                    <td className="px-6 py-4">
-                      {message}
-                    </td>
-
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      </Modal>
-
-
-
       {/* Financial Information */}
       {budget && <div className="mb-4">
         <div className="p-4 grid gap-2">
-          <div className="flex items-center justify-between ">
-            <div>{uppercase(t("AUTHORIZED_BUDGET"))}</div>
+          <div className="flex items-center justify-between uppercase">
+            <div>{t("AUTHORIZED_BUDGET")}</div>
             <div className="ml-4">${formatPrice(budget?.budget)}</div>
           </div>
-          {budget?.loans > 0 && <div className="flex items-center justify-between text-green-500 ">
-            <div>{uppercase(t("LOANS"))}</div>
+          {budget?.loans > 0 && <div className="flex items-center justify-between text-green-500 uppercase">
+            <div>{t("LOANS")}</div>
             <div className="ml-4">${formatPrice(budget?.loans)}</div>
           </div>}
-          <div className="flex items-center justify-between">
-            <div>{uppercase(t("EXPENSES"))}</div>
+          <div className="flex items-center justify-between uppercase">
+            <div>{t("EXPENSES")}</div>
             <div className="ml-4">${formatPrice(budget?.expenses)}</div>
           </div>
-          <div className="flex items-center justify-between border-t border-gray-500">
-            <div>{uppercase(t("DEVIATION"))}</div>
+          <div className="flex items-center font-bold justify-between border-t border-gray-500 uppercase">
+            <div>{t("DEVIATION")}</div>
             <div className={`ml-4 ${(budget?.deviation < 0) ? "text-red-500" : ""}`}>${formatPrice(budget?.deviation)}</div>
           </div>
         </div>

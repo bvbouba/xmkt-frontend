@@ -17,14 +17,14 @@ export const CustomModal: React.FC<ModalProps> = ({ isOpen, closeModal, title, c
 
   return (
     <Modal isOpen={isOpen} onRequestClose={closeModal} className="mymodal" overlayClassName="myoverlay">
-    <div className="text-gray-500 h-full flex flex-col">
+    <div className="text-gray-400 h-full flex flex-col">
       <div className="flex justify-end">
         <button className="text-red-500 p-2" onClick={closeModal}>
           <FontAwesomeIcon icon={faTimes} />
         </button>
       </div>
       <div className='h-64 overflow-y-auto'>
-      <h2 className="text-xl font-bold mb-4">{title}</h2>
+      <h2 className="text-xl font-bold mb-4 uppercase">{title}</h2>
       {children}
       </div>
 
