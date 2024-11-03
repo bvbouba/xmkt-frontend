@@ -187,7 +187,7 @@ function SemanticScales({ locale }: InferGetStaticPropsType<typeof getStaticProp
         <ParagraphContainer title={t("BRAND_MAPS")} content={t("MAPS_REPRESENTING_CONSUMERS_PERCEPTIONS_BASED_ON_THE_SEMANTIC_SCALES")} />
 
 
-        {features.filter(entry => entry.abbrev !== etalon?.abbrev).map(feature => {
+        {features.filter(entry => entry.abbrev !== etalon?.abbrev).map((feature,idx) => {
 
           const chartData = getMapData({
             mergedata, xKey: etalon?.abbrev,
@@ -198,7 +198,7 @@ function SemanticScales({ locale }: InferGetStaticPropsType<typeof getStaticProp
           const yTitle = (locale === "fr") ? feature?.abbrev_fr : feature?.abbrev
           if (chartData === null) return <></>
           return (
-          <div className="flex justify-center grid grid-cols-1 p-4">
+          <div className="flex justify-center grid grid-cols-1 p-4" key={idx}>
             <div className="">
               <label htmlFor="features" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 {`${(locale === "fr") ? etalon?.abbrev_fr : etalon?.abbrev} x ${(locale === "fr") ? feature.abbrev_fr : feature.abbrev}`}
