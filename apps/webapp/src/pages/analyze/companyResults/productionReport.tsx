@@ -4,17 +4,17 @@ import { getValueByBrand } from "@/lib/utils";
 import {  useEffect, useState } from "react";
 
 import { Table } from "@/components/Table";
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
+import {  GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
-import { categoryColors } from "@/lib/constants/colors";
 import GroupedBar from "@/components/charts/GroupedBar";
 import { useSession } from "next-auth/react";
 import { getBrandResultByFirm } from "features/data";
 import { brandProps } from "types";
 import { Loading } from "@/components/Loading";
 import Title from "@/components/title";
+import { colors } from "@/lib/constants/colors";
 
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -69,8 +69,8 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
                         label: row.label,
                         data: brandData.filter(row1 => row1.period_id === selectedPeriod).map(
                                 row2 =>  getValueByBrand(brandData,row2.brand_name,selectedPeriod,row.id)),
-                        backgroundColor: categoryColors[id],
-                        borderColor: categoryColors[id]
+                        backgroundColor: colors[id],
+                        borderColor: "white"
                               })
                     )}
 
@@ -90,7 +90,7 @@ function ProductionReportPage({ locale }: InferGetStaticPropsType<typeof getStat
       <div className='grid grid-cols-1 gap-4 h-80'>
         <GraphContainer>
 
-          <GroupedBar data={productionData} title="" />
+          <GroupedBar data={productionData} title="" legendPos="right" yGrid={true} />
       
               </GraphContainer>
         </div>

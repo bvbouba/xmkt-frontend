@@ -351,5 +351,5 @@ export function transformConstants(locale:string) {
   };
 }
 
-export const barThickness = 150
+export const barThickness = 35
 

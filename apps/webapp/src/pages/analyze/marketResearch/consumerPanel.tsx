@@ -110,7 +110,7 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
         data: ordered.map((row) => row.value),
         borderWidth: 1,
         backgroundColor: "rgba(54, 162, 235, 1)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "white",
       },
     ],
   };
@@ -156,7 +156,7 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
       label: (locale==="fr")?row.name_fr:row.name,
       fill: false,
       backgroundColor: segmentColors[id],
-      borderColor: segmentColors[id],
+      borderColor: "white",
     })),
   };
 
@@ -171,7 +171,7 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
         ),
         borderWidth: 1,
         backgroundColor: segmentColors,
-    borderColor: segmentColors,
+    borderColor: "white",
       },
     ],
     
@@ -217,14 +217,14 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
           </h4>
           <div className="col">
 
-            <table className="w-full text-xs border text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                   {columns.map((column) => (
                     <th
                       key={column.id}
                       scope="col"
-                      className="px-2 py-1"
+                      className="px-2 py-1 border"
                       align="center"
                     >
                       {column.label}
@@ -236,12 +236,12 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
                 {rows.map((row, index) => (
                   <tr
                     key={index}
-                    className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 ${
+                    className={`bg-white border dark:bg-gray-800 dark:border-gray-700 ${
                       index === rows.length - 1 ? "font-weight-bold" : ""
                     }`}
                   >
                     {columns.map((column) => (
-                      <td key={column.id} className="px-2 py-1" align="center">
+                      <td key={column.id} className="px-2 py-1 border" align="center">
                         {column.percent
                           ? `${row[column.id] ? row[column.id] : 0} %`
                           : column.numeric
@@ -269,6 +269,7 @@ function ConsumerPanel({ locale }: InferGetStaticPropsType<typeof getStaticProps
                 title={t("UNIT_SALES_BY_CONSUMER_SEGMENT_IN_THOUSAND_OF_UNITS")}
                 legendDisplay={false}
                 legendPos="right"
+                stacked={true}
             />
 
           </GraphContainer>

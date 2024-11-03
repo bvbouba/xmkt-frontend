@@ -12,80 +12,102 @@ Chart.register(CategoryScale);
 Chart.register(ChartDataLabels);
 
 interface props {
-  data: ChartData<"bar", number[], string>; 
-    title: string;
-    inPercent?: boolean | undefined;
-    legend?:boolean
+  data: ChartData<"bar", number[], string>;
+  title: string;
+  inPercent?: boolean | undefined;
+  legend?: boolean
 }
 
-const VerticalBar = ({data,title,inPercent,legend}:props) => {
-  
-  const options: ChartOptions<'bar'> =  {
-    responsive:true,
+const VerticalBar = ({ data, title, inPercent, legend }: props) => {
+
+  const options: ChartOptions<'bar'> = {
+    responsive: true,
     maintainAspectRatio: false,
     layout: { padding: 0 },
     scales: {
       x: {
         grid: {
           display: false,
-          drawOnChartArea:false,
+          drawOnChartArea: false,
         },
-        ticks:{
-            padding: 10,
+        ticks: {
+          padding: 10,
         }
       },
-      y:{
-        max: 1.2* data.datasets.reduce((a,c) => Math.max(a,Math.max(...c.data)),0),
-        ticks:{
-          display:false
+      y: {
+        max: 1.2 * data.datasets.reduce((a, c) => Math.max(a, Math.max(...c.data)), 0),
+        ticks: {
+          display: false
         },
-        grid:{
-          display: false,
-        }
+        grid: {
+          display: true,
+          color: function (context) {
+            if (context.tick && context.tick.value === context.chart.scales.y.max) {
+              return 'rgba(0, 0, 0, 0)';
+            }
+            return '#e0e0e0';
+          }
+        },
+        border: {
+          display: false
+        },
       }
-  },
-    plugins : {
-      tooltip:{
-        enabled:false
-       },
-      legend:{
-        display:legend? true:false
+    },
+    plugins: {
+      tooltip: {
+        enabled: false
       },
-      title:{
-        text:title,
-        display:true
+      legend: {
+        display: legend ? true : false,
+        // position: "right",
+        // labels: {
+        //   usePointStyle: true,
+        //   pointStyle: 'circle',
+        //   boxWidth: 10,
+        //   padding: 15,
+        // },
+      },
+      title: {
+        text: title,
+        display: true
       },
       datalabels: {
-        color: 'black',
-        anchor: function(context) {
+        color: function (context) {
+          const value = context.dataset.data[context.dataIndex];
+          const numValue = typeof value === 'number' ? value : null;
+          if (numValue !== null && numValue < 0.08 && inPercent) return "black"
+          return "white"
+        },
+        anchor: function (context) {
           const value = context.dataset.data[context.dataIndex];
           const numValue = typeof value === 'number' ? value : null;
           return numValue !== null && numValue < 0 ? 'start' : 'end';
         },
-        align: 'end',
-         display: true,
-          formatter: function(value, context) {
-            var index = context.dataIndex;
-            var num:any = context.dataset.data[index];
-            if (inPercent){
-              return Math.round(num*100) + ' %' ;
-            } 
-            return Math.round(num)
-            
-          },
-            }
+        align: 'start',
+        display: true,
+        formatter: function (value, context) {
+          var index = context.dataIndex;
+          var num: any = context.dataset.data[index];
+          if (inPercent) {
+            return Math.round(num * 100) + ' %';
+          }
+          return Math.round(num)
+
+        },
+      }
     }
   }
 
 
   return (
 
-  <Bar
-  data={data}
-  height={200}
-  options={options}
-  />
-)}
+    <Bar
+      data={data}
+      height={200}
+      options={options}
+    />
+  )
+}
 
 export default VerticalBar
 
@@ -105,7 +127,7 @@ export const options = ({
   horizontal?: boolean;
   yAxisDisplay?: boolean;
   y1AxisDisplay?: boolean;
-  inThousand?:boolean;
+  inThousand?: boolean;
 }): ChartOptions<"bar"> => ({
   maintainAspectRatio: false,
   indexAxis: horizontal ? "y" : "x",
@@ -120,7 +142,7 @@ export const options = ({
       ticks: {
         callback: function (value: any) {
           if (percent) return Math.round(value * 100) + "%";
-          if (inThousand) return formatPrice(Math.round(value/1000));
+          if (inThousand) return formatPrice(Math.round(value / 1000));
           return value;
         },
       },
@@ -130,11 +152,18 @@ export const options = ({
     },
   },
   plugins: {
-    tooltip:{
-      enabled:false
-     },
+    tooltip: {
+      enabled: false
+    },
     legend: {
       display: legend === true ? true : false,
+      position: "right",
+      labels: {
+        usePointStyle: true,
+        pointStyle: 'circle',
+        boxWidth: 10,
+        padding: 15,
+      },
     },
     title: {
       text: title ?? "",
@@ -143,6 +172,8 @@ export const options = ({
     datalabels: {
       display: true,
       color: "#ffffff",
+      anchor: 'end',
+      align: 'start',
       formatter: function (value, context) {
         var index = context.dataIndex;
         if (percent) {
@@ -154,7 +185,7 @@ export const options = ({
           }
           return Math.round(value * 100) + " %";
         }
-        if (inThousand) return formatPrice(Math.round(value/1000));
+        if (inThousand) return formatPrice(Math.round(value / 1000));
 
         return context.dataset.data[index];
       },

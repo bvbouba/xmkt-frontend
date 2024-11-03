@@ -51,9 +51,9 @@ function MarketResearchPage({ locale }: InferGetStaticPropsType<typeof getStatic
       }
     },[status,firmID,industryID,selectedPeriod,session?.accessToken])
 
-    if (status === "loading") {
-      return <Loading />;
-    }
+    // if (status === "loading") {
+    //   return <Loading />;
+    // }
 
 
     const benchmarkingItems = [

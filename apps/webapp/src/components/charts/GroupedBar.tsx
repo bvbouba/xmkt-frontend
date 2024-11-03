@@ -16,15 +16,15 @@ interface props {
     stacked?:boolean;
     yGrid?:boolean;
     inPercent?:boolean;
-    legendPos?:"top" | "right" | "bottom" | "left" | "center"
+    legendPos?:"top" | "right" | "bottom" | "left" | "center",
 }
 const GroupedBar = ({data,title,stacked,yGrid,inPercent,legendPos}:props) => {
 
-  // Extract the data arrays from each dataset
-const allData = data.datasets.flatMap(dataset => dataset.data);
+//   // Extract the data arrays from each dataset
+// const allData = data.datasets.flatMap(dataset => dataset.data);
 
-// Find the maximum value
-const maxValue = Math.max(...allData);
+// // Find the maximum value
+// const maxValue = Math.max(...allData);
 
 
     const options : ChartOptions<'bar'>  = {
@@ -33,15 +33,29 @@ const maxValue = Math.max(...allData);
         layout: { padding: 10 },
          scales: {
              y: {
-              max:1.2*maxValue,
                 stacked: (stacked) ? true : false,
                  ticks: {
-                   display: false,
-                 },
+                   display: true,
+                   color: function(context) {
+                    if (context.tick && context.tick.value === context.chart.scales.y.max) {
+                        return 'white';
+                    }
+                },
+                callback: function (value:any) {
+                  if (inPercent) return Math.round(value*100) + ' %'
+                    return Math.round(value)
+               }   
+              },
                  beginAtZero: true,
                  grid: {
                    display: true,
                    drawOnChartArea:(yGrid) ? true : false,
+                   color: function(context) {
+                    if (context.tick && context.tick.value === context.chart.scales.y.max) {
+                        return 'rgba(0, 0, 0, 0)';
+                    }
+                    return '#e0e0e0';
+                }
                  }
              },
              x: {
@@ -63,15 +77,28 @@ const maxValue = Math.max(...allData);
             legend: {
               display: true,
               position:(legendPos) ? (legendPos) : 'top',
+              labels: {
+                usePointStyle: true,
+                pointStyle: 'circle', 
+                boxWidth: 10,
+                padding: 15, 
+            },
           },
            title:{
              text:(title) ? title : '',
              display:title? true:false
            },
            datalabels: {
-            color: (stacked) ? 'white' : 'black',
+            color: function (context) {
+              const value = context.dataset.data[context.dataIndex];
+              const numValue = typeof value === 'number' ? value : null;
+              if (numValue !== null && numValue < 5 && !inPercent) return "black"
+              else if (numValue !== null && numValue < 0.05 && inPercent) return "black"
+
+              return "white"
+                     },
             anchor: (stacked) ? 'center' : 'end',
-            align: (stacked) ? 'center' : 'end',
+            align: (stacked) ? 'center' : 'start',
               display: true,
                formatter: function(value, context) {
                  var index = context.dataIndex;

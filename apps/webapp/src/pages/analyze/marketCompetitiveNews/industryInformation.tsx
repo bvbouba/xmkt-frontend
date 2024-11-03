@@ -79,28 +79,28 @@ function IndustryInformation({ locale }: InferGetStaticPropsType<typeof getStati
 
         <div className="col pt-4">
 
-        <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <table className="w-full text-xs  text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col"> </th>
-                  <th scope="col" align="center"> {t("DESCRIPTION")}</th>
-                  <th scope="col" className="px-2 py-1" align="center">{t("CURRENT_PERIOD_VALUE")}</th>
-                  <th scope="col" className="px-2 py-1" align="center">{t("NEXT_PERIOD_ESTIMATION")}</th>
+                  <th scope="col" className="bg-white"> </th>
+                  <th scope="col" className="px-2 py-1 border" align="center"> {t("DESCRIPTION")}</th>
+                  <th scope="col" className="px-2 py-1 border" align="center">{t("CURRENT_PERIOD_VALUE")}</th>
+                  <th scope="col" className="px-2 py-1 border" align="center">{t("NEXT_PERIOD_ESTIMATION")}</th>
                 </tr>
               </thead>
               <tbody>
                 {selectedIndustryInfo?.map((entry) => (
                   <tr key={entry.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
-                    <td scope="row " className={`px-2 py-1 font-medium font-bold text-gray-900 whitespace-nowrap dark:text-white`}>
+                    <td scope="row " className={`px-2 py-1 border font-medium font-bold text-gray-900 whitespace-nowrap dark:text-white`}>
                       {entry.label}
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border" align="center">
                       {entry.desc}
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border" align="center">
                       {entry.current}
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border" align="center">
                       {entry.next}
                     </td>
                   </tr>

@@ -1,8 +1,17 @@
-export const colors = {
-    
-  }
+export const colors = [
+ "#c0ca33",
+ "#ec407a", 
+ "#1565c0",
+ "#ffb300",
+ "#a1887f",
+ "#009688",
+ "#fdd835",
+ "#fdd835",
+ "#90a4ae",
+]
 
 
+  
 
   export const colorGrades = [
     // Pink shades
@@ -25,12 +34,13 @@ export const colors = {
   ];
 export const  categoryColors = [colorGrades[1][0],colorGrades[0][0],colorGrades[2][2]]
 
-export const marketColors = [colorGrades[2][4],colorGrades[4][3]]
+export const marketColors = ["#03a9f4","#1e88e5"]
 
 export const functionColors = [colorGrades[2][1],colorGrades[0][1],colorGrades[3][1],colorGrades[1][1]]
 
-export const channelColors = [colorGrades[0][0],"#d30000","#4d2177"]
+export const channelColors = ["#f06292","#e91e63","#673ab7"]
 
 export const segmentColors = ["#a8c66c","#1fbfb8","#d13ca4","#b85042","#1868ae",]
 
 export const featureColors = ["#12a4d9","#8a307f","#9bc472","#b9925e",]
+

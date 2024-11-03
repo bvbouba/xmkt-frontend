@@ -118,7 +118,7 @@ function ConjointAnalysis({ locale }: InferGetStaticPropsType<typeof getStaticPr
       }) || [],
       borderWidth: 1,
       backgroundColor:featureColors[id],
-      borderColor:featureColors[id],
+      borderColor:"white",
     })),
   };
 

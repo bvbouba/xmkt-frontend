@@ -12,7 +12,7 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
-import { categoryColors,  functionColors } from "@/lib/constants/colors";
+import { categoryColors,  colors,  functionColors } from "@/lib/constants/colors";
 import GroupedBar from "@/components/charts/GroupedBar";
 import { useSession } from "next-auth/react";
 import { firmProps } from "types";
@@ -85,8 +85,8 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
     labels,
     datasets: financialItems1.map((row, id) => ({
       label: (locale==="fr")?row.translate:row.label,
-      backgroundColor: categoryColors[id],
-      borderColor: categoryColors[id],
+      backgroundColor: colors[id],
+      borderColor: "white",
       data: firmsData
         .filter((row1) => row1.period_id === selectedPeriod)
         .map((row2) =>
@@ -105,8 +105,8 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
     labels,
     datasets: financialItems2.map((row, id) => ({
       label: (locale==="fr")?row.translate:row.label,
-      backgroundColor: functionColors[id],
-      borderColor: functionColors[id],
+      backgroundColor: colors[id],
+      borderColor: "white",
       data: firmsData
         .filter((row1) => row1.period_id === selectedPeriod)
         .map((row2) => {
@@ -178,12 +178,12 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
         <div className="grid grid-cols-2 gap-4 m-4 h-80">
           <GraphContainer>
 
-           <GroupedBar data={financialChartData1} title="" />
+           <GroupedBar data={financialChartData1} title="" legendPos="top"/>
                   
           </GraphContainer>
           <GraphContainer>
 
-          <GroupedBar data={financialChartData2} title="" stacked={true} inPercent={true} />
+          <GroupedBar data={financialChartData2} title="" stacked={true} inPercent={true} legendPos="top"/>
                 
           </GraphContainer>
         </div>
@@ -199,9 +199,9 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
       <table className="w-full text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th></th>
+            <th className="bg-white"></th>
             {labels.map((label) => (
-              <th key={label} scope="col" className="px-2 py-1" align="center">
+              <th key={label} scope="col" className="px-2 py-1 border" align="center">
                 {label}
               </th>
             ))}
@@ -210,9 +210,9 @@ function IndustryBenchmarking({ locale }: InferGetStaticPropsType<typeof getStat
         <tbody>
           {selectedFirmsData.map((entry, index) => (
             <tr key={index} className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 ${entry.bold ? 'font-bold' : ''}`}>
-              <td className={`px-2 py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white`}>{entry.label}</td>
+              <td className={`px-2 py-1 border font-medium text-gray-900 whitespace-nowrap dark:text-white`}>{entry.label}</td>
               {labels.map((label) => (
-                <td key={label} className="px-2 py-1" align="center" >
+                <td key={label} className="px-2 py-1 border" align="center" >
                   {formatPrice(entry[label])}
                 </td>
               ))}

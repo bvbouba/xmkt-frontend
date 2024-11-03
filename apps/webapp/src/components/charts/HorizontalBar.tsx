@@ -19,7 +19,8 @@ interface Props {
   stacked?:boolean;
   inThousand?:boolean;
   legendPos?:"top" | "left" | "right" | "bottom" | "center" ;
-  legendDisplay?:boolean
+  legendDisplay?:boolean,
+  rounded1?:boolean
 }
 
 
@@ -33,7 +34,7 @@ Array.prototype.SumArray = function (arr) {
   return sum;
 }
 
-const HorizontalBar = ({ data, title, inPercent,inThousand,legendPos,legendDisplay=true,yGrid,xGrid,stacked}: Props) => {
+const HorizontalBar = ({ data, title, inPercent,inThousand,rounded1,legendPos,legendDisplay=true,yGrid,xGrid,stacked}: Props) => {
 
   let max = 0
   let arr = Array.apply(null, Array(data.labels?.length)).map(Number.prototype.valueOf,0);
@@ -60,6 +61,12 @@ const HorizontalBar = ({ data, title, inPercent,inThousand,legendPos,legendDispl
       legend: {
         display: legendDisplay ? true :false,
         position: legendPos ? legendPos : 'top',
+        labels: {
+          usePointStyle: true,
+          pointStyle: 'circle', 
+          boxWidth: 10,
+          padding: 15, 
+      },
       },
       title: {
         text: title,
@@ -72,6 +79,11 @@ const HorizontalBar = ({ data, title, inPercent,inThousand,legendPos,legendDispl
           if (value === 0) return '';
           const index = context.dataIndex;
           const num: any = context.dataset.data[index];
+
+          if (inThousand) {
+            if (rounded1) return (value/1000).toFixed(1)
+            return (value/1000).toFixed(0)
+              }
           
           if (inPercent) return Math.round(num*100) + ' %'
             return Math.round(num)
@@ -96,8 +108,10 @@ const HorizontalBar = ({ data, title, inPercent,inThousand,legendPos,legendDispl
             maxTicksLimit: 6,
             callback: function (value:any) {
               if (inPercent) return Math.round(value*100) + ' %'
-              if (inThousand) return (value/1000).toFixed(0)
-                return Math.round(value)
+              if (inThousand) {
+                return (value/1000).toFixed(0)
+                  }
+              return Math.round(value)
            }
          },
       }

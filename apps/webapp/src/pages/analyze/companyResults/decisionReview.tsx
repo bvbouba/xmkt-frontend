@@ -9,7 +9,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { getValueByBrand, getValueByPeriodMarket, translateFeatures, translateGenericFunction } from "@/lib/utils";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
-import { channelColors, colorGrades, functionColors, marketColors } from "@/lib/constants/colors";
+import { channelColors, colorGrades, colors, functionColors, marketColors } from "@/lib/constants/colors";
 import DoughnutChart from "@/components/charts/DoughnutChart";
 import GroupedBar from "@/components/charts/GroupedBar";
 import HorizontalBar from "@/components/charts/HorizontalBar";
@@ -34,7 +34,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 function DecisionReviewPage({ locale }: InferGetStaticPropsType<typeof getStaticProps>) {
     const { t } = useTranslation('common')
     const { data: session, status } = useSession()
-    const { industryID, firmID } = session || {};
+    const { industryID, firmID,teamName } = session || {};
     const selectedPeriod = session?.selectedPeriod || 0
     const [allProjects,setAllProjects] = useState<projectProps[]>([])
     const [onlineQuery,setOnlineQuery] = useState<onlineQueryProps[]>([])
@@ -65,6 +65,7 @@ function DecisionReviewPage({ locale }: InferGetStaticPropsType<typeof getStatic
       setMarketingMix(response3)
       setFirmData(response4)
       setBrandData(response5)
+      console.log(response5)
       const response6 = await getMarketsData();
       const response7 = await getFeaturesData();
       const response8 = await getChannelsData();
@@ -112,7 +113,7 @@ if (typeof firmID === 'number') {
         ),
         borderWidth: 1,
         backgroundColor: marketColors,
-        borderColor: marketColors
+        borderColor: "white"
       },
     ],
   };
@@ -129,8 +130,8 @@ if (typeof firmID === 'number') {
           )
         ),
         borderWidth: 1,
-        backgroundColor: functionColors,
-        borderColor: functionColors
+        backgroundColor: colors,
+        borderColor: "white"
       },
     ],
   };
@@ -143,8 +144,8 @@ if (typeof firmID === 'number') {
           getValueByBrand(brandData, row2.brand_name, selectedPeriod, row.id)
         ),
       label: row.label,
-      backgroundColor: functionColors[id],
-      borderColor: functionColors[id]
+      backgroundColor: colors[id],
+      borderColor: "white"
     })),
   };
 
@@ -166,7 +167,7 @@ if (typeof firmID === 'number') {
         ) || [],
         borderWidth: 1,
         backgroundColor: channelColors,
-        borderColor: channelColors
+        borderColor: "white"
       },
     ],
   };
@@ -189,8 +190,8 @@ if (typeof firmID === 'number') {
       ],
       label: row.brand_name,
       fill: false,
-      backgroundColor: firmColors[id],
-      borderColor: firmColors[id]
+      backgroundColor: colors[id],
+      borderColor: "white"
     })),
   };
 
@@ -226,7 +227,7 @@ if (typeof firmID === 'number') {
      
       <div className="">
       <div className="container mx-auto">
-      <HeaderContainer title={t("DECISION_REVIEW")} period={selectedPeriod}/>
+      <HeaderContainer title={t("DECISION_REVIEW")} period={selectedPeriod} teamName={teamName}/>
 
   
       <ParagraphContainer  title={t("RESSOURCE_ALLOCATION_OVERVIEW")} content={t("THE_THREE_CHARTS_BELOW_SHOW_HOW_RESOURCES_HAVE_BEEN_ALLOCATED_ACR")}/>
@@ -242,7 +243,7 @@ if (typeof firmID === 'number') {
 
       <div className="grid grid-cols-1 h-80">
         <GraphContainer>
-        <GroupedBar data={byBrandData} title={t("RESOURCE_ALLOCATION_BY_BRAND")} stacked = {true} />
+        <GroupedBar data={byBrandData} title={t("RESOURCE_ALLOCATION_BY_BRAND")} stacked = {true} legendPos={"right"} />
         </GraphContainer>
       </div>
       
@@ -308,7 +309,7 @@ if (typeof firmID === 'number') {
     
         </GraphContainer>
         <GraphContainer>
-          <HorizontalBar data={commercialByBrandData} title=""/>
+          <HorizontalBar data={commercialByBrandData} title="" legendPos="right"/>
         </GraphContainer>
       </div>
       </div>

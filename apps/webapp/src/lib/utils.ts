@@ -246,7 +246,7 @@ for (let i = 0; i < mergedata.length; i++) {
     }
   }
 
-  if (closeTeamNames.length > 1) {
+  if (closeTeamNames.length > 2) {
     closePairs.push({ names: closeTeamNames });
   }
 }

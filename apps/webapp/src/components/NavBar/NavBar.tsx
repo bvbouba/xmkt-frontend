@@ -7,6 +7,10 @@ import Head from "next/head";
 import { useTranslation } from "next-i18next";
 import { useSession } from "next-auth/react";
 
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
+
+
 export const NavBar: React.FC = () => {
   const router = useRouter();
   const paths = usePaths();
@@ -14,7 +18,8 @@ export const NavBar: React.FC = () => {
   const { data: session, update } = useSession()
   const {activePeriod} = session || {}
   const selectedPeriod = session?.selectedPeriod
-  
+  const locale = router.locale;
+
  
   useEffect(() => {
     if (session?.selectedPeriod === undefined && typeof activePeriod === "number") {
@@ -176,6 +181,20 @@ export const NavBar: React.FC = () => {
   const matchingItem = submenuItems.find(item => item.url.pathname === router.pathname);
   const correspondingLabel = matchingItem ? matchingItem.label : ((router.pathname === paths.decide.$url().pathname ) ? "DECIDE HOME" :"Label Not Found");
   
+  const openNewWindow = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+   
+    const url = `${basePath}/${locale}/analyze/chartingTool`;
+
+    const newWindowFeatures = 'height=600,width=1200,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes';
+    const newWindow = window.open(url, '_blank', newWindowFeatures);
+    
+    if (newWindow) {
+      newWindow.focus();
+    }
+  };
+
+
   return (
     <>
     <Head>
@@ -185,9 +204,9 @@ export const NavBar: React.FC = () => {
       <div>
         <nav className="bg-blue-900 text-white h-24 flex">
           {/* Analyze Section */}
-          <div className="grid grid-cols-3 grid-rows-3 border-r border-white">
+          <div className="grid grid-cols-4 grid-rows-3 border-r border-white">
             <div
-              className="col-span-3 uppercase font-bold text-lg px-4 "
+              className="col-span-4 uppercase font-bold text-lg px-4 "
               style={{
                 textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
                 fontSize: "1.25rem",
@@ -202,11 +221,20 @@ export const NavBar: React.FC = () => {
                   router.pathname.includes(menu.url.pathname) ? "selected" : ""
                 }`}
               >
-                <Link href={menu.url} className={` px-4 uppercase`}>
+                <Link href={menu.url} className={`px-4 uppercase`}>
                   {menu.label}
                 </Link>
               </div>
             ))}
+            <div
+                className={`row-span-2 flex items-center  cursor-pointer border-l border-white`}
+              >
+                <Link href={"#"}  legacyBehavior>
+                <a className={`px-4 uppercase`} onClick={openNewWindow} >
+                  {t("CHARTING_TOOL")}
+                  </a>
+                </Link>
+              </div>
           </div>
 
           {/* Last 2 Menus */}
@@ -237,7 +265,7 @@ export const NavBar: React.FC = () => {
                     onChange={(e) => update({
                       ...session,
                       selectedPeriod:parseInt(e.target.value)})} // Handle the selected period
-                    value={selectedPeriod}
+                    defaultValue={selectedPeriod}
                   >
                     {/* <option value="" disabled>
                       {t("SELECT_PERIOD")}

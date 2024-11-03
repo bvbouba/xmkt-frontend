@@ -7,7 +7,7 @@ import {  GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer } from "@/components/container";
-import { colorGrades } from "@/lib/constants/colors";
+import { colorGrades, colors } from "@/lib/constants/colors";
 import VerticalBar from "@/components/charts/VerticalBar";
 import DoughnutChart from "@/components/charts/DoughnutChart";
 import { useSession } from "next-auth/react";
@@ -70,7 +70,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
 
   if (typeof firmID === 'number') {
     const colorIndex = firmID - 1; // Assuming firmID starts from 1
-    firmColors = colorGrades[colorIndex] || []; // Get the color array based on firmID
+    firmColors = colors || []; // Get the color array based on firmID
   }
 
   // Example chart data for Firm
@@ -82,9 +82,9 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
         label: t("STOCK_PRICE"),
         data: filteredFirmData?.map((item) => item.stockprice),
         backgroundColor: "rgba(54, 162, 235, 1)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "white",
         borderWidth: 1,
-        barThickness:barThickness/(selectedPeriod+1)
+        barThickness:barThickness
       },
     ],
   };
@@ -95,9 +95,9 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
         label: t("REVENUE"),
         data: filteredFirmData?.map((item) => item.revenue / unit),
         backgroundColor: "rgba(54, 162, 235, 1)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "white",
         borderWidth: 1,
-        barThickness:barThickness/(selectedPeriod+1)
+        barThickness:barThickness
       },
     ],
   };
@@ -108,9 +108,9 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
         label: t("NET_CONTRIBUTION"),
         data: filteredFirmData?.map((item) => item.net_contribution / unit),
         backgroundColor: "rgba(54, 162, 235, 1)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "white",
         borderWidth: 1,
-        barThickness:barThickness/(selectedPeriod+1)
+        barThickness:barThickness
       },
     ],
   };
@@ -121,9 +121,9 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
         label: t("MARKET_SHARE"),
         data: filteredFirmData?.map((item) => item.market_share),
         backgroundColor: "rgba(54, 162, 235, 1)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "white",
         borderWidth: 1,
-        barThickness:barThickness/(selectedPeriod+1)
+        barThickness:barThickness
       },
     ],
   };
@@ -135,9 +135,9 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
         label: t("UNIT_MARKET_SHARE"),
         data: filteredFirmData?.map((item) => item.unit_market_share),
         backgroundColor: "rgba(54, 162, 235, 1)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "white",
         borderWidth: 1,
-        barThickness:barThickness/(selectedPeriod+1)
+        barThickness:barThickness
       },
     ],
   };
@@ -149,7 +149,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
       {
         data: filteredBrandRevenue?.map((item) => item.revenue / unit),
         backgroundColor: firmColors,
-        borderColor: firmColors,
+        borderColor: "white",
         borderWidth: 1,
       },
     ],
@@ -161,7 +161,7 @@ function CompanyDashboardPage({ locale }: InferGetStaticPropsType<typeof getStat
       {
         data: filteredBrandRevenue?.map((item) => item.contribution / unit),
         backgroundColor: firmColors,
-        borderColor: firmColors,
+        borderColor: "white",
         borderWidth: 1,
       },
     ],

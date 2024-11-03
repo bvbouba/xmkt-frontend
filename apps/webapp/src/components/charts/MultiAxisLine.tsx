@@ -42,6 +42,7 @@ const MultiAxisLine = ({data,title,max}:props) => {
         beginAtZero:true
       },
       y1:{
+        min:0,
         display:false,
         position:"right",
         grid:{
@@ -73,7 +74,7 @@ const MultiAxisLine = ({data,title,max}:props) => {
       datalabels: {
         display: false,
          anchor: 'end',
-         align: 'center',
+         align: 'top',
          formatter: function(value, context) {
            var index = context.dataIndex;
            var num:any = context.dataset.data[index];

@@ -22,11 +22,11 @@ interface props {
   inThousand?:boolean;
   xTicks?:boolean;
   yTicks?:boolean;
-  yTitle?:string
-
+  yTitle?:string;
+  legendPos?:"top" | "left" | "right" | "bottom" | "center" ;
 }
 
-const LineChart = ({data,title,titlePosition,stacked,yGrid=true,inPercent,inThousand,yTitle="",xTicks=true,xGrid=false,yTicks=true}:props) => {
+const LineChart = ({data,title,titlePosition,legendPos,stacked,yGrid=true,inPercent,inThousand,yTitle="",xTicks=true,xGrid=false,yTicks=true}:props) => {
   
   const options : ChartOptions<'line'> = {
     responsive:true,
@@ -71,9 +71,13 @@ const LineChart = ({data,title,titlePosition,stacked,yGrid=true,inPercent,inThou
     plugins : {
       legend:{
         display:true,
-        labels: {
-          boxHeight:1
-       },
+        position: legendPos ? legendPos : "right",
+       labels: {
+        usePointStyle: true,
+        pointStyle: 'circle', 
+        boxWidth: 10,
+        padding: 15, 
+    },
       },
       title:{
         text:title,

@@ -26,9 +26,9 @@ function CompanyResultsPage({ locale }: InferGetStaticPropsType<typeof getStatic
   const { t } = useTranslation('common')
   const { status,data:session } = useSession()
 
-  if (status === "loading") {
-    return <Loading />;
-  }
+  // if (status === "loading") {
+  //   return <Loading />;
+  // }
   const companyItems = [
     {
       url: paths.analyze.companyResults.companyDashboard.$url(),

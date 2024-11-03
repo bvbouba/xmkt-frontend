@@ -28,7 +28,13 @@ const DoughnutChart = ({data,title,legendDisplay=true,inPercent}:props) => {
            },
           legend:{
             display: (legendDisplay) ? true : false,
-            position: 'right'
+            position: 'right',
+            labels: {
+              usePointStyle: true,
+              pointStyle: 'circle', 
+              boxWidth: 10,
+              padding: 15, 
+          },
           },
           title:{
             text:title,

@@ -84,7 +84,7 @@ if (status === "loading" || loading) {
         ),
         borderWidth: 1,
         backgroundColor: "rgba(54, 162, 235, 1)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "white",
       },
     ],
   };
@@ -101,7 +101,7 @@ if (status === "loading" || loading) {
         }),
         borderWidth: 1,
         backgroundColor: "rgba(54, 162, 235, 1)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "white",
       },
     ],
   };
@@ -117,7 +117,7 @@ if (status === "loading" || loading) {
       }),
       borderWidth: 1,
       backgroundColor: segmentColors[index],
-      borderColor: segmentColors[index],
+      borderColor: "white",
     })),
   };
 
@@ -137,7 +137,7 @@ if (status === "loading" || loading) {
       }),
       borderWidth: 1,
       backgroundColor: segmentColors[index],
-      borderColor: segmentColors[index],
+      borderColor: "white",
     })),
   };
 
@@ -151,7 +151,7 @@ if (status === "loading" || loading) {
       ),
       borderWidth: 1,
       backgroundColor: segmentColors,
-      borderColor: segmentColors,
+      borderColor: "white",
     },
   ]}
   const chart6Data = {
@@ -165,7 +165,7 @@ if (status === "loading" || loading) {
       ),
       borderWidth: 1,
       backgroundColor: segmentColors,
-      borderColor: segmentColors,
+      borderColor: "white",
     },
   ]}
   
@@ -204,20 +204,23 @@ if (status === "loading" || loading) {
   
       <ParagraphContainer title={t("MARKET_SIZE_BY_CONSUMER_SEGMENT")} content={t("THE_CHARTS_BELOW_SHOW_THE_ACTUAL_MARKET_SIZE_THIS_PERIODAND_THE_E")} />
 
-      <div className="grid grid-cols-2 gap-4 h-80">
+      <div className="grid h-80">
           <GraphContainer>
 
-          <VerticalBar data={chart3Data} title={t("MARKET_SIZE_(IN_THOUSANDS_OF_UNITS)")} legend={true}/>
+          <VerticalBar data={chart3Data} title={t("MARKET_SIZE_(IN_THOUSANDS_OF_UNITS)")} legend={true} />
           
           </GraphContainer>
+    
+      </div>
+      <div className="grid h-80">
+  
           <GraphContainer>
 
           <VerticalBar data={chart4Data} title={t("MARKET_GROWTH_RATE_(%UNIT)")} inPercent={true} legend={true}/>
         
         </GraphContainer>
       </div>
-
-      <div className="p-4">
+      
       <ParagraphContainer title={t("RELATIVE_CONSUMER_SEGMENT_SIZE_(IN_%_OF_TOTAL_MARKET_SIZE)")} />
 
         <div className="grid grid-cols-2 gap-4 h-80">
@@ -240,7 +243,6 @@ if (status === "loading" || loading) {
             <span className="italic text-sm">{t("FIVE_PERIOD")}</span>
           </div>
         </div>
-      </div>
     </div>
     </div>
     </>

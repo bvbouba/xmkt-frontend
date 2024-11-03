@@ -316,7 +316,7 @@ export const getFirmData = async ({ firmID, industryID, token,fields,period }: {
   const url = new URL(`${API_URI}api/analyze/firm/${industryID}/${firmID}`);
 
   if (fields) url.searchParams.append('fields', fields);
-  if (period) url.searchParams.append('period', period.toString());
+  if (period!==undefined) url.searchParams.append('period', period.toString());
 
   const response = await axios.get(url.toString(), {
     headers: { 'Authorization': `token ${token}` }
@@ -329,7 +329,7 @@ export const getFirmData = async ({ firmID, industryID, token,fields,period }: {
 export const getBrandResultByFirm = async ({ firmID,industryID,token,fields,period }: { firmID: number,industryID:number,token:string,fields?:string,period?:number }): Promise<brandProps[]> => {
       const url = new URL(`${API_URI}api/brand-result-list/${ industryID }/${firmID}`);
       if (fields) url.searchParams.append('fields', fields);
-      if (period) url.searchParams.append('period', period.toString());
+      if (period!==undefined) url.searchParams.append('period', period.toString());
 
       const response = await axios.get(url.toString(), {
         headers: { 'Authorization': `token ${token}` }

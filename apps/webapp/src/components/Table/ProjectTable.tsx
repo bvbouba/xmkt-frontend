@@ -18,56 +18,56 @@ export const ProjectTable = ({ projects, title, subtitle,features }:props) => {
         <ParagraphContainer title={title} content={subtitle}/>
   
        {(projects && projects?.length > 0) ? <div className="relative overflow-x-auto p-5">
-            <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <table className="w-full  text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col" className="px-2 py-1"> </th>
-                  <th scope="col" className="px-2 py-1" rowSpan={2} align="center">
+                  <th scope="col" className="border border-0 bg-white"> </th>
+                  <th scope="col" className="px-2 py-1 border border-r" rowSpan={2} align="center">
                     {t("AVAILABLE_SINCE")}
                   </th>
-                  <th scope="col" className="px-2 py-1" colSpan={5} align="center">
+                  <th scope="col" className="px-2 py-1 border border-r" colSpan={5} align="center">
                     {t("PHYSICAL_CHARACTERISTICS")}
                   </th>
-                  <th scope="col" className="px-2 py-1" colSpan={2} align="center">
+                  <th scope="col" className="px-2 py-1 border border-r" colSpan={2} align="center">
                     {t("BASE_COST")}
                   </th>
-                  <th scope="col" className="px-2 py-1" rowSpan={2} align="center">
+                  <th scope="col" className="px-2 py-1 border border-r" rowSpan={2} align="center">
                     {t("CUMULATIVE_BUDGET")}
                   </th>
                   
                 </tr>
                 <tr>
-                  <th scope="col"> </th>
+                  <th scope="col" className="border border-0 bg-white"> </th>
                   {features?.map((feature) => (
-                    <th key={feature.id} scope="col" className="px-2 py-1" align="center">
+                    <th key={feature.id} scope="col" className="px-2 py-1 border border-r" align="center">
                       {feature.abbrev}
                     </th>
                   ))}
-                  <th scope="col" className="px-2 py-1" align="center"> {t("CURRENT")} </th>
-                  <th scope="col" className="px-2 py-1" align="center"> {t("MINIMUM")} </th>
+                  <th scope="col" className="px-2 py-1 border border-r" align="center"> {t("CURRENT")} </th>
+                  <th scope="col" className="px-2 py-1 border border-r" align="center"> {t("MINIMUM")} </th>
                 </tr>
               </thead>
               <tbody>
                 {projects?.map((entry) => (
-                  <tr key={entry.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  <tr key={entry.id} className="bg-white border dark:bg-gray-800 dark:border-gray-700">
                     <td scope="row" align="center" className="x-2 py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                       {entry.name}
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border border-r" align="center">
                       {entry.ready_period}
                     </td>
                     {features?.map((feature) => (
-                      <td key={feature.id} className="px-2 py-1" align="center">
+                      <td key={feature.id} className="px-2 py-1 border border-r" align="center">
                         {entry[feature.surname]}
                       </td>
                     ))}
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border border-r" align="center">
                       {entry.base_cost}
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border border-r" align="center">
                       {entry.min_cost}
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border border-r" align="center">
                       {formatPrice(entry.accumulated_budget)}
                     </td>
                   </tr>

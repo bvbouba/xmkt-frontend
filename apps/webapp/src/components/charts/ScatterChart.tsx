@@ -56,6 +56,15 @@ const ScatterChart = ({data,closePairs,labelColors,ticks,xTitle,yTitle,min,max}:
           grid: { 
             display: true, 
             drawTicks:true,
+            color: (context) => {
+              const highlightedTicks = [-20,0,1,4,7,20];
+              return highlightedTicks.includes(context.tick.value) ? "black" : "#e0e0e0";
+            },
+            lineWidth: (context) => {
+              const highlightedTicks = [-20,0,1,4,7,20];
+              return highlightedTicks.includes(context.tick.value) ? 2 : 1;
+            }
+
         },
           title: {
             display: true,
@@ -91,6 +100,14 @@ const ScatterChart = ({data,closePairs,labelColors,ticks,xTitle,yTitle,min,max}:
           grid: { 
             display: true,
             drawTicks:true,
+            color: (context) => {
+              const highlightedTicks = [-20,0,1,4,7,20];
+              return highlightedTicks.includes(context.tick.value) ? "black" : "#e0e0e0";
+            },
+            lineWidth: (context) => {
+              const highlightedTicks = [-20,0,1,4,7,20];
+              return highlightedTicks.includes(context.tick.value) ? 2 : 1;
+            }
         },
           title: {
             display: true,
@@ -146,6 +163,7 @@ const ScatterChart = ({data,closePairs,labelColors,ticks,xTitle,yTitle,min,max}:
         },
       },
     };
+    
 
   return (
 

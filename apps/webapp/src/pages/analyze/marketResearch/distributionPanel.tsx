@@ -104,7 +104,7 @@ columns.push({id:'name' , numeric: false, label:t('BRAND')})
                 label: (locale==="fr")?row.name_fr:row.name,
                 fill: false,
                 backgroundColor: channelColors[id],
-                 borderColor: channelColors[id],
+                 borderColor: "white",
               })
                 )}
 
@@ -116,7 +116,7 @@ columns.push({id:'name' , numeric: false, label:t('BRAND')})
                              (a,c)=> a+ c.volume,0)),
                     borderWidth: 1,
                     backgroundColor: channelColors,
-                    borderColor: channelColors,
+                    borderColor: "white",
                   }]}
 
   const rows1 = brands.map(row =>{
@@ -137,7 +137,7 @@ columns.push({id:'name' , numeric: false, label:t('BRAND')})
                 label: (locale==="fr")?row.name_fr:row.name,
                 fill: false,
                 backgroundColor: channelColors[id],
-                borderColor: channelColors[id],
+                borderColor: "white",
               })
                 )}
 
@@ -148,7 +148,7 @@ const chart4Data = {
                            row => row.channel_size),
                     borderWidth: 1,
                     backgroundColor: channelColors,
-                    borderColor: channelColors,
+                    borderColor: "white",
                   }]
                 }
 
@@ -178,7 +178,7 @@ const chart4Data = {
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
 
-            <HorizontalBar data={chart1Data} title={t("UNIT_SALES_BY_CHANNEL_IN_THOUSANDS_OF_UNITS")} legendDisplay={false} />
+            <HorizontalBar data={chart1Data} title={t("UNIT_SALES_BY_CHANNEL_IN_THOUSANDS_OF_UNITS")} legendDisplay={false} stacked={true} />
   
             </GraphContainer>
   
@@ -204,7 +204,7 @@ const chart4Data = {
         <div className="grid grid-cols-2 gap-4 h-80">
           <GraphContainer>
 
-            <HorizontalBar data={chart3Data} title={t("NUMBER_OF_OUTLETS_IN_EACH_CHANNEL")} legendDisplay={false} />
+            <HorizontalBar data={chart3Data} title={t("NUMBER_OF_OUTLETS_IN_EACH_CHANNEL")} legendDisplay={false} stacked={true} />
 
           </GraphContainer>
           <GraphContainer>

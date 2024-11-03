@@ -27,9 +27,9 @@ function MarketCompetitveNewsPage({ locale }: InferGetStaticPropsType<typeof get
     const paths = usePaths();
     const { t } = useTranslation('common')
 
-    if (status === "loading") {
-      return <Loading />;
-    }
+    // if (status === "loading") {
+    //   return <Loading />;
+    // }
   
     const industryItems = [
         { url: paths.analyze.marketCompetitiveNews.industryDashboard.$url(), image: '/images/company-dashboard-logo.png', alt: 'industry_dashboard', title: t("INDUSTRY_DASHBOARD") },

@@ -140,7 +140,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
         data: ordered.map((row) => row.value_awa),
         borderWidth: 1,
         backgroundColor: "rgba(54, 162, 235, 1)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "white",
       },
     ],
     
@@ -175,7 +175,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
         data: ordered.map((row) => row.value_pi),
         borderWidth: 1,
         backgroundColor: "rgba(54, 162, 235, 1)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        borderColor: "white",
       },
     ],
   };
@@ -203,7 +203,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
       label: (locale === "fr") ? row.name_fr : row.name,
       fill: false,
       backgroundColor:channelColors[id],
-      borderColor: channelColors[id],
+      borderColor: "white",
     })),
   };
 
@@ -242,7 +242,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
                     <th
                       key={column.id}
                       scope="col"
-                      className="px-2 py-1"
+                      className="px-2 py-1 border"
                       align="center"
                     >
                       {column.label}
@@ -254,12 +254,12 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
                 {rows.map((row, index) => (
                   <tr
                     key={index}
-                    className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 ${
+                    className={`bg-white border dark:bg-gray-800 dark:border-gray-700 ${
                       index === rows.length - 1 ? "font-weight-bold" : ""
                     }`}
                   >
                     {columns.map((column) => (
-                      <td key={column.id} className="px-2 py-1" align="center">
+                      <td key={column.id} className="px-2 py-1 border" align="center">
                         {column.percent
                           ? `${row[column.id]} %`
                           : column.numeric
@@ -297,7 +297,7 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
                     <th
                       key={column.id}
                       scope="col"
-                      className="px-2 py-1"
+                      className="px-2 py-1 border"
                       align="center"
                     >
                       {column.label}
@@ -309,12 +309,12 @@ function ConsumerSurvey({ locale }: InferGetStaticPropsType<typeof getStaticProp
                 {rows1.map((row, index) => (
                   <tr
                     key={index}
-                    className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 ${
+                    className={`bg-white border dark:bg-gray-800 dark:border-gray-700 ${
                       index === rows.length - 1 ? "font-weight-bold" : ""
                     }`}
                   >
                     {columns.map((column) => (
-                      <td key={column.id} className="px-2 py-1" align="center">
+                      <td key={column.id} className="px-2 py-1 border" align="center">
                         {column.percent
                           ? `${row[column.id]} %`
                           : column.numeric

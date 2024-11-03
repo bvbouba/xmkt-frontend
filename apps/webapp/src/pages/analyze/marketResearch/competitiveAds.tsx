@@ -7,12 +7,13 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer } from "@/components/container";
 import VerticalBar from "@/components/charts/VerticalBar";
-import { channelColors, colorGrades, segmentColors } from "@/lib/constants/colors";
+import { channelColors, colorGrades, colors, segmentColors } from "@/lib/constants/colors";
 import { useSession } from "next-auth/react";
 import { fetchMarketResearchChoices, getChannelsData, getMarketingMixData, getSegmentsData } from "features/data";
 import { channelProps, markertingMixProps, marketResearchProps, segmentProps } from "types";
 import { Loading } from "@/components/Loading";
 import { Title } from "@/components/title";
+import HorizontalBar from "@/components/charts/HorizontalBar";
 
 
 
@@ -109,41 +110,43 @@ segments?.map(row => dataArray2.push(
                 )
 
   let ordered1 = dataArray1.sort((a, b) =>b[`value_ads`] - a[`value_ads`])
-  const chart1Data = {labels : ordered1.map(row => row.label),
-                datasets:[{
-                      data: ordered1.map(row=>row.value_ads),
-                      borderWidth: 1,
-                      barThickness:40,
-                      backgroundColor:ordered1.map(row=>colorGrades[row.firmID-1][0]),
-                      borderColor: ordered1.map(row=>colorGrades[row.firmID-1][0]),
-                  }]
+  const chart1Data = {labels : [""],
+                datasets:ordered1.map((row,id)=>({
+                  data:[row.value_ads],
+                 label: row.label,
+                 fill: false,
+                 backgroundColor:ordered1.map(row=>colors[id]),
+                      borderColor:"white",
+                }))
+           
   }
 
   
   let ordered2 = dataArray2.sort((a, b) =>b.value - a.value)
-  const chart2Data = {labels : ordered2.map(row => row.label),
-                      datasets:[{
-                      data: ordered2.map(row=>Math.round(row.value)),
-                      borderWidth: 1,
-                      barThickness:40,
-                      backgroundColor: ordered2.map(row=>segmentColors[row.id-1]),
-                      borderColor: ordered2.map(row=>segmentColors[row.id-1]),
-                  }]
-                }
+  const chart2Data = {labels : [""],
+                      datasets:ordered2.map((row,id)=>({
+                        data:[row.value],
+                      label: row.label,
+                      fill: false,
+                      backgroundColor:ordered2.map(row=>segmentColors[id]),
+                            borderColor:"white",
+                      }))
+                  }
   
   
 
   let ordered3 = dataArray1.sort((a, b) =>b[`value_com`] - a[`value_com`])
-    const chart3Data = {
-        labels: ordered3.map(row => row.label),
-    datasets: [{
-                        data: ordered3.map(row=>Math.round(row.value_com)),
-                        borderWidth: 1,
-                        barThickness:40,
-                        backgroundColor:ordered1.map(row=>colorGrades[row.firmID-1][0]),
-                        borderColor: ordered1.map(row=>colorGrades[row.firmID-1][0]),
-                    }]
-  }
+    const chart3Data = {labels : [""],
+                  datasets:ordered3.map((row,id)=>({
+                    data:[row.value_com],
+                  label: row.label,
+                  fill: false,
+                  backgroundColor:ordered3.map(row=>colors[id]),
+                        borderColor:"white",
+                  }))
+              }
+
+  
 
     let dataArray4:{label:string,id:number,value:number}[]=[]
     channels?.map(row => dataArray4.push(
@@ -156,14 +159,16 @@ segments?.map(row => dataArray2.push(
               })
            )
     let ordered4 = dataArray4.sort((a, b) =>b[`value`] - a[`value`])
-    const chart4Data = {labels : ordered4.map(row => row.label),
-    datasets: [{
-                        data: ordered4.map(row=>row.value),
-                        borderWidth: 1,
-                        barThickness:40,
-                        backgroundColor: ordered4.map(row=>channelColors[row.id-1]),
-                        borderColor: ordered4.map(row=>channelColors[row.id-1]),
-                    }]}
+    const chart4Data = 
+    {labels : [""],
+      datasets:ordered4.map((row,id)=>({
+        data:[row.value],
+      label: row.label,
+      fill: false,
+      backgroundColor:ordered4.map(row=>channelColors[id]),
+            borderColor:"white",
+      }))
+  }
   
 
   const brands = Array.from(new Set(m2Data?.map(row => row.brand_name
@@ -240,12 +245,12 @@ segments?.map(row => dataArray2.push(
         <div className="grid grid-cols-2 gap-4 h-80 p-4">
           <GraphContainer>
 
-            <VerticalBar data={chart1Data} title={t("ESTIMATE_TOTAL_EXPENDITURE_(IN_MILLION_$)_-_BY_FIRM")} />
+            <HorizontalBar data={chart1Data} rounded1={true} title={t("ESTIMATE_TOTAL_EXPENDITURE_(IN_MILLION_$)_-_BY_FIRM")} stacked={true} inThousand={true}/>
     
           </GraphContainer>
           <GraphContainer>
 
-          <VerticalBar data={chart2Data} title={t("ESTIMATE_TOTAL_EXPENDITURE_(IN_MILLION_$)_-_BY_SEGMENT")} />
+          <HorizontalBar data={chart2Data} rounded1={true} title={t("ESTIMATE_TOTAL_EXPENDITURE_(IN_MILLION_$)_-_BY_SEGMENT")} stacked={true} inThousand={true}/>
   
           </GraphContainer>
         </div>
@@ -268,12 +273,12 @@ segments?.map(row => dataArray2.push(
         <div className="grid grid-cols-2 gap-4 h-80 p-4">
           <GraphContainer>
 
-          <VerticalBar data={chart3Data} title= {t("ESTIMATED_COMMERCIAL_TEAM_SIZE_(IN_FULL-TIME_EQUIVALENT)_-_BY_FIRM")} />
+          <HorizontalBar data={chart3Data} stacked={true} title= {t("ESTIMATED_COMMERCIAL_TEAM_SIZE_(IN_FULL-TIME_EQUIVALENT)_-_BY_FIRM")} />
 
           </GraphContainer>
           <GraphContainer>
 
-          <VerticalBar data={chart4Data} title={t("ESTIMATED_COMMERCIAL_TEAM_SIZE_(IN_FULL-TIME_EQUIVALENT)_-_BY_SEGMENT")} />
+          <HorizontalBar data={chart4Data} stacked={true} title={t("ESTIMATED_COMMERCIAL_TEAM_SIZE_(IN_FULL-TIME_EQUIVALENT)_-_BY_SEGMENT")} />
 
           </GraphContainer>
         </div>

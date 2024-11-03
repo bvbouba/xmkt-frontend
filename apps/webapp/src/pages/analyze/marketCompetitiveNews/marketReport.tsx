@@ -121,25 +121,25 @@ const selectedUnitMsData = brandData?.filter(row => row.period_id === selectedPe
           <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col">Brand </th>
-                  <th scope="col" className="px-2 py-1" align="center">{t("VALUE_SHARE")} </th>
-                  <th scope="col" className="px-2 py-1" align="center">{t("RETAIL_SALES")}</th>
-                  <th scope="col" className="px-2 py-1" align="center">{t("VARIATION")}</th>
+                  <th scope="col" className="px-2 py-1 border">{t("BRAND")} </th>
+                  <th scope="col" className="px-2 py-1 border" align="center">{t("VALUE_SHARE")} </th>
+                  <th scope="col" className="px-2 py-1 border" align="center">{t("RETAIL_SALES")}</th>
+                  <th scope="col" className="px-2 py-1 border" align="center">{t("VARIATION")}</th>
                 </tr>
               </thead>
               <tbody>
                 {selectedValueMsData?.sort((a,b)=>a.market_share - b.market_share).slice().sort((a, b) => b.revenue - a.revenue).map((entry,index) => (
                   <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td scope="row " className={`px-2 py-1 font-bold font-medium text-gray-900 whitespace-nowrap dark:text-white`}>
+                    <td scope="row " className={`px-2 py-1 border font-bold font-medium text-gray-900 whitespace-nowrap dark:text-white`}>
                       {entry.brand_name}
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border" align="center">
                       {entry.value_market_share}%
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border" align="center">
                       {formatPrice(entry.revenue)}
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border" align="center">
                       {formatPrice(entry.variation)}
                     </td>
                   </tr>
@@ -153,25 +153,25 @@ const selectedUnitMsData = brandData?.filter(row => row.period_id === selectedPe
            <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col">{t("BRAND")} </th>
+                  <th scope="col" className="px-2 py-1 border">{t("BRAND")} </th>
                   <th scope="col" align="center">{t("UNIT_SHARE")} </th>
-                  <th scope="col" className="px-2 py-1" align="center">{t("VOLUME")}</th>
-                  <th scope="col" className="px-2 py-1" align="center">{t("VARIATION")}</th>
+                  <th scope="col" className="px-2 py-1 border" align="center">{t("VOLUME")}</th>
+                  <th scope="col" className="px-2 py-1 border" align="center">{t("VARIATION")}</th>
                 </tr>
               </thead>
               <tbody>
                 {selectedUnitMsData?.sort((a, b) => b.unit_market_share - a.unit_market_share).map((entry,index) => (
                   <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
-                    <td scope="row " className={`px-2 py-1 font-medium font-bold text-gray-900 whitespace-nowrap dark:text-white`}>
+                    <td scope="row " className={`px-2 py-1 border font-medium font-bold text-gray-900 whitespace-nowrap dark:text-white`}>
                       {entry.brand_name}
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border" align="center">
                       {entry.unit_market_share}%
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border" align="center">
                       {entry.unit_sold}
                     </td>
-                    <td className="px-2 py-1" align="center">
+                    <td className="px-2 py-1 border" align="center">
                       {entry.variation}
                     </td>
                   </tr>
@@ -193,29 +193,29 @@ const selectedUnitMsData = brandData?.filter(row => row.period_id === selectedPe
               <table className="w-full border text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400">
               <thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 font-bold">
-                  <th scope="col" className="px-2 py-1">{t("BRAND_NAME")}</th>
-                  <th scope="col" className="px-2 py-1" align="center">{t("LAUNCHED_DATE")}</th>
+                  <th scope="col" className="px-2 py-1 border">{t("BRAND")}</th>
+                  <th scope="col" className="px-2 py-1 border" align="center">{t("LAUNCHED_DATE")}</th>
                   {features.slice(0, 5).map((feature) => (
-                    <th key={feature.id} scope="col" className="px-2 py-1" align="center">
+                    <th key={feature.id} scope="col" className="px-2 py-1 border" align="center">
                       {feature.abbrev}
                     </th>
                   ))}
-                  <th scope="col" className="px-2 py-1" align="center">{t("PRICE")}</th>
-                  <th scope="col" className="px-2 py-1" align="center">{t("BASE_COST")}</th>
-                  <th scope="col" className="px-2 py-1" align="center">{t("BASE_COST_%_OF_PRICE")}</th>
+                  <th scope="col" className="px-2 py-1 border" align="center">{t("PRICE")}</th>
+                  <th scope="col" className="px-2 py-1 border" align="center">{t("BASE_COST")}</th>
+                  <th scope="col" className="px-2 py-1 border" align="center">{t("BASE_COST_%_OF_PRICE")}</th>
                 </tr>
               </thead>
               <tbody>
                 {m2Data.filter(m=>m.is_active === true).map((data) => (
                   <tr key={data.id}  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 ">
-                    <td className="px-2 py-1 font-medium font-bold text-gray-900 whitespace-nowrap dark:text-white">{data.brand_name}</td>
-                    <td className="px-2 py-1" align="center">{data.project.available_period}</td>
+                    <td className="px-2 py-1 border font-medium font-bold text-gray-900 whitespace-nowrap dark:text-white">{data.brand_name}</td>
+                    <td className="px-2 py-1 border" align="center">{data.project.available_period}</td>
                     {features.slice(0, 5).map((feature) => (
-                      <td key={feature.id} className="px-2 py-1" align="center">{data.project[feature.surname]}</td>
+                      <td key={feature.id} className="px-2 py-1 border" align="center">{data.project[feature.surname]}</td>
                     ))}
-                    <td className="px-2 py-1" align="center">{data.price}</td>
-                    <td className="px-2 py-1" align="center">{data.project.base_cost}</td>
-                    <td className="px-2 py-1" align="center">{((data.project.base_cost / data.price) * 100).toFixed(0)}%</td>
+                    <td className="px-2 py-1 border" align="center">{data.price}</td>
+                    <td className="px-2 py-1 border" align="center">{data.project.base_cost}</td>
+                    <td className="px-2 py-1 border" align="center">{((data.project.base_cost / data.price) * 100).toFixed(0)}%</td>
                   </tr>
                 ))}
               </tbody>

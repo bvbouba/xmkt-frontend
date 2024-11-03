@@ -9,7 +9,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { getValueByTeam } from "@/lib/utils";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
-import { colorGrades, marketColors } from "@/lib/constants/colors";
+import { colorGrades, colors, marketColors } from "@/lib/constants/colors";
 import LineChart from "@/components/charts/LineChart";
 import HorizontalBar from "@/components/charts/HorizontalBar";
 import VerticalBar, { options } from "@/components/charts/VerticalBar";
@@ -47,7 +47,9 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
       const loadData = async () => {
         setLoading(true)
         try {
-          const response1 = await getFirmData({ industryID, firmID:0, token: session.accessToken });
+          const response1 = await getFirmData({ industryID, firmID:0, token: session.accessToken,
+            fields:"period_id,team_name,stockprice,revenue,net_contribution,cum_nc,market_id,market_share,unit_market_share"
+           });
           const response2 = await getBrandResultByFirm({ industryID, firmID:0, token: session.accessToken });
           const response3 = await getMarketsData()
           setFirmData(response1)
@@ -69,15 +71,15 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
     return <Loading />;
   }
 
- const periods = Array.from(Array(selectedPeriod+1).keys())
+ const periods = Array.from(Array(selectedPeriod+1).keys()).slice(-3)
 
-  const industryData = firmData?.filter(row => row.period_id === selectedPeriod).map((row1) => {
+ const industryData = firmData?.filter(row => row.period_id === selectedPeriod).map((row1) => {
                     let temp: industryDataProps = {
-                        team_name: '', // Initialize with a default value or set the actual value
-                        stockprice: 0, // Initialize with a default value or set the actual value
-                        revenue: 0, // Initialize with a default value or set the actual value
-                        net_contribution: 0, // Initialize with a default value or set the actual value
-                        cum_nc: 0, // Initialize with a default value or set the actual value
+                        team_name: '',
+                        stockprice: 0,
+                        revenue: 0, 
+                        net_contribution: 0, 
+                        cum_nc: 0, 
                     };
                 industryFinancialItems.map(row2 =>{
                     if(row2.numeric && row2.unit){
@@ -87,8 +89,8 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
                     }})
                 return temp })
 
-        const industryChartData = {
-    labels:periods.map((item) => `${(selectedPeriod < 4 ) ? t("PERIOD"): t("PER")} ${item}`) || [],
+  const industryChartData = {
+    labels:periods.map((item) => `${t("PERIOD")} ${item}`) || [],
     datasets: firmData?.filter(row => row.period_id === selectedPeriod).map(
           (row,id) => ({
             data: periods.map(per => getValueByTeam(firmData,row.team_name,per,'stockprice')),
@@ -99,15 +101,15 @@ function IndustryDashboard({ locale }: InferGetStaticPropsType<typeof getStaticP
             datalabels: {
                 display: false
               },
-              backgroundColor: colorGrades[id][0],
-        borderColor: colorGrades[id][0],
+              backgroundColor: colors[id],
+        borderColor: "white",
           })
             ) || []
           }
 
 
 const byMarketChartData = {
-    labels:periods.map((item) => `${(selectedPeriod < 4 ) ? t("PERIOD"): t("PER")} ${item}`),
+    labels:periods.map((item) => `${t("PERIOD")} ${item}`),
     datasets: marketsData.map(
               (m,id) => ({
               data: periods.map(p => firmData?.filter(d => d.period_id === p
@@ -121,12 +123,12 @@ const byMarketChartData = {
                   display: false
                 },
                 backgroundColor: marketColors[id],
-                borderColor: marketColors[id],
+                borderColor: "white",
             })
               )}
 
 const byFirmChartData = {
-    labels:periods.map((item) => `${(selectedPeriod < 4 ) ? t("PERIOD"): t("PER")} ${item}`),
+    labels:periods.map((item) => `${t("PERIOD")} ${item}`),
       datasets: firmData?.filter(row => row.period_id === selectedPeriod).map(
             (f,id) => ({
             data: periods.map(p => getValueByTeam(firmData,f.team_name,p,'revenue')),
@@ -138,8 +140,8 @@ const byFirmChartData = {
             datalabels: {
                 display: false
               },
-              backgroundColor: colorGrades[id][0],
-        borderColor: colorGrades[id][0],
+              backgroundColor: colors[id],
+        borderColor: "white",
           })
             ) || []
           }
@@ -152,8 +154,8 @@ const marketShareChartData = {
               data: industryMarketShareItems.map(row1 => getValueByTeam(firmData,row.team_name,selectedPeriod,row1.id)),
               label: row.team_name,
               fill: false,
-              backgroundColor: colorGrades[id][0],
-            borderColor: colorGrades[id][0],
+              backgroundColor: colors[id],
+            borderColor: "white",
             })
               ) || []
             }
@@ -168,7 +170,7 @@ const topSellingVolumeChartData = {
             data: vSelected?.map(row => row.unit_sold) || [],
             borderWidth: 1,
             backgroundColor: "rgba(54, 162, 235, 1)",
-            borderColor: "rgba(54, 162, 235, 1)",
+            borderColor: "white",
         }]}
 
 const rSelected = brandData?.filter(row => row.period_id === selectedPeriod).sort((a, b) =>
@@ -181,7 +183,7 @@ datasets:[{
             data: rSelected?.map(row => Math.round(row.revenue/unit)) || [],
             borderWidth: 1,
             backgroundColor: "rgba(54, 162, 235, 1)",
-            borderColor: "rgba(54, 162, 235, 1)",
+            borderColor: "white",
         }]}
 
     return ( 
@@ -211,7 +213,7 @@ datasets:[{
         
 
           <GraphContainer>
-          {(selectedPeriod !== 0) ? <LineChart data={industryChartData} title="" yGrid={true}  />
+          {(selectedPeriod !== 0) ? <LineChart data={industryChartData} title="" yGrid={true} legendPos="right" />
           :
           <Bar data={industryChartData} options={options({title:"",legend:true})}/> 
           }
@@ -258,7 +260,7 @@ datasets:[{
         </div>
 
           <GraphContainer>
-           <HorizontalBar data={marketShareChartData} title="" inPercent={true} stacked={true} />
+           <HorizontalBar data={marketShareChartData} title="" inPercent={true} stacked={true} legendPos="right" />
           </GraphContainer>
          
          <div className="col"></div>

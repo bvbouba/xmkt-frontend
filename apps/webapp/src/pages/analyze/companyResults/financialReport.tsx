@@ -8,7 +8,7 @@ import {  GetStaticProps, InferGetStaticPropsType } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { GraphContainer, HeaderContainer, ParagraphContainer } from "@/components/container";
-import { categoryColors, colorGrades } from "@/lib/constants/colors";
+import { categoryColors, colorGrades, colors } from "@/lib/constants/colors";
 import { getValueByPeriod } from "@/lib/utils";
 import MultiAxisLine from "@/components/charts/MultiAxisLine";
 import LineChart from "@/components/charts/LineChart";
@@ -70,7 +70,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
       let firmColors:string[] = []; // Default color array
       if (typeof firmID === 'number') {
         const colorIndex = firmID - 1; // Assuming firmID starts from 1
-        firmColors = colorGrades[colorIndex] || []; // Get the color array based on firmID
+        firmColors = colors || []; // Get the color array based on firmID
       }
       
       const periods = Array.from(Array(selectedPeriod+1).keys())
@@ -94,7 +94,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
           datalabels: {
               display: (selectedPeriod === 0 )? true : row.display
             },
-            borderColor: categoryColors[id],
+            borderColor: "white",
             backgroundColor: categoryColors[id],
 
         }))}
@@ -113,7 +113,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
               datalabels: {
                   display: (selectedPeriod === 0 )? true : false
                 },
-                borderColor: categoryColors[id],
+                borderColor: "white",
                 backgroundColor: categoryColors[id],
 
             })
@@ -127,7 +127,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
                    row => row.revenue),
             borderWidth: 1,
             backgroundColor: firmColors,
-            borderColor: firmColors
+            borderColor: "white"
           }]}
 
          const contributionData = {
@@ -138,7 +138,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
                    row => row.contribution),
             borderWidth: 1,
             backgroundColor: firmColors,
-            borderColor: firmColors
+            borderColor: "white"
           }]}
 
     const filteredBrandData = brandData.filter(b=> b.period_id == selectedPeriod)
@@ -169,7 +169,7 @@ function FinancialReportPage({ locale }: InferGetStaticPropsType<typeof getStati
           <GraphContainer>
           {(selectedPeriod !== 0) ? <LineChart data={costData} title={t("COST_EVOLUTION_BY_CATEGORY_(%_Revenue)")} inPercent={true} />
           :
-          <Bar data={costData} options={options({title:t("COST_EVOLUTION_BY_CATEGORY"),legend:true,percent:true,yAxisDisplay:false})}/> 
+          <Bar data={costData} options={options({title:t("COST_EVOLUTION_BY_CATEGORY_(%_Revenue)"),legend:true,percent:true,yAxisDisplay:false})}/> 
           }
           </GraphContainer>
         </div>
