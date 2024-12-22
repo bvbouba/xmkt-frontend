@@ -424,5 +424,7 @@
 "SELECT_INDUSTRY": "Sélectionnez une Industrie",
 "SELECT_MENU": "Sélectionnez un Menu",
 "SELECT_SUBMENU": "Sélectionnez un Sous-menu",
-"SELECT_SUBMENU_TO_VIEW_GRAPH": "Veuillez sélectionner un sous-menu pour afficher le graphique."
+"SELECT_SUBMENU_TO_VIEW_GRAPH": "Veuillez sélectionner un sous-menu pour afficher le graphique.",
+"DECISION_ROUND_NOT_ACTIVE": "Le tour de décision n'a pas commencé"
+
 }

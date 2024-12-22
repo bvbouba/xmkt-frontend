@@ -418,5 +418,6 @@
 "SELECT_INDUSTRY": "Select Industry",
 "SELECT_MENU": "Select Menu",
 "SELECT_SUBMENU": "Select Submenu",
-"SELECT_SUBMENU_TO_VIEW_GRAPH": "Please select a submenu to view the graph."
+"SELECT_SUBMENU_TO_VIEW_GRAPH": "Please select a submenu to view the graph.",
+"DECISION_ROUND_NOT_ACTIVE":"Decision round is not active"
 }
