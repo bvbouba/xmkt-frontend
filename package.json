@@ -26,14 +26,10 @@
     "node": ">=18"
   },
   "packageManager": "npm@10.2.4",
-  "workspaces": {
-    "packages": ["apps/*", "packages/*"],
-    "nohoist": [
-      "apps/webapp/**",
-      "apps/webapp/**/next",
-      "apps/webapp/**/postcss"
-    ]
-  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-brands-svg-icons": "^6.5.2",

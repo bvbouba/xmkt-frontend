@@ -4,9 +4,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**",
-    "apps/webapp/.next/**", "apps/dashboard/.next/**", "apps/storefront/.next/**"
-    ]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "lint": {},
     "type-check": {},
