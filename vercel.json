@@ -1,0 +1,12 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "apps/webapp/package.json",
+        "use": "@vercel/next",
+        "config": {
+          "installCommand": "npm install --prefer-workspace-root"
+        }
+      }
+    ]
+  }
