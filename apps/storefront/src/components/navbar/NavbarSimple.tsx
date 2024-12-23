@@ -11,7 +11,6 @@ export const NavbarSimple: React.FC = () => {
   const { t } = useTranslation("common");
   const paths = usePaths();
   const { data: session, status } = useSession();
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "/store";
 
   const menus = [
     {
@@ -40,7 +39,7 @@ export const NavbarSimple: React.FC = () => {
         {/* Logo Section */}
         <div className="flex justify-center lg:justify-normal">
           <Link href={paths.$url()}>
-            <img src={`${basePath}/logo.svg`} alt="Logo" />
+            <img src={`/logo.svg`} alt="Logo" />
           </Link>
         </div>
 

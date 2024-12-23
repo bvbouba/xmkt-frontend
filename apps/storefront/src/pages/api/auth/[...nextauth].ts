@@ -34,14 +34,13 @@ declare module "next-auth" {
     }
 }
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
 
 const handler = NextAuth({
     session: {
         strategy: 'jwt'
     },
     pages: {
-        signOut:`${process.env.NEXT_PUBLIC_BASE_URL}${basePath}`
+        signOut:`${process.env.NEXT_PUBLIC_BASE_URL}`
     },
     providers: [
         CredentialsProvider({

@@ -12,7 +12,6 @@ export const config = {
 }
 
 export function middleware(req: NextRequest) {
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/admin'
   
   let lng
   if (req.cookies.has(cookieName)) lng = acceptLanguage.get(req.cookies.get(cookieName)?.value)
@@ -24,12 +23,12 @@ export function middleware(req: NextRequest) {
     !languages.some(loc => req.nextUrl.pathname.startsWith(`/${loc}`)) &&
     !req.nextUrl.pathname.startsWith('/_next')
   ) {
-    return NextResponse.redirect(new URL(`${basePath}/${lng}${req.nextUrl.pathname}`, req.url))
+    return NextResponse.redirect(new URL(`/${lng}${req.nextUrl.pathname}`, req.url))
   }
   const refererHeader = req.headers.get('referer')
   if (refererHeader) {
     const refererUrl = new URL(refererHeader)
-    const lngInReferer = languages.find((l) => refererUrl.pathname.startsWith(`${basePath}/${l}`))
+    const lngInReferer = languages.find((l) => refererUrl.pathname.startsWith(`/${l}`))
     const response = NextResponse.next()
     if (lngInReferer) response.cookies.set(cookieName, lngInReferer)
     return response

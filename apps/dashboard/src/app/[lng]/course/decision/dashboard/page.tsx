@@ -25,7 +25,6 @@ export default function Page({ params: { lng } }: { params: { lng: string; } }) 
     const industry = watch("industry");
     const [errors, setErrors] = useState<IsErrorLog[]>()
     const router = useRouter()
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/admin'
 
     useEffect(() => {
         if (status === "authenticated") {
@@ -125,7 +124,7 @@ export default function Page({ params: { lng } }: { params: { lng: string; } }) 
                 industryId: industry,
                 teamName: team_name
               });
-        window.open(`${basePath}/${lng}/course/decision/dashboard/team/`, '_blank')
+        window.open(`/${lng}/course/decision/dashboard/team/`, '_blank')
     }
     }
     return (
@@ -150,7 +149,7 @@ export default function Page({ params: { lng } }: { params: { lng: string; } }) 
             </form>
             {industry && (
                 <button
-                    onClick={() => window.open(`${basePath}/${lng}/course/decision/dashboard/data/`, '_blank')}
+                    onClick={() => window.open(`/${lng}/course/decision/dashboard/data/`, '_blank')}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                     {t('see_data')}

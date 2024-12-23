@@ -18,7 +18,6 @@ export function SectionCourseDetail() {
     register,
   } = useForm<FormValues>();
   const [course, setCourse] = useState<CourseProps>();
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "/store";
   const [error, setError] = useState<string>();
 
   const onSubmit = async (data: FormValues) => {
@@ -75,7 +74,7 @@ export function SectionCourseDetail() {
             <div className="h-32 w-32 md:h-48 md:w-48 relative flex-shrink-0">
               <img
                 className="object-cover h-full w-full rounded-t-lg md:rounded-none md:rounded-l-lg"
-                src={`${basePath}/img/store/simulation-1.png`}
+                src={`/img/store/simulation-1.png`}
                 alt="Course"
               />
             </div>

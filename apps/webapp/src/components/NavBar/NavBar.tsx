@@ -8,7 +8,6 @@ import { useTranslation } from "next-i18next";
 import { useSession } from "next-auth/react";
 
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
 
 
 export const NavBar: React.FC = () => {
@@ -184,7 +183,7 @@ export const NavBar: React.FC = () => {
   const openNewWindow = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
    
-    const url = `${basePath}/${locale}/analyze/chartingTool`;
+    const url = `/${locale}/analyze/chartingTool`;
 
     const newWindowFeatures = 'height=600,width=1200,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes';
     const newWindow = window.open(url, '_blank', newWindowFeatures);

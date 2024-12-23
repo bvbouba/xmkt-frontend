@@ -2,14 +2,13 @@ import { Html, Head, Main, NextScript } from "next/document";
 import { useRouter } from "next/router";
 
 export default function Document() {
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
   const locale = 'fr'
   const isFrench = locale === 'fr';
 
   return (
     <Html lang={locale}>
       <Head>
-        <link rel="icon" href={`${basePath}/ico.svg`} />
+        <link rel="icon" href={`/ico.svg`} />
         {isFrench ? (
           <>
 

@@ -20,7 +20,6 @@ function MobileNav() {
   const { isAuthenticated } = useAuth();
   const dispatch = useAppDispatch();
   const router = useRouter()
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
 
   const toggleMobileNav = () => {
     setIsMobileNavOpen(!isMobileNavOpen);
@@ -71,7 +70,7 @@ function MobileNav() {
       </div>
       <div className="px-12 flex flex-col gap-y-12 h-full">
         <Link href={paths.$url()}>
-          <img src={`${basePath}/logo.svg`} alt="" />
+          <img src={`/logo.svg`} alt="" />
         </Link>
         <ul className="flex flex-col gap-y-5">
           {menus.map((menu,idx)=>{

@@ -3,7 +3,6 @@
 import type { Config } from "tailwindcss";
 import sharedConfig from "@repo/tailwind-config";
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
 const config: Pick<Config, "content" | "presets" | "theme" > = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -42,12 +41,12 @@ const config: Pick<Config, "content" | "presets" | "theme" > = {
         custom2: "0px 0px 30px 0px rgba(8, 73, 81, 0.06)",
       },
       backgroundImage:{
-        services:`url(${basePath}/img/services/bg.svg)`,
-        testimonials:`url(${basePath}/img/testimonials/bg.svg)`,
-        departments:`url(${basePath}/img/departments/bg.svg)`,
-        quoteLeft:`url(${basePath}/icons/testimonials/quote-left.svg)`,
-        quoteRight:`url(${basePath}/icons/testimonials/quote-right.svg)`,
-        banner:`url(${basePath}/img/banner/bg.png)`,
+        services:`url(/img/services/bg.svg)`,
+        testimonials:`url(/img/testimonials/bg.svg)`,
+        departments:`url(/img/departments/bg.svg)`,
+        quoteLeft:`url(/icons/testimonials/quote-left.svg)`,
+        quoteRight:`url(/icons/testimonials/quote-right.svg)`,
+        banner:`url(/img/banner/bg.png)`,
       }
     }
   }

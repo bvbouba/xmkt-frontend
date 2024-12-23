@@ -34,7 +34,6 @@ export default function Page({
     const [loadingEnroll, setLoadingEnroll] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "/store";
 
     useEffect(() => {
         if (courseId) {
@@ -97,7 +96,7 @@ export default function Page({
                 <div className="md:w-1/3">
                     <img
                         className="w-full h-64 object-cover md:h-full"
-                        src={`${basePath}/img/store/simulation-1.png`}
+                        src={`/img/store/simulation-1.png`}
                         alt={course.course_name}
                     />
                 </div>

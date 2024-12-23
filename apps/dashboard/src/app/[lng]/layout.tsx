@@ -22,12 +22,11 @@ export default function RootLayout({
                         pathname.includes("/login") ||
                         pathname.includes("/signup") ||
                         pathname.includes("/dashboard/team"));
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/admin'
   return (
-    <SessionProvider basePath={`${basePath}/api/auth`}>
+    <SessionProvider basePath={`/api/auth`}>
       <html lang={lng} dir={dir(lng)}>
         <head>
-        <link rel="icon" href={`${basePath}/ico.svg`} />
+        <link rel="icon" href={`/ico.svg`} />
         </head>
         <body className={`${inter.className} bg-gray-100`}>
           <div className="flex h-screen">

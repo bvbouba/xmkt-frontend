@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { menuProps } from "../Section/Section";
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
 
 export function Card({ menu,locale }: { menu: menuProps,locale?:string }) {
    
@@ -11,7 +10,7 @@ export function Card({ menu,locale }: { menu: menuProps,locale?:string }) {
     if (!pathname )  {
       return;
     }
-    const url = `${basePath}/${locale}${menu.url.pathname}`;
+    const url = `/${locale}${menu.url.pathname}`;
 
     const newWindowFeatures = 'height=600,width=1200,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes';
     const newWindow = window.open(url, '_blank', newWindowFeatures);
@@ -31,7 +30,7 @@ export function Card({ menu,locale }: { menu: menuProps,locale?:string }) {
          <a onClick={openNewWindow} className="d-flex flex-column items-center text-center">
         <div className="grid grid-rows-6 h-48">
           <div className="row-span-5">
-            <img className="rounded-t-lg object-contain	w-full h-full" src={`${basePath}${menu.image}`} alt={menu.alt} />
+            <img className="rounded-t-lg object-contain	w-full h-full" src={`${menu.image}`} alt={menu.alt} />
           </div>
           <div className="bg-gray-500">
             <h5 className="leading-5 text-base font-bold tracking-tight text-white dark:text-white uppercase">
@@ -57,7 +56,7 @@ export function CardBasic({menu}:{menu:menuProps}) {
         >
           <div className="grid grid-rows-6 h-52 p-6">
           <div className="row-span-5 border border-gray-500 rounded-lg shadow">
-            <img className="rounded-t-lg object-contain w-full h-full" src={`${basePath}${menu.image}`} alt={menu.alt} /></div>
+            <img className="rounded-t-lg object-contain w-full h-full" src={`${menu.image}`} alt={menu.alt} /></div>
           <span className="inline-block align-middle">
             <h5 className="mb-2 text-base font-bold tracking-tight text-gray dark:text-white">
               {menu.title}

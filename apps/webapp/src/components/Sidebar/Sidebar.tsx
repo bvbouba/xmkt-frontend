@@ -44,7 +44,6 @@ export const SideBar: React.FC = () => {
 
   }, [status,session?.teamID,session?.accessToken,session?.activePeriod])
   
-  const basePath=process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
   const locale = router.locale;
   const { t } = useTranslation('common')
 
@@ -53,7 +52,7 @@ export const SideBar: React.FC = () => {
   
   const openModal = (severity: number) => {
 
-    const url = `${basePath}/${locale}/decide/errors/${severity}`;
+    const url = `/${locale}/decide/errors/${severity}`;
 
     const newWindowFeatures = 'height=600,width=1200,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes';
     const newWindow = window.open(url, '_blank', newWindowFeatures);
@@ -89,7 +88,7 @@ export const SideBar: React.FC = () => {
     <aside className="w-1/5 bg-gray-100 border-r border-gray-300  text-gray-500">
       {/* Logo */}
       <div className="mb-4 text-center bg-white">
-        <img src={`${basePath}/logo.svg`} alt="Logo" className="h-24 mx-auto" />
+        <img src={`/logo.svg`} alt="Logo" className="h-24 mx-auto" />
       </div>
 
       {/* User Information */}

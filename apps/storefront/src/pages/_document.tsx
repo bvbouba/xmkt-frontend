@@ -2,7 +2,6 @@ import { Html, Head, Main, NextScript } from "next/document";
 import { useRouter } from "next/router";
 
 export default function Document() {
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
   const locale = 'fr'
   const isFrench = locale === 'fr';
   
@@ -10,7 +9,7 @@ export default function Document() {
     <Html lang={locale}>
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="icon" href={`${basePath}/ico.svg`} />
+        <link rel="icon" href={`/ico.svg`} />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"

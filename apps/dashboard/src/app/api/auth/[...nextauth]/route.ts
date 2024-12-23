@@ -5,7 +5,6 @@ import { API_URI } from "myconstants";
 import { getUser } from "@/lib/auth";
 import { logout } from "features/data";
 
-const basePath=process.env.NEXT_PUBLIC_BASE_PATH || '/admin'
 
 declare module "next-auth" {
   interface Session {
@@ -42,7 +41,7 @@ const handler = NextAuth({
     strategy: 'jwt'
   },
   pages: {
-    signOut:`${process.env.NEXT_PUBLIC_BASE_URL}${basePath}`
+    signOut:`${process.env.NEXT_PUBLIC_BASE_URL}/`
   },
   providers: [
     CredentialsProvider({

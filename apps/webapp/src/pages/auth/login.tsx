@@ -36,7 +36,6 @@ const LoginPage = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) =
   const [loading,setLoading] = useState(false)
   const [errors1,setErrors1] = useState("")
   const [loading1,setLoading1] = useState(false)
-  const basePath=process.env.NEXT_PUBLIC_BASE_PATH || '/marketing'
 
   const {
     handleSubmit,
@@ -97,7 +96,7 @@ const LoginPage = ({ locale }: InferGetStaticPropsType<typeof getStaticProps>) =
     <div className="container mx-auto mt-2">
   
       <div className="flex justify-center mb-5">
-        <img src={`${basePath}/logo.svg`}  alt="Logo" className="h-12 w-auto" />
+        <img src={`/logo.svg`}  alt="Logo" className="h-12 w-auto" />
       </div>
       <h5 className="text-2xl flex justify-center font-bold mb-4 uppercase">{t("READY_TO_START")}</h5>
 

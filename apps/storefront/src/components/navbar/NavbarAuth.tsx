@@ -6,7 +6,6 @@ import usePaths from "@/lib/paths";
 export const NavbarAuth: React.FC = () => {
   const { t } = useTranslation("common");
   const paths = usePaths();
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
 
   return (
     <header className="py-8 lg:pt-6 lg:pb-14">
@@ -16,7 +15,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/store'
       >
         <div className="flex justify-center lg:justify-normal">
           <Link href={paths.$url()}>
-            <img src={`${basePath}/logo.svg`} alt="" />
+            <img src={`/logo.svg`} alt="" />
           </Link>
         </div>
    
